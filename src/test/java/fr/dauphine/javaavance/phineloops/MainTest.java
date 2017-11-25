@@ -1,4 +1,4 @@
-package fr.dauphine.javaavance.phineloop; 
+package fr.dauphine.javaavance.phineloops; 
 
 import junit.framework.TestCase;
 

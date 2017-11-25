@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.dauphine.javaavance.phineloop</groupId>
-  <artifactId>phineloop</artifactId>
+  <groupId>fr.dauphine.javaavance.phineloops</groupId>
+  <artifactId>phineloops</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
-  <name>phineloop</name>
+  <name>phineloops</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -32,7 +32,7 @@
 	<configuration>
           <archive>
             <manifest>
-	      <mainClass>fr.dauphine.javaavance.phineloop.Main</mainClass>
+	      <mainClass>fr.dauphine.javaavance.phineloops.Main</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

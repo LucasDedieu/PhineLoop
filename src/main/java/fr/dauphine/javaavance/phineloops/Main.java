@@ -1,4 +1,4 @@
-package fr.dauphine.javaavance.phineloop; 
+package fr.dauphine.javaavance.phineloops; 
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -36,13 +36,13 @@ public class Main {
         } catch (ParseException e) {
             System.err.println("Error: invalid command line format.");
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "phineloopgen", options );
+            formatter.printHelp( "phineloops", options );
             System.exit(1);
         }       
                 
     try{    
         if( cmd.hasOption( "g" ) ) {
-            System.out.println("Running phineloop generator.");
+            System.out.println("Running phineloops generator.");
             String[] gridformat = cmd.getOptionValue( "g" ).split("x");
             height = Integer.parseInt(gridformat[0]);
             width = Integer.parseInt(gridformat[1]); 
@@ -53,7 +53,7 @@ public class Main {
             //...            
         }
         else if( cmd.hasOption( "s" ) ) {
-            System.out.println("Running phineloop solver.");
+            System.out.println("Running phineloops solver.");
             inputFile = cmd.getOptionValue( "s" );
             if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
             outputFile = cmd.getOptionValue( "o" );
@@ -66,7 +66,7 @@ public class Main {
         }
         
         else if( cmd.hasOption( "c" )) {
-            System.out.println("Running phineloop checker.");
+            System.out.println("Running phineloops checker.");
             inputFile = cmd.getOptionValue( "c" );
             boolean solved = false; 
             
@@ -81,7 +81,7 @@ public class Main {
         // TODO Auto-generated catch block
             System.err.println("Error parsing commandline : " + e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "phineloop", options );         
+            formatter.printHelp( "phineloops", options );         
             System.exit(1); // exit with error      
     }
         System.exit(0); // exit with success                            
