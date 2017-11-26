@@ -44,8 +44,8 @@ public class Main {
         if( cmd.hasOption( "g" ) ) {
             System.out.println("Running phineloops generator.");
             String[] gridformat = cmd.getOptionValue( "g" ).split("x");
-            height = Integer.parseInt(gridformat[0]);
-            width = Integer.parseInt(gridformat[1]); 
+            width = Integer.parseInt(gridformat[0]);
+            height = Integer.parseInt(gridformat[1]); 
             if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
             outputFile = cmd.getOptionValue( "o" );
 
