@@ -1,13 +1,15 @@
 package fr.dauphine.javaavance.phineloops; 
 
+import java.io.FileNotFoundException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import fr.dauphine.javaavance.phineloops.model.Game;
 
 public class Main {
     private static String inputFile = null;  
@@ -17,19 +19,28 @@ public class Main {
     private static Integer maxcc = -1; 
     
 
-    private void generate(int width, int height, String outputFile){
+    private static void generate(int width, int height, String outputFile){
 	// generate grid and store it to outputFile...
-	//...            
+	//... 
+  
+    	try {
+        	Game game = new Game(width, height,0);
+        	game.generate();
+			game.write(outputFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found: "+outputFile);
+		}
+    	
     }
 
-    private boolean solve(String inputFile, String outputFile){
+    private static boolean solve(String inputFile, String outputFile){
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
 
 	return false; 
     }
 
-    private boolean check(String inputFile){
+    private static boolean check(String inputFile){
 	// load grid from inputFile and check if it is solved... 
 	// ...
 
@@ -77,7 +88,7 @@ public class Main {
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 		outputFile = cmd.getOptionValue( "o" );
 
-		boolean solved = solve(intputFile, outputFile); 
+		boolean solved = solve(inputFile, outputFile); 
 
 		System.out.println("SOLVED: " + solved);            
 	    }
