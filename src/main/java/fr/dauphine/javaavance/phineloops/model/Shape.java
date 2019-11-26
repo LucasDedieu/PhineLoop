@@ -1,7 +1,9 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+import java.util.List;
+
 public abstract class Shape {
-	protected Connection[] connections;
+	protected List<Connection> connections;
 	private ShapeType type;
 	protected int orientation;
 	private int i;
@@ -34,6 +36,10 @@ public abstract class Shape {
 
 	public int getJ() {
 		return j;
+	}
+	
+	public List<Connection> getConnections(){
+		return connections;
 	}
 
 

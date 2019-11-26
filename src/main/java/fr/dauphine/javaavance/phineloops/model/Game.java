@@ -5,9 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Game {
+	private static int NORTH = 0;
+	private static int SOUTH = 1;
+	private static int EAST = 2;
+	private static int WEST = 3;
 	private int width;
 	private int height;
 	private Shape[][] board;
@@ -73,16 +79,80 @@ public class Game {
 	}
 	
 	public boolean shapeIsFullyConnected(Shape shape) {
-		return true;
+		Shape[] neighbors = getNeighbors(shape); 
+		List<Connection> connections = shape.getConnections();
+		if(countNeighbors(neighbors)<connections.size()) {
+			return false;
+		}
+		boolean isShapeFullyConnected = true;
+		for(Connection connection : connections) {
+			switch(connection) {
+				case NORTH : isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[NORTH], Connection.SOUTH);break;
+				case SOUTH : isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[SOUTH], Connection.NORTH);break;
+				case EAST :  isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[EAST], Connection.WEST);break;
+				case WEST :  isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[WEST], Connection.EAST);break;
+				default : break;
+			}
+		}
+		return isShapeFullyConnected;
 	}
 	
-	private List<Shape> getNeighbors(){
-		return null;
+	private int countNeighbors(Shape[] neighbors) {
+		int count = 0;
+		for(int i=0;i<4;i++) {
+			if(neighbors[i] != null) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
-	private boolean shapesAreConnected(Shape s1, Shape s2) {
-		return true;
+	public boolean neighborContainConnection(Shape neighbor,Connection connection) {
+		if(neighbor == null) {
+			return false;
+		}
+		return neighbor.getConnections().contains(connection);
+			
 	}
+	
+	
+	public Shape[] getNeighbors(Shape shape){
+		int i = shape.getI();
+		int j = shape.getJ();
+		
+		Shape[] neighbors = new Shape[4];
+		
+		//north neighbor
+		if(i-1>=0) {
+			neighbors[NORTH] = board[i-1][j];
+		}
+		//south neighbor
+		if(i+1<height) {
+			neighbors[SOUTH] = board[i+1][j];
+		}
+		//east neighbor
+		if(j+1<width) {
+			neighbors[EAST] = board[i][j+1];
+		}
+		//west neighbor
+		if(j-1>=0) {
+			neighbors[WEST] = board[i][j-1];
+		}
+		return neighbors;
+	}
+	
+	public void addShape(Shape shape) throws Exception {
+		int shapeI =shape.getI();
+		int shapeJ = shape.getJ();
+		if(board[shapeI][shapeJ] == null) {
+			board[shapeI][shapeJ] = shape;
+			return;
+		}
+		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
+			
+		
+	}
+	
 	
 	
 	
