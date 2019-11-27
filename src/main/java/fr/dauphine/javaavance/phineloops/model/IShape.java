@@ -19,5 +19,11 @@ public class IShape extends Shape {
 			throw new IllegalArgumentException("0<=orientation<=2");
 		}
 	}
+	
+	public void rotate() {
+		this.orientation = (this.orientation + 1)%2;
+		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
+		connections.replaceAll(x->x.getNextConnection());
+	}
 
 }

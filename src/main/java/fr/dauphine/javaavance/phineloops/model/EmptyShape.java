@@ -8,5 +8,6 @@ public class EmptyShape extends Shape {
 		super(ShapeType.EmptyShape, orientation,i,j);
 		connections = new ArrayList<>();	
 	}
-
+	public void rotate() {
+	}
 }

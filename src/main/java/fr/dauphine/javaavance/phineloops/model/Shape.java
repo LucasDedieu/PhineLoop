@@ -19,6 +19,8 @@ public abstract class Shape {
 	
 	public void rotate() {
 		orientation = (orientation + 1)%4;
+		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
+		connections.replaceAll(x->x.getNextConnection());
 	}
 	
 	public int getType() {
@@ -41,8 +43,6 @@ public abstract class Shape {
 	public List<Connection> getConnections(){
 		return connections;
 	}
-
-
 	
 	
 	public String toString() {

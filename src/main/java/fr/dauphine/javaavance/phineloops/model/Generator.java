@@ -318,6 +318,14 @@ public class Generator {
 			}
 		}
 		//TODO : MODIFY THE ORIENTATION OF EACH SHAPE 
+		for (Shape[] shapes:board)
+		{
+			for (Shape shape:shapes)
+			{
+				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
+			}
+		}
+		
 		return null;
 	}
 }

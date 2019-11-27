@@ -9,5 +9,7 @@ public class XShape extends Shape {
 		super(ShapeType.XShape, orientation,i,j);
 		connections = Arrays.asList(Connection.NORTH,Connection.SOUTH,Connection.EAST,Connection.WEST);
 	}
+	public void rotate() {
+	}
 
 }
