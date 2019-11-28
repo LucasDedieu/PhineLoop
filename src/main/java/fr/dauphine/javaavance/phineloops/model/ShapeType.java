@@ -31,7 +31,6 @@ public enum ShapeType {
 			case TShape: return new TShape(orientation,i,j);
 			case XShape: return new XShape(orientation,i,j);
 			case LShape: return new TShape(orientation,i,j);
-			
 		}
 		return null;
 	}

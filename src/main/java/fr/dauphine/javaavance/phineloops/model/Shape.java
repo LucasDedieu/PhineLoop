@@ -17,11 +17,8 @@ public abstract class Shape {
 		this.j=j;
 	}
 	
-	public void rotate() {
-		orientation = (orientation + 1)%4;
-		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
-		connections.replaceAll(x->x.getNextConnection());
-	}
+	public abstract void rotate();
+	
 	
 	public int getType() {
 		return type.getId();

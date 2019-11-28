@@ -25,5 +25,11 @@ public class QShape extends Shape {
 			throw new IllegalArgumentException("0<=orientation<=3");
 		}
 	}
+	
+	public void rotate() {
+		orientation = (orientation + 1)%4;
+		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
+		connections.replaceAll(x->x.getNextConnection());
+	}
 
 }
