@@ -17,7 +17,11 @@ public class Variable {
 		return name;
 	}
 	
-	public boolean equals(Variable var) {
-		return this.name == var.name;
+	public boolean equals(Object o) {
+		if(!(o instanceof Variable)) return false;
+		
+		Variable var = (Variable)o;
+		
+		return name == var.name;
 	}
 }
