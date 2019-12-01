@@ -63,7 +63,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testShapeisFullyConnected_positive() throws Exception {
+	public void testIsShapeFullyConnected_positive() throws Exception {
 		Shape s1 = new TShape(0, 1,1);
 		Shape s2 = new XShape(0, 0,1);
 		Shape s3 = new XShape(0, 1,2);
@@ -76,11 +76,11 @@ public class GameTest {
 		game.addShape(s4);
 		game.addShape(s5);
 		
-		Assert.assertEquals(true, game.shapeIsFullyConnected(s1));
+		Assert.assertEquals(true, game.isShapeFullyConnected(s1));
 	}
 	
 	@Test
-	public void testShapeisFullyConnected_negative() throws Exception {
+	public void testIsShapeFullyConnected_negative() throws Exception {
 		Shape s1 = new TShape(0, 1,1);
 		Shape s2 = new XShape(0, 0,1);
 		Shape s3 = new XShape(0, 1,2);
@@ -93,7 +93,7 @@ public class GameTest {
 		game.addShape(s4);
 		game.addShape(s5);
 		
-		Assert.assertEquals(false, game.shapeIsFullyConnected(s2));
+		Assert.assertEquals(false, game.isShapeFullyConnected(s2));
 	}
 
 }

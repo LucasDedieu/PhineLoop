@@ -7,7 +7,6 @@ public abstract class Shape {
 	private ShapeType type;
 	protected int orientation;
 	private int i;
-	
 	private int j;
 	
 	public Shape (ShapeType type, int orientation, int i, int j) {
@@ -44,5 +43,12 @@ public abstract class Shape {
 	
 	public String toString() {
 		return getType()+" "+orientation;
+	}
+	
+	public boolean hasConnection(Connection connection) {
+		if(connections == null) {
+			return false;
+		}
+		return connections.contains(connection);
 	}
 }
