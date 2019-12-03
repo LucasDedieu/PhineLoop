@@ -13,7 +13,7 @@ public class Checker {
 		int width = game.getWidth();
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) {
-				if(!(game.shapeIsFullyConnected(board[i][j]))){
+				if(!(game.isShapeFullyConnected(board[i][j]))){
 					return false;
 				}
 			}

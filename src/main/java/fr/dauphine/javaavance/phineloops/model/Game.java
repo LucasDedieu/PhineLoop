@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Game {
 	private static int NORTH = 0;
@@ -17,10 +18,6 @@ public class Game {
 	private int width;
 	private int height;
 	private Shape[][] board;
-	public Shape[][] getBoard() {
-		return board;
-	}
-
 	private int cc;
 	
 	public Game(int width, int height, int cc) {
@@ -53,6 +50,12 @@ public class Game {
 		return height;
 	}
 	
+	
+	public Shape[][] getBoard() {
+		return board;
+	}
+
+	
 	public void generate() {
 		Generator generator = new Generator(this);
 		generator.generate();
@@ -78,23 +81,26 @@ public class Game {
 		}
 	}
 	
-	public boolean shapeIsFullyConnected(Shape shape) {
+	public boolean isShapeFullyConnected(Shape shape) {
+		if(shape == null) {
+			return false;
+		}
 		Shape[] neighbors = getNeighbors(shape); 
 		List<Connection> connections = shape.getConnections();
 		if(countNeighbors(neighbors)<connections.size()) {
 			return false;
 		}
-		boolean isShapeFullyConnected = true;
+		
 		for(Connection connection : connections) {
 			switch(connection) {
-				case NORTH : isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[NORTH], Connection.SOUTH);break;
-				case SOUTH : isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[SOUTH], Connection.NORTH);break;
-				case EAST :  isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[EAST], Connection.WEST);break;
-				case WEST :  isShapeFullyConnected = isShapeFullyConnected && neighborContainConnection(neighbors[WEST], Connection.EAST);break;
+				case NORTH : if (neighbors[NORTH] == null || !neighbors[NORTH].hasConnection(Connection.SOUTH)) {return false;} break;
+				case SOUTH : if (neighbors[SOUTH] == null || !neighbors[SOUTH].hasConnection(Connection.NORTH)) {return false;} break;
+				case EAST :  if (neighbors[EAST] == null || !neighbors[EAST].hasConnection(Connection.WEST)) {return false;} break;
+				case WEST :  if (neighbors[WEST] == null || !neighbors[WEST].hasConnection(Connection.EAST)) {return false;} break;
 				default : break;
 			}
 		}
-		return isShapeFullyConnected;
+		return true;
 	}
 	
 	private int countNeighbors(Shape[] neighbors) {
@@ -105,14 +111,6 @@ public class Game {
 			}
 		}
 		return count;
-	}
-	
-	public boolean neighborContainConnection(Shape neighbor,Connection connection) {
-		if(neighbor == null) {
-			return false;
-		}
-		return neighbor.getConnections().contains(connection);
-			
 	}
 	
 	
@@ -142,6 +140,9 @@ public class Game {
 	}
 	
 	public void addShape(Shape shape) throws Exception {
+		if(shape == null) {
+			return;
+		}
 		int shapeI =shape.getI();
 		int shapeJ = shape.getJ();
 		if(board[shapeI][shapeJ] == null) {
