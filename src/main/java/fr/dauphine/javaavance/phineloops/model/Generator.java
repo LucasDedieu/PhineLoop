@@ -17,31 +17,33 @@ public class Generator {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
-		//int topLeftCornerLegalShapes[][]= {{0,0},{1,1},{1,2},{5,1}};
+		//Generation of the set of Legal Shapes 
 		Shape topLeftCornerLegalShapes[]= {new EmptyShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new LShape(1, 0,0)};
-		//int topBorderLegalShapes[][]={{0,0},{1,1},{1,2},{1,3},{2,1},{3,2},{5,1},{5,2}}; //Pour (0,1) random entre emptyShape,Ishapen.orientation.EAST ou Ishapen.orientation.WEST, Lshape.SOUTH_WEST ou Lshape.SOUTH_EAST,Tshape.SOUTH,Qshape	
 		Shape topBorderLegalShapes[]= {new EmptyShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new QShape(3, w, w),new IShape(1,w,w),new TShape(2,w,w),new LShape(1, 0,0),new LShape(2, 0,0)};
-	    //int topRightCornerLegalShapes[][]= {{0,0},{1,2},{1,3},{5,2}};
 		Shape topRightCornerLegalShapes[]= {new EmptyShape(0, w, w),new QShape(2, w, w),new QShape(3, w, w),new LShape(2, 0,0)};
-		//int leftBorderLegalShapes[][]={{0,0},{1,1},{1,0},{1,2},{2,0},{3,1},{5,0},{5,1}};
 		Shape leftBorderLegalShapes[]= {new EmptyShape(0, w, w),new QShape(1, w, w),new QShape(0, w, w),new QShape(2, w, w),new IShape(0,w,w),new TShape(1,w,w),new LShape(0, 0,0),new LShape(1, 0,0)};
-		//int BottomLeftCornerLegalShapes[][]= {{0,0},{1,0},{1,1},{5,0}};
 		Shape bottomLeftCornerLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new LShape(0, 0,0)};
-		//int bottomBorderLegalShapes[][]={{0,0},{1,0},{1,1},{1,3},{2,1},{3,0},{5,0},{5,3}};
 		Shape bottomBorderLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(3, w, w),new IShape(1,w,w),new TShape(0,w,w),new LShape(0, 0,0),new LShape(3, 0,0)};
-		//int bottomRightCornerLegalShapes[][]= {{0,0},{1,0},{1,3},{5,3}};
 		Shape bottomRightCornerLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(3, w, w),new LShape(3, 0,0)};
-		//int rightBorderLegalShapes[][]={{0,0},{1,0},{1,1},{1,2},{2,1},{3,3},{5,2},{5,3}};
 		Shape rightBorderLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new IShape(0,w,w),new TShape(3,w,w),new LShape(2, 0,0),new LShape(3, 0,0)};
 		List<Shape> allShape= Arrays.asList(new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new QShape(3, w, w),new IShape(0,w,w),new IShape(1,w,w),new TShape(0,w,w),new TShape(1,w,w),new TShape(2,w,w),new XShape(0, 0, 0),new LShape(0, 0,0),new LShape(1, 0,0),new LShape(2, 0,0),new LShape(3, 0,0));
 		Random rand = new Random();
+		
+		//Grid Traversal putting each correct shape regarding the legal and feasible shapes 
 		for(int i=0; i<h;i++) {
 			for(int j =0; j<w;j++) {
+				
+				int cc=game.getMaxCC(); 
+				//DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
+				
 				if (i==0 && j==0) //Top Left Corner
 				{
 					int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
 					board[i][j] = topLeftCornerLegalShapes[randomIndex];
 				}
+				
+				
+				
 				else if (i==0 && j<w-1) // Top Border
 				{
 					if (board[i][j-1].connections.contains(Connection.EAST))
@@ -317,6 +319,9 @@ public class Generator {
 				}
 			}
 		}
+		
+		
+		
 		//TODO : MODIFY THE ORIENTATION OF EACH SHAPE 
 		for (Shape[] shapes:board)
 		{
@@ -325,7 +330,6 @@ public class Generator {
 				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 			}
 		}
-		
 		return null;
 	}
 }

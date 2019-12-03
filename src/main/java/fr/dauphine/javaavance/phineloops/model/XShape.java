@@ -10,7 +10,6 @@ public class XShape extends Shape {
 		connections = Arrays.asList(Connection.NORTH,Connection.SOUTH,Connection.EAST,Connection.WEST);
 	}
 	public void rotate() {
-		//empty
 	}
 
 }
