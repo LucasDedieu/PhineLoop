@@ -51,7 +51,7 @@ public class CSP {
 			keyValues.put(newName, newSize);
 		}else {
 			try {
-				throw new Exception("This name already exists!");
+				throw new Exception("This name already exists !");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
