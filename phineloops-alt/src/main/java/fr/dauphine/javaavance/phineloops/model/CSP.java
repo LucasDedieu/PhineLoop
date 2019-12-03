@@ -2,6 +2,7 @@ package fr.dauphine.javaavance.phineloops.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -16,28 +17,46 @@ public class CSP {
 	private List<Variable> variables;
 	private List<Domain> domains;
 	private List<Constraints> constraints;
-	
+	private HashMap<Variable, Integer> keyValues;
 	
 	public CSP() {
 		this.variables = new ArrayList<>();
 		this.domains = new ArrayList<>();
 		this.constraints = new ArrayList<>();
+		this.keyValues = new HashMap<>();
 	}
 	
-	public List<Variable> my_variables(){
+	public List<Variable> getVariables(){
 		return Collections.unmodifiableList(variables);
 	}
 	
-	public List<Constraints> my_constraints(){
+	public List<Constraints> getConstraints(){
 		return constraints;
 	}
 	
-	public List<Domain> my_domains(){
+	public List<Domain> getDomain(){
 		return domains;
 	}
 
 	
 	public List<Variable> getScope(){ // List of variables satisfying the constraints
 		return null;
+	}
+	
+	public void addNewVariables(Variable newName) {//This function adds a new variable.
+		boolean variableKey = keyValues.containsKey(newName);
+		if(!variableKey) {
+			variables.add(newName);
+			int newSize = variables.size() - 1;
+			keyValues.put(newName, newSize);
+		}else {
+			try {
+				throw new Exception("This name already exists !");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }
