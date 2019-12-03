@@ -21,8 +21,11 @@ import fr.dauphine.javaavance.phineloops.model.QShape;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.TShape;
 import fr.dauphine.javaavance.phineloops.model.XShape;
+import fr.dauphine.javaavance.phineloops.view.Visualize;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
     private static String inputFile = null;  
     private static String outputFile = null;
     private static Integer width = -1;
@@ -62,6 +65,7 @@ public class Main {
     }
     
     public static void main(String[] args) {
+    	Application.launch(args);
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -160,5 +164,12 @@ public class Main {
     	return game;   	
     }
     
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		Visualize visu = new Visualize();
+		visu.start(primaryStage);
+	}
 	
 }
