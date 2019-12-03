@@ -7,11 +7,18 @@ import java.util.Random;
 
 public class Generator {
 	private Game game;
+	private int node = 0;
+	private int road = 0;
+	private int maxCc; //DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
+	
 	
 	
 	public Generator(Game game) {
 		this.game = game;
+		this.maxCc = game.getMaxCC(); 
 	}
+	
+	
 	
 	public Game generate() {
 		int h = game.getHeight();
@@ -26,6 +33,8 @@ public class Generator {
 		Shape bottomBorderLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(3, w, w),new IShape(1,w,w),new TShape(0,w,w),new LShape(0, 0,0),new LShape(3, 0,0)};
 		Shape bottomRightCornerLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(3, w, w),new LShape(3, 0,0)};
 		Shape rightBorderLegalShapes[]={new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new IShape(0,w,w),new TShape(3,w,w),new LShape(2, 0,0),new LShape(3, 0,0)};
+		//restriction for connected components case
+		//Shape rightTripleBorderLegalShape[]
 		List<Shape> allShape= Arrays.asList(new EmptyShape(0, w, w),new QShape(0, w, w),new QShape(1, w, w),new QShape(2, w, w),new QShape(3, w, w),new IShape(0,w,w),new IShape(1,w,w),new TShape(0,w,w),new TShape(1,w,w),new TShape(2,w,w),new XShape(0, 0, 0),new LShape(0, 0,0),new LShape(1, 0,0),new LShape(2, 0,0),new LShape(3, 0,0));
 		Random rand = new Random();
 		
@@ -33,8 +42,6 @@ public class Generator {
 		for(int i=0; i<h;i++) {
 			for(int j =0; j<w;j++) {
 				
-				int cc=game.getMaxCC(); 
-				//DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
 				
 				if (i==0 && j==0) //Top Left Corner
 				{
