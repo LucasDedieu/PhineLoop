@@ -17,23 +17,24 @@ public class Game {
 	private static int WEST = 3;
 	private int width;
 	private int height;
+	private int maxcc;
 	private Shape[][] board;
-	private int cc;
 	
-	public Game(int width, int height, int cc) {
+	public Game(int width, int height, int maxcc) {
 		if(width<1) {
 			throw new IllegalArgumentException("Width must be >= 1");
 		}
 		if(height<1) {
 			throw new IllegalArgumentException("Height must be >= 1");
 		}
-		if(cc<0) {
-			throw new IllegalArgumentException("Number of  must be positive");
+		if(maxcc<0) {
+			//|| maxcc<= (width*height)/2 / The smallest connected component you can put in a grid fill 2 cases => maxcc must be < numberOfCases/2
+			throw new IllegalArgumentException("Maximum cc must be positive and you have to put at least less cc than the number of cases");
 			//FIXME
 		}
 		this.width = width;
 		this.height = height;
-		this.cc = cc;
+		this.maxcc = maxcc;
 		board = new Shape[height][width];
 	}
 
@@ -54,7 +55,11 @@ public class Game {
 	public Shape[][] getBoard() {
 		return board;
 	}
-
+	
+	public int getMaxCC()
+	{
+		return this.maxcc;
+	}
 	
 	public void generate() {
 		Generator generator = new Generator(this);

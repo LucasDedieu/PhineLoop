@@ -1,6 +1,10 @@
 package fr.dauphine.javaavance.phineloops; 
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,9 +13,19 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import fr.dauphine.javaavance.phineloops.model.Checker;
+import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.LShape;
+import fr.dauphine.javaavance.phineloops.model.QShape;
+import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.model.TShape;
+import fr.dauphine.javaavance.phineloops.model.XShape;
+import fr.dauphine.javaavance.phineloops.view.Visualize;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
     private static String inputFile = null;  
     private static String outputFile = null;
     private static Integer width = -1;
@@ -43,11 +57,15 @@ public class Main {
     private static boolean check(String inputFile){
 	// load grid from inputFile and check if it is solved... 
 	// ...
+    	Game game = loadFile(inputFile);
+    	Checker checker = new Checker(game);
+    	System.out.println(checker.check());
 
 	return false; 
     }
     
     public static void main(String[] args) {
+    	Application.launch(args);
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -59,7 +77,7 @@ public class Main {
         options.addOption("o", "output", true, "Store the generated or solved grid in <arg>. (Use only with --generate and --solve.)");
         options.addOption("t", "threads", true, "Maximum number of solver threads. (Use only with --solve.)");
         options.addOption("x", "nbcc", true, "Maximum number of connected components. (Use only with --generate.)");
-	options.addOption("G", "gui", true, "Run with the graphic user interface.");
+        options.addOption("G", "gui", true, "Run with the graphic user interface.");
         options.addOption("h", "help", false, "Display this help");
         
         try {
@@ -113,4 +131,45 @@ public class Main {
 
         System.exit(0); // exit with success                            
     }
+    
+    static Game loadFile(String inputFile){
+    	File file = new File(inputFile);
+    	Game game = null;
+    	try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br=new BufferedReader(fr); 
+			String line;
+			//First we get the width and height
+			int width = Integer.parseInt(br.readLine());
+			int height = Integer.parseInt(br.readLine());
+			game = new Game(width, height, 1);
+			//while((line=br.readLine())!=null) {
+				for(int i=0; i<height;i++) {
+					for(int j =0; j<width;j++) {
+						line = br.readLine();
+						Shape shape = Shape.getShapeFromStringId(line, i, j);
+						try {
+							game.addShape(shape);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				//}	
+			}
+			br.close();	
+    	}
+    	catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	return game;   	
+    }
+    
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		Visualize visu = new Visualize();
+		visu.start(primaryStage);
+	}
+	
 }

@@ -1,10 +1,25 @@
 package fr.dauphine.javaavance.phineloops.view;
 
-public class Visualize {
+import javafx.*;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
-	public Visualize() {
-		// TODO Auto-generated constructor stub
-		
+
+public class Visualize extends Application{
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		primaryStage.setTitle("PhineLoops");
+		BorderPane pane = new BorderPane();
+		Scene scene = new Scene(pane);
+		primaryStage.setScene(scene);
+		primaryStage.sizeToScene();
+		primaryStage.show();
 	}
 
+	
 }
+
