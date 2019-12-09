@@ -3,7 +3,10 @@ package fr.dauphine.javaavance.phineloops.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * In this constraint satisfaction algorithm (CSP), we need:
@@ -58,5 +61,15 @@ public class CSP {
 			}
 		}
 		
+	}
+	
+	public static <T,U> void courseMap(Map<T,U> map) {//Showing the elements of a HashMap.
+		Set<Map.Entry<T,U> > inputs = map.entrySet();
+		Iterator<Map.Entry<T,U> > iter = inputs.iterator();
+		
+		while(iter.hasNext()) {
+			Map.Entry<T, U> input = iter.next();
+			System.out.println(input.getKey()+" : "+input.getValue());
+		}
 	}
 }
