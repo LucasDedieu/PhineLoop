@@ -1,18 +1,28 @@
 package fr.dauphine.javaavance.phineloops.model;
 
 public class Checker {
+	/*
 	private Game game;
 	
 	public Checker(Game game) {
 		this.game = game;
-	}
+	}*/
 	
-	public boolean check() {
-		Shape[][] board = game.getBoard();
+	public static boolean check(Game game) {
+		return checkFromI(game, 0);
+ 	}
+	
+
+	public static boolean check(State state) {
+		return checkFromI(state, 0);
+ 	}
+	
+	public static boolean checkFromI(Game game, int iStart) {
 		int height = game.getHeight();
 		int width = game.getWidth();
-		for(int i=0; i<height;i++) {
-			for(int j =0; j<width;j++) {
+		Shape[][] board = game.getBoard();
+		for(int i =iStart;i<height;i++) {
+			for(int j=0;j<width;j++) {
 				if(!(game.isShapeFullyConnected(board[i][j]))){
 					return false;
 				}
@@ -20,5 +30,10 @@ public class Checker {
 		}
 		return true;
  	}
-
+	
+	
+	public static boolean checkFromI(State state, int iStart) {
+		Game game = state.getGame();
+		return checkFromI(game, iStart);
+	}
 }

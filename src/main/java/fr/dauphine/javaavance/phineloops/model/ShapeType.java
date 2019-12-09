@@ -26,11 +26,11 @@ public enum ShapeType {
 	public Shape buildShape(int orientation,int i, int j) {
 		switch(this) {
 			case EmptyShape: return new EmptyShape(orientation,i,j);
-			case QShape: return new TShape(orientation,i,j);
-			case IShape: return new TShape(orientation,i,j);
+			case QShape: return new QShape(orientation,i,j);
+			case IShape: return new IShape(orientation,i,j);
 			case TShape: return new TShape(orientation,i,j);
 			case XShape: return new XShape(orientation,i,j);
-			case LShape: return new TShape(orientation,i,j);
+			case LShape: return new LShape(orientation,i,j);
 		}
 		return null;
 	}

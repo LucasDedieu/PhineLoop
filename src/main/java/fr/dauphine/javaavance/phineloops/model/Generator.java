@@ -20,7 +20,7 @@ public class Generator {
 	
 	
 	
-	public Game generate() {
+	public void generate() {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
@@ -327,7 +327,7 @@ public class Generator {
 			}
 		}
 		
-		
+		/*
 		
 		//TODO : MODIFY THE ORIENTATION OF EACH SHAPE 
 		for (Shape[] shapes:board)
@@ -337,6 +337,6 @@ public class Generator {
 				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 			}
 		}
-		return null;
+		*/
 	}
 }

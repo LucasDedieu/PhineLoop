@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -14,18 +15,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import fr.dauphine.javaavance.phineloops.model.Checker;
-import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.Game;
-import fr.dauphine.javaavance.phineloops.model.LShape;
-import fr.dauphine.javaavance.phineloops.model.QShape;
 import fr.dauphine.javaavance.phineloops.model.Shape;
-import fr.dauphine.javaavance.phineloops.model.TShape;
-import fr.dauphine.javaavance.phineloops.model.XShape;
+import fr.dauphine.javaavance.phineloops.model.Solver;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends Application  {
     private static String inputFile = null;  
     private static String outputFile = null;
     private static Integer width = -1;
@@ -36,11 +33,29 @@ public class Main extends Application {
     private static void generate(int width, int height, String outputFile){
 	// generate grid and store it to outputFile...
 	//... 
-  
+    	//FIXME fix the generator
     	try {
         	Game game = new Game(width, height,0);
-        	game.generate();
+        	Game solution;
+        	int nb=0;
+        	do {
+        		nb++;
+        		game.generate();
+            	solution = new Game(game);
+        	}while(!Checker.check(solution));
+        	
+        	System.out.println(nb);
+        	System.out.println(game);
+        	Random rand = new Random();
+        	for (Shape[] shapes:game.getBoard())
+    		{
+    			for (Shape shape:shapes)
+    			{
+    				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
+    			}
+    		}
 			game.write(outputFile);
+			System.out.println(game);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: "+outputFile);
 		}
@@ -50,22 +65,33 @@ public class Main extends Application {
     private static boolean solve(String inputFile, String outputFile){
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
-
-	return false; 
+    	Game game = loadFile(inputFile);
+    	System.out.println("original game :\n"+game);
+    	Solver solver = new Solver(game);
+		long startTime = System.currentTimeMillis();
+    	Game gameSolved = solver.solve();
+    	if(game == null) {
+    		return false;
+    	}
+    	long deltaTime = System.currentTimeMillis() - startTime;
+    	System.out.println("time : "+deltaTime+" ms");
+    	System.out.println("\n__________________________\n"+gameSolved);
+    	return true;
+ 
     }
 
     private static boolean check(String inputFile){
 	// load grid from inputFile and check if it is solved... 
 	// ...
     	Game game = loadFile(inputFile);
-    	Checker checker = new Checker(game);
-    	System.out.println(checker.check());
-
-	return false; 
+    	//Checker checker = new Checker(game);
+    	boolean isSolution = Checker.check(game);
+    	return isSolution;
+    	
     }
     
     public static void main(String[] args) {
-    	Application.launch(args);
+    	//Application.launch(args);
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;

@@ -19,7 +19,7 @@ public class Game {
 	private int height;
 	private int maxcc;
 	private Shape[][] board;
-	
+
 	public Game(int width, int height, int maxcc) {
 		if(width<1) {
 			throw new IllegalArgumentException("Width must be >= 1");
@@ -42,7 +42,22 @@ public class Game {
 	public Game(File file) {
 		load(file);
 	}
-	
+
+	public Game(Game game) {
+		this.height = game.height;
+		this.width = game.width;
+		board = new Shape[height][width];
+		Shape[][] boardToClone = game.board;
+		for(int i=0; i<height;i++) {
+			for(int j =0; j<width;j++) {
+				Shape s = boardToClone[i][j];
+				board[i][j] = s.getShapeType().buildShape(s.getOrientation(), i, j);
+			}
+		}
+	}
+
+
+
 	public int getWidth() {
 		return width;
 	}
@@ -50,30 +65,32 @@ public class Game {
 	public int getHeight() {
 		return height;
 	}
-	
-	
+
+
 	public Shape[][] getBoard() {
 		return board;
 	}
-	
+
 	public int getMaxCC()
 	{
 		return this.maxcc;
 	}
-	
+
 	public void generate() {
 		Generator generator = new Generator(this);
 		generator.generate();
 	}
-	
+
 	private void load(File file) {
-		
+
 	}
-	
+
 	public void solve() {
-		
+
 	}
-	
+
+
+
 	public void write(String outputFile) throws FileNotFoundException {
 		FileOutputStream fos = new FileOutputStream(outputFile);
 		PrintStream ps = new PrintStream(fos);
@@ -85,7 +102,7 @@ public class Game {
 			}
 		}
 	}
-	
+
 	public boolean isShapeFullyConnected(Shape shape) {
 		if(shape == null) {
 			return false;
@@ -95,19 +112,19 @@ public class Game {
 		if(countNeighbors(neighbors)<connections.size()) {
 			return false;
 		}
-		
+
 		for(Connection connection : connections) {
 			switch(connection) {
-				case NORTH : if (neighbors[NORTH] == null || !neighbors[NORTH].hasConnection(Connection.SOUTH)) {return false;} break;
-				case SOUTH : if (neighbors[SOUTH] == null || !neighbors[SOUTH].hasConnection(Connection.NORTH)) {return false;} break;
-				case EAST :  if (neighbors[EAST] == null || !neighbors[EAST].hasConnection(Connection.WEST)) {return false;} break;
-				case WEST :  if (neighbors[WEST] == null || !neighbors[WEST].hasConnection(Connection.EAST)) {return false;} break;
-				default : break;
+			case NORTH : if (neighbors[NORTH] == null || !neighbors[NORTH].hasConnection(Connection.SOUTH)) {return false;} break;
+			case SOUTH : if (neighbors[SOUTH] == null || !neighbors[SOUTH].hasConnection(Connection.NORTH)) {return false;} break;
+			case EAST :  if (neighbors[EAST] == null || !neighbors[EAST].hasConnection(Connection.WEST)) {return false;} break;
+			case WEST :  if (neighbors[WEST] == null || !neighbors[WEST].hasConnection(Connection.EAST)) {return false;} break;
+			default : break;
 			}
 		}
 		return true;
 	}
-	
+
 	private int countNeighbors(Shape[] neighbors) {
 		int count = 0;
 		for(int i=0;i<4;i++) {
@@ -117,14 +134,66 @@ public class Game {
 		}
 		return count;
 	}
-	
-	
+
+	public boolean iShapeConnectedToBoardBorder(Shape shape) {
+		int i = shape.getI();
+		int j = shape.getJ();
+		if(i>0 && i<height-1 && j<width-1 && j>0) {
+			return false;
+		}
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		for(Connection connection : connections) {
+			switch(connection) {
+			case NORTH : if (neighbors[NORTH] == null ) {return true;} break;
+			case SOUTH : if (neighbors[SOUTH] == null) {return true;} break;
+			case EAST :  if (neighbors[EAST] == null ) {return true;} break;
+			case WEST :  if (neighbors[WEST] == null ) {return true;} break;
+			}
+		}
+		return false;
+	}
+
+
+
+	public boolean isShapeWellConnectedWithNorthAndWest(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[NORTH] != null ) {
+			if(neighbors[NORTH].hasConnection(Connection.SOUTH)) {
+				if (!connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+		}
+		if (neighbors[WEST] != null ) {
+			if(neighbors[WEST].hasConnection(Connection.EAST)) {
+				if (!connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
-		
+
 		Shape[] neighbors = new Shape[4];
-		
+
 		//north neighbor
 		if(i-1>=0) {
 			neighbors[NORTH] = board[i-1][j];
@@ -143,7 +212,7 @@ public class Game {
 		}
 		return neighbors;
 	}
-	
+
 	public void addShape(Shape shape) throws Exception {
 		if(shape == null) {
 			return;
@@ -155,15 +224,28 @@ public class Game {
 			return;
 		}
 		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
-			
-		
+
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<height;i++) {
+			for(int j =0; j<width;j++) {
+				sb.append(board[i][j].getSymbol());
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+
+
+
+
+
+
+
+
 }

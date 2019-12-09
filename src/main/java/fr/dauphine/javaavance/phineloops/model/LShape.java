@@ -3,6 +3,7 @@ package fr.dauphine.javaavance.phineloops.model;
 import java.util.Arrays;
 
 public class LShape extends Shape {
+	private int[] domain = {50,51,52,53};
 
 	public LShape(int orientation, int i, int j) {
 		super(ShapeType.LShape, orientation, i, j);
@@ -32,5 +33,28 @@ public class LShape extends Shape {
 		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
 		connections.replaceAll(x->x.getNextConnection());
 	}
+	public int[] getDomain() {
+		return domain;
+	}
 
+	
+	public String getSymbol() {
+		switch(orientation)
+		{
+		case 0:
+			return "╰";
+		case 1:
+			return "╭";
+		case 2:
+			return "╮";
+		case 3:
+			return "╯";
+		default:
+			throw new IllegalArgumentException("0<=orientation<=3");
+		}
+	}
+	
+	public int getMaxRotation() {
+		return 3;
+	}
 }
