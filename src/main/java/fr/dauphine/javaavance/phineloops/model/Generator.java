@@ -326,7 +326,7 @@ public class Generator {
 				}
 			}
 		}
-		
+		System.out.println(game);
 		for (Shape[] shapes:board)
 		{
 			for (Shape shape:shapes)

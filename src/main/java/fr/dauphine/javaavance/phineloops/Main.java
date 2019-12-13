@@ -18,6 +18,7 @@ import fr.dauphine.javaavance.phineloops.model.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.Solver;
+import fr.dauphine.javaavance.phineloops.model.Solver2;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -50,7 +51,7 @@ public class Main extends Application  {
 	// ...
     	Game game = loadFile(inputFile);
     	System.out.println("original game :\n"+game);
-    	Solver solver = new Solver(game);
+    	Solver2 solver = new Solver2(game);
 		long startTime = System.currentTimeMillis();
     	Game gameSolved = solver.solve();
     	if(game == null) {
