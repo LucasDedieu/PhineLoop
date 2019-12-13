@@ -36,4 +36,18 @@ public class Checker {
 		Game game = state.getGame();
 		return checkFromI(game, iStart);
 	}
+	
+	public static boolean checkFromIJ(Game game, int iStart,int jStart) {
+		int height = game.getHeight();
+		int width = game.getWidth();
+		Shape[][] board = game.getBoard();
+		for(int i =iStart;i<height;i++) {
+			for(int j=jStart;j<width;j++) {
+				if(!(game.isShapeFullyConnected(board[i][j]))){
+					return false;
+				}
+			}
+		}
+		return true;
+ 	}
 }

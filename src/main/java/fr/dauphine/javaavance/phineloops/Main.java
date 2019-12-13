@@ -36,24 +36,7 @@ public class Main extends Application  {
     	//FIXME fix the generator
     	try {
         	Game game = new Game(width, height,0);
-        	Game solution;
-        	int nb=0;
-        	do {
-        		nb++;
-        		game.generate();
-            	solution = new Game(game);
-        	}while(!Checker.check(solution));
-        	
-        	System.out.println(nb);
-        	System.out.println(game);
-        	Random rand = new Random();
-        	for (Shape[] shapes:game.getBoard())
-    		{
-    			for (Shape shape:shapes)
-    			{
-    				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
-    			}
-    		}
+        	game.generate();
 			game.write(outputFile);
 			System.out.println(game);
 		} catch (FileNotFoundException e) {

@@ -136,6 +136,7 @@ public class Game {
 	}
 
 	public boolean iShapeConnectedToBoardBorder(Shape shape) {
+		
 		int i = shape.getI();
 		int j = shape.getJ();
 		if(i>0 && i<height-1 && j<width-1 && j>0) {
@@ -152,6 +153,21 @@ public class Game {
 			}
 		}
 		return false;
+		
+		/* Other method. Same time cost
+		int i = shape.getI();
+		int j = shape.getJ();
+		List<Connection> connections = shape.getConnections();
+		for(Connection connection : connections) {
+			switch(connection) {
+			case NORTH : if (i==0) {return true;} break;
+			case SOUTH : if (i==height-1) {return true;} break;
+			case EAST :  if (j==width-1) {return true;} break;
+			case WEST :  if (j==0) {return true;} break;
+			}
+		}
+		return false;
+		*/
 	}
 
 

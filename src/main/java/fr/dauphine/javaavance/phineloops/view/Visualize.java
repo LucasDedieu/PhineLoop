@@ -1,5 +1,6 @@
 package fr.dauphine.javaavance.phineloops.view;
 
+import fr.dauphine.javaavance.phineloops.Main;
 import javafx.*;
 import javafx.application.Application;
 import javafx.scene.Scene;

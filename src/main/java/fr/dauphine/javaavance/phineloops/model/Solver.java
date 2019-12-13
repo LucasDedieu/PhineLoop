@@ -24,30 +24,23 @@ public class Solver {
 		while(!stack.isEmpty()) {
 			nb++;
 			State iteration = stack.peek();
-			if(nb%10000000==0) {
+			if(nb%1000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
 			}
 			int i = iteration.getI();
 			int j = iteration.getJ();
 			
 			//Game solved ?
-			if(i<2) {
-				if(Checker.check(iteration)) {
-					return iteration.getGame();
-				}
-			}
-			else{
-				if(Checker.checkFromI(iteration,i-2)) {
-					
-					return iteration.getGame();
-				}
+			Game game = iteration.getGame();
+			if(Checker.checkFromIJ(game, i, j)) {
+				return game;
 			}
 			
 			
 			
 			if(iteration.canRotate()) {
 				iteration.rotate();
-				Game game = iteration.getGame();
+				//Game game = iteration.getGame();
 				Shape shape  = iteration.getShape();
 				//rotate until shape is well placed
 				if(game.iShapeConnectedToBoardBorder(shape)  ||  !game.isShapeWellConnectedWithNorthAndWest(shape)) {
