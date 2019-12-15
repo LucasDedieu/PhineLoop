@@ -21,15 +21,17 @@ public class Solver2 {
 	public Game solve() {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
-		State2 initialState = new State2(0,0,0);
+		int i =0;
+		int j=0;
+		State2 initialState = new State2(i,j,0);
 		stack.push(initialState);
 		while(!stack.isEmpty()) {
-//			nb++;
+			nb++;
 			State2 iteration = stack.peek();
-			int i = iteration.getI();
-			int j = iteration.getJ();
+			i = iteration.getI();
+			j = iteration.getJ();
 			Shape shape = testBoard[i][j];
-/*			
+			
 			//Print 
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
@@ -40,7 +42,7 @@ public class Solver2 {
 				return testGame;
 			}
 */
-			
+
 			
 			//Can rotate ?		
 			if(iteration.canRotate(shape)) {
@@ -69,7 +71,7 @@ public class Solver2 {
 				
 				
 			}
-			else {
+			else{
 				String shapeClassName =shape.getClass().getSimpleName();
 				//Case XShape or EmptyShape (do not rotate)
 				if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
