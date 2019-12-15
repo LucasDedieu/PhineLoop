@@ -54,7 +54,7 @@ public class Main extends Application  {
     	Solver2 solver = new Solver2(game);
 		long startTime = System.currentTimeMillis();
     	Game gameSolved = solver.solve();
-    	if(game == null) {
+    	if(gameSolved == null) {
     		return false;
     	}
     	long deltaTime = System.currentTimeMillis() - startTime;
