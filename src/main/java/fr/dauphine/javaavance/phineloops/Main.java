@@ -18,10 +18,10 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.Solver2;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
-import javafx.application.Application;
-import javafx.stage.Stage;
+//import javafx.application.Application;
+//import javafx.stage.Stage;
 
-public class Main extends Application  {
+public class Main /*extends Application*/  {
     private static String inputFile = null;  
     private static String outputFile = null;
     private static Integer width = -1;
@@ -55,9 +55,14 @@ public class Main extends Application  {
     	if(gameSolved == null) {
     		return false;
     	}
-    	long deltaTime = System.currentTimeMillis() - startTime;
-    	System.out.println("time : "+deltaTime+" ms");
-    	System.out.println("\n__________________________\n"+gameSolved);
+    	//long deltaTime = System.currentTimeMillis() - startTime;
+    	//System.out.println("time : "+deltaTime+" ms");
+    	//System.out.println("\n__________________________\n"+gameSolved);
+    	try {
+			gameSolved.write(outputFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
     	return true;
  
     }
@@ -172,12 +177,12 @@ public class Main extends Application  {
     	return game;   	
     }
     
-
+/*
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		Visualize visu = new Visualize();
 		visu.start(primaryStage);
-	}
+	}*/
 	
 }

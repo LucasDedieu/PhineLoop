@@ -1,10 +1,5 @@
 package fr.dauphine.javaavance.phineloops;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 import fr.dauphine.javaavance.phineloops.model.EmptyShape;
