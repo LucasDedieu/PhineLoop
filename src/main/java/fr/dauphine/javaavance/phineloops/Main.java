@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -17,10 +16,7 @@ import org.apache.commons.cli.ParseException;
 import fr.dauphine.javaavance.phineloops.model.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
-import fr.dauphine.javaavance.phineloops.model.Solver;
 import fr.dauphine.javaavance.phineloops.model.Solver2;
-import fr.dauphine.javaavance.phineloops.model.Solver3;
-import fr.dauphine.javaavance.phineloops.model.TestSolver3Algo;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 import javafx.application.Application;
 import javafx.stage.Stage;
