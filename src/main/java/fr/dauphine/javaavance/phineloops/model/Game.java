@@ -66,7 +66,6 @@ public class Game {
 		return height;
 	}
 
-
 	public Shape[][] getBoard() {
 		return board;
 	}
@@ -201,9 +200,168 @@ public class Game {
 		}
 		return true;
 	}
+	
+	public boolean isShapeWellConnectedWithNorthAndEast(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[NORTH] != null ) {
+			if(neighbors[NORTH].hasConnection(Connection.SOUTH)) {
+				if (!connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+		}
+		if (neighbors[EAST] != null ) {
+			if(neighbors[EAST].hasConnection(Connection.WEST)) {
+				if (!connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
+	public boolean isShapeWellConnectedWithSouthAndEast(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[SOUTH] != null ) {
+			if(neighbors[SOUTH].hasConnection(Connection.NORTH)) {
+				if (!connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+		}
+		if (neighbors[EAST] != null ) {
+			if(neighbors[EAST].hasConnection(Connection.WEST)) {
+				if (!connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
+	public boolean isShapeWellConnectedWithSouthAndWest(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[SOUTH] != null ) {
+			if(neighbors[SOUTH].hasConnection(Connection.NORTH)) {
+				if (!connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+		}
+		if (neighbors[WEST] != null ) {
+			if(neighbors[WEST].hasConnection(Connection.EAST)) {
+				if (!connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean isShapeWellConnectedWithSouth(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[SOUTH] != null ) {
+			if(neighbors[SOUTH].hasConnection(Connection.NORTH)) {
+				if (!connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.SOUTH)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean isShapeWellConnectedWithNorth(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[NORTH] != null ) {
+			if(neighbors[NORTH].hasConnection(Connection.SOUTH)) {
+				if (!connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.NORTH)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean isShapeWellConnectedWithEast(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[EAST] != null ) {
+			if(neighbors[EAST].hasConnection(Connection.WEST)) {
+				if (!connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.EAST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
+	public boolean isShapeWellConnectedWithWest(Shape shape) {
+		List<Connection> connections = shape.getConnections();
+		Shape[] neighbors = getNeighbors(shape);
+		if (neighbors[WEST] != null ) {
+			if(neighbors[WEST].hasConnection(Connection.EAST)) {
+				if (!connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+			else {
+				if (connections.contains(Connection.WEST)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();

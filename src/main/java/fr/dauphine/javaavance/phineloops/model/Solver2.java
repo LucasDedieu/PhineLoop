@@ -26,12 +26,12 @@ public class Solver2 {
 		State2 initialState = new State2(i,j,0);
 		stack.push(initialState);
 		while(!stack.isEmpty()) {
-			nb++;
+			//nb++;
 			State2 iteration = stack.peek();
 			i = iteration.getI();
 			j = iteration.getJ();
 			Shape shape = testBoard[i][j];
-			
+			/*
 			//Print 
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
