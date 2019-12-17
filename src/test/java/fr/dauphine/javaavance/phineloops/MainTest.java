@@ -12,9 +12,8 @@ public class MainTest
 {
 	@Test
     public void testLoadFile() throws FileNotFoundException {
-		/*
-        Game game = Main.loadFile(getClass().getClassLoader().getResource("fr/dauphine/javaavance/phineloops/correct_board.txt").getFile());
+        Game game = Main.loadFile(getClass().getClassLoader().getResource("correct_board.txt").getFile());
         Assert.assertEquals(3, game.getHeight() );
-        Assert.assertEquals(3, game.getWidth() );*/
+        Assert.assertEquals(3, game.getWidth() );
     }
 }
