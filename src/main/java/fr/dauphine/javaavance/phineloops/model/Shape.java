@@ -5,14 +5,14 @@ import java.util.List;
 
 public abstract class Shape {
 	protected List<Connection> connections;
-	private ShapeType shapeType;
+	//private ShapeType shapeType;
 	protected int orientation;
 	private int i;
 	private int j;
 
 	
-	public Shape (ShapeType type, int orientation, int i, int j) {
-		this.shapeType = type;
+	public Shape (/*ShapeType type,*/ int orientation, int i, int j) {
+		//this.shapeType = type;
 		this.orientation = orientation;
 		this.i=i;
 		this.j=j;
@@ -53,15 +53,15 @@ public abstract class Shape {
 	public abstract String getSymbol();
 	
 	
-	
+	/*
 	public int getType() {
 		return shapeType.getId();
 	}
 	
 	public ShapeType getShapeType() {
 		return shapeType;
-	}
-	
+	}*/
+	public abstract int getType();
 	
 	public int getOrientation() {
 		return orientation;

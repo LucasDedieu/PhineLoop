@@ -57,7 +57,7 @@ public class Solver2 {
 				boolean isWellPlaced = false;
 				do{
 					iteration.rotate(shape);
-					if(!testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
+					if(/*!testGame.iShapeConnectedToBoardBorder(shape)  &&*/  testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
 						isWellPlaced = true;
 					}
 				}while(isWellPlaced == false && iteration.canRotate(shape));
@@ -72,9 +72,8 @@ public class Solver2 {
 				
 			}
 			else{
-				String shapeClassName =shape.getClass().getSimpleName();
 				//Case XShape or EmptyShape (do not rotate)
-				if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
+				if(shape.getType() == 0 || shape.getType() ==4) {
 					stack.pop();
 					if(!testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
 						continue;

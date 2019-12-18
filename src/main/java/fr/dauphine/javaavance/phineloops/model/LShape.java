@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 public class LShape extends Shape {
 	private int[] domain = {50,51,52,53};
+	private int type = 5;
 
 	public LShape(int orientation, int i, int j) {
-		super(ShapeType.LShape, orientation, i, j);
+		super(orientation, i, j);
 		// TODO Auto-generated constructor stub
 		switch(orientation)
 		{
@@ -56,5 +57,11 @@ public class LShape extends Shape {
 	
 	public int getMaxRotation() {
 		return 3;
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 }

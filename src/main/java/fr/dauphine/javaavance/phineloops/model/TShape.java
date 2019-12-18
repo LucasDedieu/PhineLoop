@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 public class TShape extends Shape {
 	private int[] domain = {30,31,32,33};
+	private int type = 3;
 	
 	public TShape(int orientation,int i, int j) {
-		super(ShapeType.TShape, orientation,i,j);
+		super(orientation,i,j);
 		switch(orientation)
 		{
 		case 0:
@@ -57,6 +58,12 @@ public class TShape extends Shape {
 		default:
 			throw new IllegalArgumentException("0<=orientation<=3");
 		}
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 
 }

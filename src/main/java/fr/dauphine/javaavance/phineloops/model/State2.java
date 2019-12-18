@@ -25,8 +25,7 @@ public class State2 {
 	}
 
 	public boolean canRotate(Shape shape) {
-		String shapeClassName = shape.getClass().getSimpleName();
-		if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
+		if(shape.getType() == 0 || shape.getType() ==4) {
 			return false;
 		}
 		return r <shape.getMaxRotation()+1;

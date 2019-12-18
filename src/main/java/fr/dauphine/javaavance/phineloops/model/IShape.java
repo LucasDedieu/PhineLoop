@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 public class IShape extends Shape {
 	private int[] domain = {20,21};
+	private int type = 2;
 	
 	public IShape(int orientation, int i, int j) {
-		super(ShapeType.IShape, orientation, i, j);
+		super(orientation, i, j);
 		// TODO Auto-generated constructor stub
 		switch(orientation)
 		{
@@ -46,6 +47,12 @@ public class IShape extends Shape {
 	
 	public int getMaxRotation() {
 		return 1;
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 
 }

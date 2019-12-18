@@ -17,6 +17,7 @@ import fr.dauphine.javaavance.phineloops.model.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.Solver2;
+import fr.dauphine.javaavance.phineloops.model.Solver3;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 //import javafx.application.Application;
 //import javafx.stage.Stage;
@@ -49,15 +50,23 @@ public class Main /*extends Application*/  {
 	// ...
     	Game game = loadFile(inputFile);
     	System.out.println("original game :\n"+game);
-    	Solver2 solver = new Solver2(game);
+    	if(Checker.check(game)) {
+        	try {
+    			game.write(outputFile);
+    		} catch (FileNotFoundException e) {
+    			e.printStackTrace();
+    		}
+    		return true;
+    	}
+    	Solver2 solver2 = new Solver2(game);
 		long startTime = System.currentTimeMillis();
-    	Game gameSolved = solver.solve();
+    	Game gameSolved = solver2.solve();
     	if(gameSolved == null) {
     		return false;
     	}
-    	//long deltaTime = System.currentTimeMillis() - startTime;
-    	//System.out.println("time : "+deltaTime+" ms");
-    	//System.out.println("\n__________________________\n"+gameSolved);
+    	long deltaTime = System.currentTimeMillis() - startTime;
+    	System.out.println("time : "+deltaTime+" ms");
+    	System.out.println("\n__________________________\n"+gameSolved);
     	try {
 			gameSolved.write(outputFile);
 		} catch (FileNotFoundException e) {

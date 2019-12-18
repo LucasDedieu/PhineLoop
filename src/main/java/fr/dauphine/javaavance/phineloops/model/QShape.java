@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 public class QShape extends Shape {
 	private int[] domain = {10,11,12,13};
+	private int type = 1;
 
 	public QShape(int orientation, int i, int j) {
-		super(ShapeType.QShape, orientation, i, j);
+		super(orientation, i, j);
 		// TODO Auto-generated constructor stub
 		switch(orientation)
 		{
@@ -55,6 +56,12 @@ public class QShape extends Shape {
 	}
 	public int getMaxRotation() {
 		return 3;
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 
 }

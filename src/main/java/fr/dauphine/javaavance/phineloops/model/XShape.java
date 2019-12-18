@@ -5,9 +5,10 @@ import java.util.Arrays;
 
 public class XShape extends Shape {
 	private int[] domain = {40};
+	private int type = 4;
 	
 	public XShape(int orientation,int i, int j) {
-		super(ShapeType.XShape, orientation,i,j);
+		super(orientation,i,j);
 		connections = Arrays.asList(Connection.NORTH,Connection.SOUTH,Connection.EAST,Connection.WEST);
 	}
 	public void rotate() {
@@ -23,5 +24,10 @@ public class XShape extends Shape {
 	
 	public int getMaxRotation() {
 		return 0;
+	}
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 }
