@@ -148,9 +148,32 @@ public class Game {
 
 		int i = shape.getI();
 		int j = shape.getJ();
-		if(i>0 && i<height-1 && j<width-1 && j>0) {
+		
+		if(i>0 && j>0 && i<height-1 && j<width-1 ) {
 			return false;
 		}
+		if(i == 0) {
+			if(shape.hasConnection(Connection.NORTH)) {
+				return true;
+			}
+		}
+		else if(i == height-1) {
+			if(shape.hasConnection(Connection.SOUTH)) {
+				return true;
+			}
+		}
+		if(j == 0) {
+			if(shape.hasConnection(Connection.WEST)) {
+				return true;
+			}
+		}
+		else if(j == width-1) {
+			if(shape.hasConnection(Connection.EAST)) {
+				return true;
+			}
+		}
+		return false;
+		/*
 		List<Connection> connections = shape.getConnections();
 		Shape[] neighbors = getNeighbors(shape);
 		for(Connection connection : connections) {

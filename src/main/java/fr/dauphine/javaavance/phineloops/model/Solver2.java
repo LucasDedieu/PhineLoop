@@ -21,6 +21,15 @@ public class Solver2 {
 	public Game solve() {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
+		for(int i = 0; i<height-1;i++) {
+			for(int j = 0; j<height-1;j++) {
+				Shape shape = board[i][j];
+				if(shape.getType() == 4 && (i==0||j==0||i==height-1||j==width-1)) {
+					//unsolvable
+					return null;
+				}
+			}
+		}
 		int i =0;
 		int j=0;
 		State2 initialState = new State2(i,j,0);
@@ -31,7 +40,7 @@ public class Solver2 {
 			i = iteration.getI();
 			j = iteration.getJ();
 			Shape shape = testBoard[i][j];
-			/*
+/*			
 			//Print 
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
@@ -57,8 +66,8 @@ public class Solver2 {
 				boolean isWellPlaced = false;
 				do{
 					iteration.rotate(shape);
-					if(/*!testGame.iShapeConnectedToBoardBorder(shape)  &&*/  testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
-						isWellPlaced = true;
+					if(!testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
+							isWellPlaced = true;
 					}
 				}while(isWellPlaced == false && iteration.canRotate(shape));
 				
@@ -73,7 +82,8 @@ public class Solver2 {
 			}
 			else{
 				//Case XShape or EmptyShape (do not rotate)
-				if(shape.getType() == 0 || shape.getType() ==4) {
+				int shapeType = shape.getType();
+				if(shapeType == 0 || shapeType ==4) {
 					stack.pop();
 					if(!testGame.isShapeWellConnectedWithNorthAndWest(shape)) {
 						continue;
