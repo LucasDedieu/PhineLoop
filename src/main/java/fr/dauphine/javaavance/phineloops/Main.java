@@ -45,7 +45,7 @@ public class Main /*extends Application*/  {
     	
     }
 
-    private static boolean solve(String inputFile, String outputFile){
+    private static boolean solve(String inputFile, String outputFile, int threads){
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
@@ -127,8 +127,8 @@ public class Main /*extends Application*/  {
 		inputFile = cmd.getOptionValue( "s" );
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 		outputFile = cmd.getOptionValue( "o" );
-
-		boolean solved = solve(inputFile, outputFile); 
+		int threads = Integer.getInteger(cmd.getOptionValue( "t" ));
+		boolean solved = solve(inputFile, outputFile, threads); 
 
 		System.out.println("SOLVED: " + solved);            
 	    }
