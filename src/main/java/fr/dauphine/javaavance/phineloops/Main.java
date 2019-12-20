@@ -127,7 +127,7 @@ public class Main /*extends Application*/  {
 		inputFile = cmd.getOptionValue( "s" );
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 		outputFile = cmd.getOptionValue( "o" );
-		int threads = Integer.getInteger(cmd.getOptionValue( "t" ));
+		int threads = 0; //Integer.getInteger(cmd.getOptionValue( "t" ));
 		boolean solved = solve(inputFile, outputFile, threads); 
 
 		System.out.println("SOLVED: " + solved);            
