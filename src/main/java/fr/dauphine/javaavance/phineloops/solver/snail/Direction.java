@@ -1,4 +1,4 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver.snail;
 
 public enum Direction {
 	NORTH,

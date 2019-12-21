@@ -1,7 +1,10 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver.csp;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
+
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class SolverChoco {
 	private Game game;

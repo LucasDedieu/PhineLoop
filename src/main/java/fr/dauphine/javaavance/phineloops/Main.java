@@ -13,13 +13,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
-import fr.dauphine.javaavance.phineloops.model.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
-import fr.dauphine.javaavance.phineloops.model.SolverLineByLine;
-import fr.dauphine.javaavance.phineloops.model.SolverLineByLineMultiThread;
-import fr.dauphine.javaavance.phineloops.model.SolverSnail;
+import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
+import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLineMultiThread;
+import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 //import javafx.application.Application;
 //import javafx.stage.Stage;

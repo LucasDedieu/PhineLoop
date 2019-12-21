@@ -1,6 +1,10 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver.line;
 
 import java.util.Stack;
+
+import fr.dauphine.javaavance.phineloops.checker.Checker;
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class Solver {
 	private Game originalGame ;

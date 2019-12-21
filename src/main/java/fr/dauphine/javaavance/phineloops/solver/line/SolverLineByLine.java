@@ -1,5 +1,4 @@
-package fr.dauphine.javaavance.phineloops.model;
-
+package fr.dauphine.javaavance.phineloops.solver.line;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -7,43 +6,29 @@ import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
-public class SolverLineByLineMultiThread {
+public class SolverLineByLine {
 	private Game originalGame ;
 	private int height;
 	private int width;
-	private Deque<StateLineByLine> stack = new ArrayDeque<>();
+	private Deque<StateLineByLine> stack;
 	//private Stack<State2> stack = new Stack<>();
 	private Shape[][] board;
 	int nb=0;
 
-	public SolverLineByLineMultiThread(Game game) {
+	public SolverLineByLine(Game game) {
 		this.originalGame = game;
 		this.height = game.getHeight();
 		this.width = game.getWidth();
 		this.board = game.getBoard();
+		stack = new ArrayDeque<StateLineByLine>(height*width);
 	}
 	
-	public Game solve(){
-		CountDownLatch latch = new CountDownLatch(1);
-		Thread t1 = new Thread(new LineByLineThread(latch, originalGame, false, true));
-		Thread t2 = new Thread(new LineByLineThread(latch, originalGame, true, true));
-		Thread t3 = new Thread(new LineByLineThread(latch, originalGame, true, true));
-		Thread t4 = new Thread(new LineByLineThread(latch, originalGame, false, true));
-		t1.setDaemon(true);
-		t2.setDaemon(true);
-		t1.start();
-		t2.start();
-		try {
-			latch.await();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ThreadController.getInstance().getSolvedGame();
-	}
+	
 
-	public Game solve(boolean rotateFirst) {
+	public Game solve() {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
 		for(int i = 0; i<height-1;i++) {
@@ -61,16 +46,16 @@ public class SolverLineByLineMultiThread {
 		stack.push(initialState);
 		boolean hasPop = false;
 		while(!stack.isEmpty()) {
-			//nb++;
+			nb++;
 			StateLineByLine iteration = stack.peek();
 			i = iteration.getI();
 			j = iteration.getJ();
 			Shape shape = testBoard[i][j];
-/*			
+		
 			//Print 
-			if(nb%10000000==0) {
-				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
-			}*/
+			if(nb%100000000==0) {
+				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+testGame);
+			}
 
 			//Case XShape or EmptyShape (do not rotate)
 			int shapeType = shape.getType();
@@ -82,7 +67,7 @@ public class SolverLineByLineMultiThread {
 				}
 			}
 			
-			else if(rotateFirst && !hasPop && !testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape)) {
+			else if( !hasPop && !testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape)) {
 				//empty
 			}
 			//Can rotate ?		
@@ -107,7 +92,8 @@ public class SolverLineByLineMultiThread {
 				hasPop = true;
 				continue;
 			}
-
+			
+			
 			//When the shape is well placed, we prepare next iteration
 			StateLineByLine nextIteration = null;
 			//hasPop = false;
@@ -126,9 +112,10 @@ public class SolverLineByLineMultiThread {
 				}
 				else{
 					nextIteration = new StateLineByLine(i,j-1,0);
-
-				}
+				}		
 			}
+			//Add next iteration to stack
+			stack.push(nextIteration);
 		}
 		return null;
 	}

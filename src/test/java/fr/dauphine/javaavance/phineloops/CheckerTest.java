@@ -3,7 +3,7 @@ package fr.dauphine.javaavance.phineloops;
 import org.junit.Assert;
 import org.junit.Test;
 
-import fr.dauphine.javaavance.phineloops.model.Checker;
+import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 
 public class CheckerTest {

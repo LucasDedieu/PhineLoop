@@ -1,29 +1,19 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver.line;
 
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
-public class StateSnail {
-	Direction dir;
+public class StateLineByLine {
 	private int i;
 	private int j;
 	private int r;
-	private int level = 0;
-	int nb;
 	
-	public StateSnail(Direction dir, int level, int i, int j, int r,int nb) {
-
-		this.dir = dir;
+	public StateLineByLine(int i, int j, int r) {
 		this.i = i;
 		this.j = j;
 		this.r = r;
-		this.level = level;
-		this.nb = nb;
 	}
 
 
-	public Direction getDir() {
-		return dir;
-	}
-	
 	public int getI() {
 		return i;
 	}
@@ -35,16 +25,12 @@ public class StateSnail {
 	public int getR() {
 		return r;
 	}
+
 	
-	public int getNb() {
-		return nb;
-	}
+
 
 	public boolean canRotate(Shape shape) {
-		String shapeClassName = shape.getClass().getSimpleName();
-		if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
-			return false;
-		}
+		
 		return r <shape.getMaxRotation()+1;
 	}
 	
@@ -65,14 +51,6 @@ public class StateSnail {
 	public void setR(int r) {
 		this.r=r;
 		
-	}
-	
-	public int getLevel() {
-		return level;
-	}
-	
-	public void setLevel(int level) {
-		this.level = level;
 	}
 
 	
