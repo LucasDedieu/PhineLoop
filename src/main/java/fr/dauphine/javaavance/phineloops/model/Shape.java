@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Shape {
-	protected List<Connection> connections;
+	//protected List<Connection> connections;
 	//private ShapeType shapeType;
+	protected static int NORTH = 0;
+	protected static int EAST = 1;
+	protected static int SOUTH = 2;
+	protected static int WEST = 3;
+	
+	protected boolean[] connections = new boolean[4];
 	protected int orientation;
 	private int i;
 	private int j;
@@ -44,7 +50,7 @@ public abstract class Shape {
 	
 	
 	
-	public abstract void rotate();
+	//public abstract void rotate();
 	
 	public abstract int getMaxRotation();
 	
@@ -52,6 +58,15 @@ public abstract class Shape {
 	
 	public abstract String getSymbol();
 	
+	
+	public void rotate() {
+		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
+		boolean tmp = connections[WEST];
+		connections[WEST] = connections[SOUTH];
+		connections[SOUTH] = connections[EAST];
+		connections[EAST] = connections[NORTH];
+		connections[NORTH] = tmp;
+	}
 	
 	/*
 	public int getType() {
@@ -75,7 +90,7 @@ public abstract class Shape {
 		return j;
 	}
 	
-	public List<Connection> getConnections(){
+	public boolean[] getConnections(){
 		return connections;
 	}
 	
@@ -84,10 +99,10 @@ public abstract class Shape {
 		return getType()+" "+orientation;
 	}
 	
-	public boolean hasConnection(Connection connection) {
+	public boolean hasConnection(int connection) {
 		if(connections == null) {
 			return false;
 		}
-		return connections.contains(connection);
+		return connections[connection];
 	}
 }

@@ -7,6 +7,10 @@ import java.util.Random;
 
 public class Generator {
 	private Game game;
+	private static int NORTH = 0;
+	private static int EAST = 1;
+	private static int SOUTH = 2;
+	private static int WEST = 3;
 	private int node = 0;
 	private int road = 0;
 	private int maxCc; //DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
@@ -53,12 +57,12 @@ public class Generator {
 				
 				else if (i==0 && j<w-1) // Top Border
 				{
-					if (board[i][j-1].connections.contains(Connection.EAST))
+					if (board[i][j-1].getConnections()[EAST])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:topBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui ont connection WEST
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -69,7 +73,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:topBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui n'ont pas connection WEST 
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -78,12 +82,12 @@ public class Generator {
 				}
 				else if (i==0 && j==(w-1)) // Top Right Corner
 				{
-					if (board[i][j-1].connections.contains(Connection.EAST))
+					if (board[i][j-1].getConnections()[EAST])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:topRightCornerLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui ont connection WEST
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -94,7 +98,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:topRightCornerLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui n'ont pas connection WEST 
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -103,12 +107,12 @@ public class Generator {
 				}
 				else if (i<h-1 && j==0) //Left Border
 				{
-					if (board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:leftBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui ont connection WEST
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -119,7 +123,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:leftBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui n'ont pas connection WEST 
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -129,32 +133,32 @@ public class Generator {
 				else if (i<h-1 && j==w-1) // Right Border
 				{
 
-					if (board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:rightBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (board[i][j-1].connections.contains(Connection.EAST) && !board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (board[i][j-1].getConnections()[EAST] && !board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:rightBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (!board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (!board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:rightBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -164,7 +168,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:rightBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -172,12 +176,12 @@ public class Generator {
 				}
 				else if (i==h-1 && j==0) // Bottom Left Corner 
 				{
-					if (board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:bottomLeftCornerLegalShapes)
 						{
-							if (shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui ont connection WEST
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -188,7 +192,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>() ;
 						for (Shape shape:bottomLeftCornerLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						//random parmi les shapes qui n'ont pas connection WEST 
 						int randomIndex = rand.nextInt(feasibleShapes.size());
@@ -197,32 +201,32 @@ public class Generator {
 				}
 				else if (i==h-1 && j<w-1) // Bottom Border
 				{
-					if (board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (board[i][j-1].connections.contains(Connection.EAST) && !board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (board[i][j-1].getConnections()[EAST] && !board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomBorderLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (!board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (!board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -232,7 +236,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomBorderLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -240,32 +244,32 @@ public class Generator {
 				}
 				else if (i==h-1 && j==w-1) // Bottom Right Corner
 				{
-					if (board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomRightCornerLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (board[i][j-1].connections.contains(Connection.EAST) && !board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (board[i][j-1].getConnections()[EAST] && !board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomRightCornerLegalShapes)
 						{
-							if (shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (!board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (!board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomRightCornerLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -275,7 +279,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:bottomRightCornerLegalShapes)
 						{
-							if (!shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -283,32 +287,32 @@ public class Generator {
 				}
 				else //Rest of cases 
 				{
-					if (board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					if (board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:allShape)
 						{
-							if (shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (board[i][j-1].connections.contains(Connection.EAST) && !board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (board[i][j-1].getConnections()[EAST] && !board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:allShape)
 						{
-							if (shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
 					}
-					else if (!board[i][j-1].connections.contains(Connection.EAST) && board[i-1][j].connections.contains(Connection.SOUTH))
+					else if (!board[i][j-1].getConnections()[EAST] && board[i-1][j].getConnections()[SOUTH])
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:allShape)
 						{
-							if (!shape.connections.contains(Connection.WEST) && shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);
@@ -318,7 +322,7 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for (Shape shape:allShape)
 						{
-							if (!shape.connections.contains(Connection.WEST) && !shape.connections.contains(Connection.NORTH)) feasibleShapes.add(shape);
+							if (!shape.getConnections()[WEST] && !shape.getConnections()[NORTH]) feasibleShapes.add(shape);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j]=feasibleShapes.get(randomIndex);

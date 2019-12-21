@@ -13,11 +13,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
-import fr.dauphine.javaavance.phineloops.model.Solver2;
-import fr.dauphine.javaavance.phineloops.model.Solver3;
+import fr.dauphine.javaavance.phineloops.model.SolverLineByLine;
+import fr.dauphine.javaavance.phineloops.model.SolverLineByLineMultiThread;
+import fr.dauphine.javaavance.phineloops.model.SolverSnail;
 import fr.dauphine.javaavance.phineloops.view.Visualize;
 //import javafx.application.Application;
 //import javafx.stage.Stage;
@@ -58,9 +60,9 @@ public class Main /*extends Application*/  {
     		}
     		return true;
     	}
-    	Solver2 solver2 = new Solver2(game);
+    	SolverLineByLine solver = new SolverLineByLine(game);
 		long startTime = System.currentTimeMillis();
-    	Game gameSolved = solver2.solve();
+    	Game gameSolved = solver.solve();
     	if(gameSolved == null) {
     		return false;
     	}
@@ -130,7 +132,7 @@ public class Main /*extends Application*/  {
 		int threads = 0; //Integer.getInteger(cmd.getOptionValue( "t" ));
 		boolean solved = solve(inputFile, outputFile, threads); 
 
-		System.out.println("SOLVED: " + solved);            
+		System.out.println("SOLVED: " + solved);   
 	    }
         
 	    else if( cmd.hasOption( "c" )) {

@@ -9,8 +9,9 @@ public class XShape extends Shape {
 	
 	public XShape(int orientation,int i, int j) {
 		super(orientation,i,j);
-		connections = Arrays.asList(Connection.NORTH,Connection.SOUTH,Connection.EAST,Connection.WEST);
+		connections[NORTH]=true; connections[SOUTH] = true; connections[WEST] =true; connections[EAST] =true;
 	}
+	@Override
 	public void rotate() {
 	}
 

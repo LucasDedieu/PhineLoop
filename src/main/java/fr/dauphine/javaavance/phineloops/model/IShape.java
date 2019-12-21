@@ -1,7 +1,5 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.Arrays;
-
 public class IShape extends Shape {
 	private int[] domain = {20,21};
 	private int type = 2;
@@ -12,20 +10,20 @@ public class IShape extends Shape {
 		switch(orientation)
 		{
 		case 0:
-			connections = Arrays.asList(Connection.NORTH,Connection.SOUTH);
+			connections[NORTH]=true; connections[SOUTH] = true;
 			break;
 		case 1:
-			connections = Arrays.asList(Connection.EAST,Connection.WEST);
+			connections[EAST]=true; connections[WEST] = true;
 			break;
 		default:
 			throw new IllegalArgumentException("0<=orientation<=2");
 		}
 	}
 	
+	@Override
 	public void rotate() {
-		this.orientation = (this.orientation + 1)%2;
-		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
-		connections.replaceAll(x->x.getNextConnection());
+		super.rotate();
+		orientation = (orientation + 1)%2;
 	}
 	public int[] getDomain() {
 		return domain;

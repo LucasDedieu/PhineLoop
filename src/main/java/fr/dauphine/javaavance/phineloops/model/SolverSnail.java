@@ -2,17 +2,17 @@ package fr.dauphine.javaavance.phineloops.model;
 
 import java.util.Stack;
 
-public class Solver3 {
+public class SolverSnail {
 	private Game originalGame ;
 	private int height;
 	private int width;
-	private Stack<State3> stack = new Stack<>();
+	private Stack<StateSnail> stack = new Stack<>();
 	private Shape[][] board;
 	private int nbIterationInStack=0;
 	private int iEnd;
 	private int jEnd;
 
-	public Solver3(Game game) {
+	public SolverSnail(Game game) {
 		this.originalGame = game;
 		this.height = game.getHeight();
 		this.width = game.getWidth();
@@ -36,11 +36,11 @@ public class Solver3 {
 		int i = 0;
 		int j = 0;
 		int nb = 1;
-		State3 initialState = new State3(Direction.EAST,0,i,j,0,1);
+		StateSnail initialState = new StateSnail(Direction.EAST,0,i,j,0,1);
 		stack.push(initialState);
 		while(!stack.isEmpty()) {
 			nb++;
-			State3 iteration = stack.peek();
+			StateSnail iteration = stack.peek();
 			i = iteration.getI();
 			j = iteration.getJ();
 			nbIterationInStack = iteration.getNb();
@@ -48,7 +48,7 @@ public class Solver3 {
 			int level = iteration.getLevel();
 			Shape shape = testBoard[i][j];
 			Direction currentDirection = iteration.getDir();
-			State3 nextIteration = null;
+			StateSnail nextIteration = null;
 
 
 
@@ -105,11 +105,11 @@ public class Solver3 {
 					continue;
 				}
 				if(j<width-1-level) {
-					nextIteration = new State3(currentDirection,level, i,j+1,0,nbIterationInStack+1);
+					nextIteration = new StateSnail(currentDirection,level, i,j+1,0,nbIterationInStack+1);
 				}
 				else {
 					if(testGame.isShapeWellConnectedWithEast(shape)) {
-						nextIteration = new State3(Direction.SOUTH,level,i+1,j,0,nbIterationInStack+1);
+						nextIteration = new StateSnail(Direction.SOUTH,level,i+1,j,0,nbIterationInStack+1);
 					}
 					else{
 						continue;
@@ -166,11 +166,11 @@ public class Solver3 {
 					continue;
 				}
 				if(i<height-1-level) {
-					nextIteration = new State3(currentDirection,level,i+1,j,0,nbIterationInStack+1);
+					nextIteration = new StateSnail(currentDirection,level,i+1,j,0,nbIterationInStack+1);
 				}
 				else {
 					if(testGame.isShapeWellConnectedWithSouth(shape)) {
-						nextIteration = new State3(Direction.WEST,level,i,j-1,0,nbIterationInStack+1);
+						nextIteration = new StateSnail(Direction.WEST,level,i,j-1,0,nbIterationInStack+1);
 					}
 					else{
 						continue;
@@ -227,11 +227,11 @@ public class Solver3 {
 					continue;
 				}
 				if(j>0+level) {
-					nextIteration = new State3(currentDirection,level,i,j-1,0,nbIterationInStack+1);
+					nextIteration = new StateSnail(currentDirection,level,i,j-1,0,nbIterationInStack+1);
 				}
 				else {
 					if(testGame.isShapeWellConnectedWithWest(shape)) {
-						nextIteration = new State3(Direction.NORTH,level,i-1,j,0,nbIterationInStack+1);
+						nextIteration = new StateSnail(Direction.NORTH,level,i-1,j,0,nbIterationInStack+1);
 					}
 					else{
 						continue;
@@ -288,11 +288,11 @@ public class Solver3 {
 					continue;
 				}
 				if(i>1+level) {
-					nextIteration = new State3(currentDirection,level,i-1,j,0,nbIterationInStack+1);
+					nextIteration = new StateSnail(currentDirection,level,i-1,j,0,nbIterationInStack+1);
 				}
 				else {
 					if(testGame.isShapeWellConnectedWithNorth(shape)) {
-						nextIteration = new State3(Direction.EAST,level+1,i,j+1,0,nbIterationInStack+1);
+						nextIteration = new StateSnail(Direction.EAST,level+1,i,j+1,0,nbIterationInStack+1);
 					}
 					else{
 						continue;

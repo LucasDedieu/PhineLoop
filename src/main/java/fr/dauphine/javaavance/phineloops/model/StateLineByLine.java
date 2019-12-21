@@ -1,11 +1,11 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-public class State2 {
+public class StateLineByLine {
 	private int i;
 	private int j;
 	private int r;
 	
-	public State2(int i, int j, int r) {
+	public StateLineByLine(int i, int j, int r) {
 		this.i = i;
 		this.j = j;
 		this.r = r;
@@ -25,9 +25,6 @@ public class State2 {
 	}
 
 	public boolean canRotate(Shape shape) {
-		if(shape.getType() == 0 || shape.getType() ==4) {
-			return false;
-		}
 		return r <shape.getMaxRotation()+1;
 	}
 	

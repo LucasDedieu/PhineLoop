@@ -13,10 +13,12 @@ public class ShapeTest {
 
 	@Test
 	public void testRotate() {
+		
 		TShape t = new TShape(2,0,0);
 		t.rotate();
 		assertEquals(3,t.getOrientation());
-		assertTrue(t.getConnections().containsAll((Arrays.asList(Connection.NORTH,Connection.NORTH,Connection.WEST))));
-		assertTrue(!t.getConnections().contains(Connection.EAST));
+		assertTrue(t.getConnections()[0] && t.getConnections()[2] && t.getConnections()[3]);
+		assertTrue(!t.getConnections()[1]);
+		 
 	}
 }

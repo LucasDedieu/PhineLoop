@@ -12,8 +12,8 @@ import java.util.Objects;
 
 public class Game {
 	private static int NORTH = 0;
-	private static int SOUTH = 1;
-	private static int EAST = 2;
+	private static int EAST = 1;
+	private static int SOUTH = 2;
 	private static int WEST = 3;
 	private int width;
 	private int height;
@@ -152,22 +152,22 @@ public class Game {
 			return false;
 		}
 		if(i == 0) {
-			if(shape.hasConnection(Connection.NORTH)) {
+			if(shape.getConnections()[NORTH]) {
 				return true;
 			}
 		}
 		else if(i == height-1) {
-			if(shape.hasConnection(Connection.SOUTH)) {
+			if(shape.getConnections()[SOUTH]) {
 				return true;
 			}
 		}
 		if(j == 0) {
-			if(shape.hasConnection(Connection.WEST)) {
+			if(shape.getConnections()[WEST]) {
 				return true;
 			}
 		}
 		else if(j == width-1) {
-			if(shape.hasConnection(Connection.EAST)) {
+			if(shape.getConnections()[EAST]) {
 				return true;
 			}
 		}
@@ -193,7 +193,7 @@ public class Game {
 	}
 
 	public boolean isShapeWellConnectedWithSouth(Shape shape) {
-		List<Connection> connections = shape.getConnections();
+		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
 		int j = shape.getJ();
 		Shape neighbor = null;
@@ -201,23 +201,23 @@ public class Game {
 			neighbor = board[i+1][j];
 		}
 		if (neighbor != null ) {
-			if(neighbor.hasConnection(Connection.NORTH)) {
-				if (!connections.contains(Connection.SOUTH)) {
+			if(neighbor.getConnections()[NORTH]) {
+				if (!connections[SOUTH]) {
 					return false;
 				}
 			}
-			else if (connections.contains(Connection.SOUTH)){
+			else if (connections[SOUTH]){
 				return false;
 			}
 		}
-		else if (connections.contains(Connection.SOUTH)) {
+		else if (connections[SOUTH]) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isShapeWellConnectedWithNorth(Shape shape) {
-		List<Connection> connections = shape.getConnections();
+		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
 		int j = shape.getJ();
 		Shape neighbor = null;
@@ -225,47 +225,47 @@ public class Game {
 			neighbor = board[i-1][j];
 		}
 		if (neighbor != null ) {
-			if(neighbor.hasConnection(Connection.SOUTH)) {
-				if (!connections.contains(Connection.NORTH)) {
+			if(neighbor.getConnections()[SOUTH]) {
+				if (!connections[NORTH]) {
 					return false;
 				}
 			}
-			else if (connections.contains(Connection.NORTH)){
+			else if (connections[NORTH]){
 				return false;
 			}
 		}
-		else if (connections.contains(Connection.NORTH)) {
+		else if (connections[NORTH]) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isShapeWellConnectedWithEast(Shape shape) {
-		List<Connection> connections = shape.getConnections();
+		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
 		int j = shape.getJ();
 		Shape neighbor = null;
-		if(j+1<width) {
+		if(j+1<height) {
 			neighbor = board[i][j+1];
 		}
 		if (neighbor != null ) {
-			if(neighbor.hasConnection(Connection.WEST)) {
-				if (!connections.contains(Connection.EAST)) {
+			if(neighbor.getConnections()[WEST]) {
+				if (!connections[EAST]) {
 					return false;
 				}
 			}
-			else if (connections.contains(Connection.EAST)){
+			else if (connections[EAST]){
 				return false;
 			}
 		}
-		else if (connections.contains(Connection.EAST)) {
+		else if (connections[EAST]) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isShapeWellConnectedWithWest(Shape shape) {
-		List<Connection> connections = shape.getConnections();
+		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
 		int j = shape.getJ();
 		Shape neighbor = null;
@@ -273,16 +273,16 @@ public class Game {
 			neighbor = board[i][j-1];
 		}
 		if (neighbor != null ) {
-			if(neighbor.hasConnection(Connection.EAST)) {
-				if (!connections.contains(Connection.WEST)) {
+			if(neighbor.getConnections()[EAST]) {
+				if (!connections[WEST]) {
 					return false;
 				}
 			}
-			else if (connections.contains(Connection.WEST)){
+			else if (connections[WEST]){
 				return false;
 			}
 		}
-		else if (connections.contains(Connection.WEST)) {
+		else if (connections[WEST]) {
 			return false;
 		}
 		return true;
