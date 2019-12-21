@@ -1,5 +1,6 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver;
 
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class StateSnail {
 	Direction dir;
@@ -41,10 +42,6 @@ public class StateSnail {
 	}
 
 	public boolean canRotate(Shape shape) {
-		String shapeClassName = shape.getClass().getSimpleName();
-		if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
-			return false;
-		}
 		return r <shape.getMaxRotation()+1;
 	}
 	

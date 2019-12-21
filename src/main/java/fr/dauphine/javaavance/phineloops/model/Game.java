@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import fr.dauphine.javaavance.phineloops.generator.Generator;
+
 public class Game {
 	private static int NORTH = 0;
 	private static int EAST = 1;

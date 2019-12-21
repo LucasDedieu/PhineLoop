@@ -1,4 +1,4 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -6,6 +6,8 @@ import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class SolverLineByLine {
 	private Game originalGame ;
@@ -90,14 +92,6 @@ public class SolverLineByLine {
 				hasPop = true;
 				continue;
 			}
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			
 			//When the shape is well placed, we prepare next iteration

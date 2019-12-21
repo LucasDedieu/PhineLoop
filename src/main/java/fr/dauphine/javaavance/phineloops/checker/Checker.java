@@ -1,4 +1,8 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.checker;
+
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.State;
 
 public class Checker {
 	/*

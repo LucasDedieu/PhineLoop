@@ -1,5 +1,6 @@
-package fr.dauphine.javaavance.phineloops.model;
+package fr.dauphine.javaavance.phineloops.solver;
 
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class StateLineByLine {
 	private int i;
