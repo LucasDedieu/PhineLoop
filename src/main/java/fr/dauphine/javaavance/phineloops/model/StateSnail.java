@@ -1,5 +1,6 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+<<<<<<< HEAD
 public class StateSnail {
 	Direction dir;
 	private int i;
@@ -9,6 +10,17 @@ public class StateSnail {
 	int nb;
 	
 	public StateSnail(Direction dir, int level, int i, int j, int r,int nb) {
+=======
+public class State3 {
+	Direction dir;
+	private int i;
+	private int j;
+	private int r;
+	private int level = 0;
+	int nb;
+	
+	public State3(Direction dir, int level, int i, int j, int r,int nb) {
+>>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 		this.dir = dir;
 		this.i = i;
 		this.j = j;
