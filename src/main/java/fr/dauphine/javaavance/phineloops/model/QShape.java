@@ -3,6 +3,7 @@ package fr.dauphine.javaavance.phineloops.model;
 public class QShape extends Shape {
 	private int[] domain = {10,11,12,13};
 	private int type = 1;
+	private int nbConnection = 1;
 
 	public QShape(int orientation, int i, int j) {
 		super(orientation, i, j);
@@ -60,6 +61,14 @@ public class QShape extends Shape {
 	public int getType() {
 		// TODO Auto-generated method stub
 		return type;
+	}
+
+	public int getNbConnection() {
+		return nbConnection;
+	}
+
+	public void setNbConnection(int nbConnection) {
+		this.nbConnection = nbConnection;
 	}
 
 }

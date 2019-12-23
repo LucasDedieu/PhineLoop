@@ -85,7 +85,7 @@ public class Game {
 		return this.maxcc;
 	}
 
-	public void generate() {
+	public void generate(int nbcc) {
 		Generator generator = new Generator(this);
 		generator.generate();
 	}
@@ -114,26 +114,6 @@ public class Game {
 
 	public boolean isShapeFullyConnected(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithWest(shape);
-		/*
-		if(shape == null) {
-			return false;
-		}
-		Shape[] neighbors = getNeighbors(shape); 
-		List<Connection> connections = shape.getConnections();
-		if(countNeighbors(neighbors)<connections.size()) {
-			return false;
-		}
-
-		for(Connection connection : connections) {
-			switch(connection) {
-			case NORTH : if (neighbors[NORTH] == null || !neighbors[NORTH].hasConnection(Connection.SOUTH)) {return false;} break;
-			case SOUTH : if (neighbors[SOUTH] == null || !neighbors[SOUTH].hasConnection(Connection.NORTH)) {return false;} break;
-			case EAST :  if (neighbors[EAST] == null || !neighbors[EAST].hasConnection(Connection.WEST)) {return false;} break;
-			case WEST :  if (neighbors[WEST] == null || !neighbors[WEST].hasConnection(Connection.EAST)) {return false;} break;
-			default : break;
-			}
-		}
-		return true;*/
 	}
 
 	private int countNeighbors(Shape[] neighbors) {
@@ -192,6 +172,26 @@ public class Game {
 
 	public boolean isShapeWellConnectedWithSouthAndWest(Shape shape) {
 		return isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithWest(shape);
+	}
+	
+	public boolean isShapeWellConnectedWithNorthAndSouth(Shape shape) {
+		return isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithNorth(shape);
+	}
+	
+	public boolean isShapeWellConnectedWithEastAndWest(Shape shape) {
+		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape);
+	}
+	public boolean isShapeWellConnectedWithEastAndSouthAndWest(Shape shape) {
+		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithSouth(shape);
+	}
+	public boolean isShapeWellConnectedWithNorthAndSouthAndWest(Shape shape) {
+		return isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithSouth(shape);
+	}
+	public boolean isShapeWellConnectedWithNorthAndEastAndWest(Shape shape) {
+		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithNorth(shape);
+	}
+	public boolean isShapeWellConnectedWithNorthAndEastAndSouth(Shape shape) {
+		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithNorth(shape);
 	}
 
 	public boolean isShapeWellConnectedWithSouth(Shape shape) {
@@ -289,23 +289,37 @@ public class Game {
 		}
 		return true;
 	}
-	/*
-	List<Connection> connections = shape.getConnections();
-	Shape[] neighbors = getNeighbors(shape);
-	if (neighbors[WEST] != null ) {
-		if(neighbors[WEST].hasConnection(Connection.EAST)) {
-			if (!connections.contains(Connection.WEST)) {
+
+	public boolean isShapeWellConnectedWithFrozenNeighbors(Shape shape) {
+		//North
+		int i = shape.getI();
+		int j = shape.getJ();
+		//NORTH
+		Shape neighbor = null;
+		if(i-1>=0) {
+			neighbor = board[i-1][j];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithNorth(shape)) {
 				return false;
 			}
 		}
-		else {
-			if (connections.contains(Connection.WEST)) {
+		//WEST
+		neighbor = null;
+		if(j-1>=0) {
+			neighbor = board[i][j-1];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithWest(shape)) {
 				return false;
 			}
 		}
+		return true;
+		
 	}
-	return true;
-}*/
+	
+	
+	
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -357,6 +371,12 @@ public class Game {
 		}
 		return sb.toString();
 	}
+
+
+	
+
+
+	
 
 
 

@@ -3,7 +3,8 @@ package fr.dauphine.javaavance.phineloops.model;
 public class LShape extends Shape {
 	private int[] domain = {50,51,52,53};
 	private int type = 5;
-
+	private int nbConnection = 2;
+	
 	public LShape(int orientation, int i, int j) {
 		super(orientation, i, j);
 		// TODO Auto-generated constructor stub
@@ -61,5 +62,13 @@ public class LShape extends Shape {
 	public int getType() {
 		// TODO Auto-generated method stub
 		return type;
+	}
+
+	public int getNbConnection() {
+		return nbConnection;
+	}
+
+	public void setNbConnection(int nbConnection) {
+		this.nbConnection = nbConnection;
 	}
 }

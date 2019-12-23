@@ -3,6 +3,7 @@ package fr.dauphine.javaavance.phineloops.model;
 public class TShape extends Shape {
 	private int[] domain = {30,31,32,33};
 	private int type = 3;
+	private int nbConnection = 3;
 	
 	public TShape(int orientation,int i, int j) {
 		super(orientation,i,j);
@@ -62,6 +63,14 @@ public class TShape extends Shape {
 	public int getType() {
 		// TODO Auto-generated method stub
 		return type;
+	}
+
+	public int getNbConnection() {
+		return nbConnection;
+	}
+
+	public void setNbConnection(int nbConnection) {
+		this.nbConnection = nbConnection;
 	}
 
 }
