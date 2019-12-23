@@ -2,6 +2,7 @@ package fr.dauphine.javaavance.phineloops.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Shape {
 	//protected List<Connection> connections;
@@ -16,6 +17,8 @@ public abstract class Shape {
 	private int i;
 	private int j;
 	private boolean isFroze;
+	public boolean[] possibleOrientation;
+	
 	
 
 	
@@ -56,7 +59,7 @@ public abstract class Shape {
 	
 	public abstract int getMaxRotation();
 	
-	public  abstract int[] getDomain();
+	
 	
 	public abstract String getSymbol();
 	
@@ -71,11 +74,22 @@ public abstract class Shape {
 		connections[NORTH] = tmp;
 	}
 	
+	/*
 	public void rotateTo(int orientation) {
 		while(this.orientation != orientation) {
 			rotate();
+		}	
+	}*/
+	public  abstract void rotateTo(int orientation);
+
+	public void removePossibleOrientation(int[] orientations) {
+		for(int o : orientations) {
+			possibleOrientation[o] = false;
 		}
-		
+	}
+	
+	public boolean[] getPossibleOrientation() {
+		return possibleOrientation;
 	}
 	
 	/*

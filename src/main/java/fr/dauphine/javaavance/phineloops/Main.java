@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -133,7 +134,10 @@ public class Main /*extends Application*/  {
 		inputFile = cmd.getOptionValue( "s" );
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 		outputFile = cmd.getOptionValue( "o" );
-		int threads = 0; //Integer.getInteger(cmd.getOptionValue( "t" ));
+		int threads =0;
+		if(cmd.hasOption("t")) {
+			threads= Integer.parseInt(cmd.getOptionValue( "t" ));
+		}
 		boolean solved = solve(inputFile, outputFile, threads); 
 
 		System.out.println("SOLVED: " + solved);   

@@ -1,13 +1,18 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 public class IShape extends Shape {
-	private int[] domain = {20,21};
+	
 	private int type = 2;
 	private int nbConnection = 2;
 	
 	public IShape(int orientation, int i, int j) {
 		super(orientation, i, j);
-		// TODO Auto-generated constructor stub
+		this.possibleOrientation = new boolean[]{true, true};
 		switch(orientation)
 		{
 		case 0:
@@ -26,9 +31,7 @@ public class IShape extends Shape {
 		super.rotate();
 		orientation = (orientation + 1)%2;
 	}
-	public int[] getDomain() {
-		return domain;
-	}
+	
 	
 	
 	public String getSymbol() {
@@ -60,6 +63,24 @@ public class IShape extends Shape {
 
 	public void setNbConnection(int nbConnection) {
 		this.nbConnection = nbConnection;
+	}
+
+	@Override
+	public void rotateTo(int orientation) {
+		connections = new boolean[4];
+		this.orientation= orientation;
+		switch(orientation)
+		{
+		case 0:
+			connections[NORTH]=true; connections[SOUTH] = true;
+			break;
+		case 1:
+			connections[EAST]=true; connections[WEST] = true;
+			break;
+		default:
+			throw new IllegalArgumentException("0<=orientation<=2");
+		}
+		
 	}
 
 }

@@ -290,7 +290,7 @@ public class Game {
 		return true;
 	}
 
-	public boolean isShapeWellConnectedWithFrozenNeighbors(Shape shape) {
+	public boolean isShapeWellConnectedWithNorthAndWestFrozenNeighbors(Shape shape) {
 		//North
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -315,8 +315,56 @@ public class Game {
 			}
 		}
 		return true;
+	}
+	public boolean isShapeWellConnectedWithFrozenNeighbors(Shape shape) {
+		//North
+		int i = shape.getI();
+		int j = shape.getJ();
+		//NORTH
+		Shape neighbor = null;
+		if(i-1>=0) {
+			neighbor = board[i-1][j];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithNorth(shape)) {
+				return false;
+			}
+		}
+		//WEST
+		neighbor = null;
+		if(j-1>=0) {
+			neighbor = board[i][j-1];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithWest(shape)) {
+				return false;
+			}
+		}
+		//EAST
+		neighbor = null;
+		if(j+1<width) {
+			neighbor = board[i][j+1];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithEast(shape)) {
+				return false;
+			}
+		}
+		//SOUTH
+		neighbor = null;
+		if(i+1<height) {
+			neighbor = board[i+1][j];
+		}
+		if(neighbor != null && neighbor.isFroze()) {
+			if(!isShapeWellConnectedWithSouth(shape)) {
+				return false;
+			}
+		}
+		return true;
+		
 		
 	}
+	
 	
 	
 	

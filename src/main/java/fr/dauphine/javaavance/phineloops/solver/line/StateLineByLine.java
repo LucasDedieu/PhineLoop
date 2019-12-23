@@ -30,7 +30,6 @@ public class StateLineByLine {
 
 
 	public boolean canRotate(Shape shape) {
-		
 		return r <shape.getMaxRotation()+1;
 	}
 	

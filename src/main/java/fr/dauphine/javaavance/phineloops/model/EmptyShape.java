@@ -1,17 +1,20 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class EmptyShape extends Shape {
-	private int[] domain = {0};
+	
 	private int type = 0;
 	private int nbConnection = 0;
 	
 	public EmptyShape(int orientation,int i,int j) {
 		super(orientation,i,j);
+		this.possibleOrientation = new boolean[]{true};
 	}
 
-	public int[] getDomain() {
-		return domain;
-	}
+	
 	
 	
 	public String getSymbol() {
@@ -36,5 +39,10 @@ public class EmptyShape extends Shape {
 
 	public void setNbConnection(int nbConnection) {
 		this.nbConnection = nbConnection;
+	}
+
+	@Override
+	public void rotateTo(int orientation) {
+		
 	}
 }
