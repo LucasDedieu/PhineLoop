@@ -4,6 +4,7 @@ package fr.dauphine.javaavance.phineloops.model;
 public class IShape extends Shape {
 	private int[] domain = {0,1};
 	private int type = 2;
+	private int nbConnection = 2;
 	
 	public IShape(int orientation, int i, int j) {
 		super(orientation, i, j);
@@ -90,6 +91,14 @@ public class IShape extends Shape {
 	public int getType() {
 		// TODO Auto-generated method stub
 		return type;
+	}
+
+	public int getNbConnection() {
+		return nbConnection;
+	}
+
+	public void setNbConnection(int nbConnection) {
+		this.nbConnection = nbConnection;
 	}
 
 }

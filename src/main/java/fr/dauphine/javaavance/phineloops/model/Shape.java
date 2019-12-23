@@ -15,6 +15,8 @@ public abstract class Shape {
 	protected int orientation;
 	private int i;
 	private int j;
+	private boolean isFroze;
+	
 
 	
 	public Shape (/*ShapeType type,*/ int orientation, int i, int j) {
@@ -67,6 +69,7 @@ public abstract class Shape {
 	
 	public abstract String getSymbol();
 	
+	public abstract int getNbConnection();
 	
 	public void rotate() {
 		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
@@ -75,6 +78,13 @@ public abstract class Shape {
 		connections[SOUTH] = connections[EAST];
 		connections[EAST] = connections[NORTH];
 		connections[NORTH] = tmp;
+	}
+	
+	public void rotateTo(int orientation) {
+		while(this.orientation != orientation) {
+			rotate();
+		}
+		
 	}
 	
 	/*
@@ -126,4 +136,14 @@ public abstract class Shape {
 		}
 		return connections[connection];
 	}
+
+	public boolean isFroze() {
+		return isFroze;
+	}
+
+	public void setFroze(boolean isFixed) {
+		this.isFroze = isFixed;
+	}
+	
+	
 }

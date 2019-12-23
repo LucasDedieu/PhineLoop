@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class XShape extends Shape {
 	private int[] domain = {0};
 	private int type = 4;
+	private int nbConnection = 4;
 	
 	public XShape(int orientation,int i, int j) {
 		super(orientation,i,j);
@@ -36,5 +37,11 @@ public class XShape extends Shape {
 	public int getType() {
 		// TODO Auto-generated method stub
 		return type;
+	}
+	public int getNbConnection() {
+		return nbConnection;
+	}
+	public void setNbConnection(int nbConnection) {
+		this.nbConnection = nbConnection;
 	}
 }

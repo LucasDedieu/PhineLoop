@@ -41,8 +41,8 @@ public class Main /*extends Application*/  {
 	//... 
     	//FIXME fix the generator
     	try {
-        	Game game = new Game(width, height,0);
-        	game.generate();
+        	Game game = new Game(width, height,1);
+        	game.generate(1);
 			game.write(outputFile);
 			System.out.println(game);
 		} catch (FileNotFoundException e) {
@@ -64,8 +64,12 @@ public class Main /*extends Application*/  {
     		}
     		return true;
     	}
+<<<<<<< HEAD
     	SolverSnail solver = new SolverSnail(game);
     	//SolverChoco solver = new SolverChoco(game);
+=======
+    	SolverLineByLine solver = new SolverLineByLine(game);
+>>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 		long startTime = System.currentTimeMillis();
     	Game gameSolved = solver.solve();
 		//Game gameSolved = solver.solve_choco();
@@ -81,7 +85,7 @@ public class Main /*extends Application*/  {
 			e.printStackTrace();
 		}
     	return true;
- 
+  
     }
 
     private static boolean check(String inputFile){
