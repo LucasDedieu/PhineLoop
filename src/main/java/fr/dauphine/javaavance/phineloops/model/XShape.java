@@ -1,10 +1,12 @@
 package fr.dauphine.javaavance.phineloops.model;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 
+
 public class XShape extends Shape {
-	private int[] domain = {40};
+	private int[] domain = {0};
 	private int type = 4;
 	
 	public XShape(int orientation,int i, int j) {
@@ -16,6 +18,10 @@ public class XShape extends Shape {
 	}
 
 	public int[] getDomain() {
+		return domain;
+	}
+	
+	public int[] getDomainWithPruning(Game game) {
 		return domain;
 	}
 	

@@ -12,9 +12,12 @@ public class EmptyShape extends Shape {
 		return domain;
 	}
 	
+	public int[] getDomainWithPruning(Game game) {
+		return domain;
+	}
 	
 	public String getSymbol() {
-		return "  ";
+		return " ";
 	}
 	
 	public int getMaxRotation() {

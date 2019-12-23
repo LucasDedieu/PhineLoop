@@ -17,7 +17,7 @@ import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
-
+import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLineMultiThread;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
@@ -65,8 +65,10 @@ public class Main /*extends Application*/  {
     		return true;
     	}
     	SolverSnail solver = new SolverSnail(game);
+    	//SolverChoco solver = new SolverChoco(game);
 		long startTime = System.currentTimeMillis();
     	Game gameSolved = solver.solve();
+		//Game gameSolved = solver.solve_choco();
     	if(gameSolved == null) {
     		return false;
     	}

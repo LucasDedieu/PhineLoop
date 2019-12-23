@@ -1,6 +1,7 @@
 package fr.dauphine.javaavance.phineloops.model;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 
 import fr.dauphine.javaavance.phineloops.generator.Generator;
 
@@ -88,6 +90,11 @@ public class Game {
 	public void generate() {
 		Generator generator = new Generator(this);
 		generator.generate();
+	}
+	
+	public void generateSolution() {
+		Generator generator = new Generator(this);
+		generator.generateSolution();
 	}
 
 	private void load(File file) {
@@ -306,6 +313,49 @@ public class Game {
 	}
 	return true;
 }*/
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC ALBAN 
+	 */
+	public boolean areShapesConnected(Shape shape1,Shape shape2)
+	{
+			boolean areShapesConnected=false;
+			if (shape1.getConnections()[EAST] && shape2.getConnections()[WEST] && shape1.getJ()+1==shape2.getJ()) areShapesConnected = true;
+			else if (shape1.getConnections()[WEST] && shape2.getConnections()[EAST] && shape1.getJ()-1==shape2.getJ()) areShapesConnected = true;
+			else if (shape1.getConnections()[NORTH] && shape2.getConnections()[SOUTH] && shape1.getI()-1==shape2.getI()) areShapesConnected = true;
+			else if (shape1.getConnections()[SOUTH] && shape2.getConnections()[NORTH] && shape1.getI()+1==shape2.getI()) areShapesConnected = true;
+			return areShapesConnected;
+	}
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC ALBAN 
+	 */
+	public boolean lookingButNotConnected(Shape shape1,Shape shape2)
+	{
+		boolean cc=false;
+		boolean[] connections = shape1.getConnections();
+		Shape[] neighbors = getNeighbors(shape1);
+		if (neighbors[NORTH] != null && neighbors[NORTH]==shape2 && connections[NORTH] && !shape2.hasConnection(SOUTH)) cc=true;
+		if (neighbors[SOUTH] != null && neighbors[SOUTH]==shape2 && connections[SOUTH] && !shape2.hasConnection(NORTH)) cc=true;
+		if (neighbors[EAST] != null && neighbors[EAST]==shape2 && connections[EAST] && !shape2.hasConnection(WEST)) 
+			{
+				cc=true;
+			}
+		if (neighbors[WEST] != null && neighbors[WEST]==shape2 && connections[WEST] && !shape2.hasConnection(EAST)) cc=true;
+		return cc;
+		
+	}
+	
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();

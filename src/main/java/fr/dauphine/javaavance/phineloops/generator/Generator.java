@@ -22,7 +22,7 @@ public class Generator {
 	private static int WEST = 3;
 	private int node = 0;
 	private int road = 0;
-	private int maxCc; //DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
+	private int maxCc; 
 	
 	
 	
@@ -32,8 +32,14 @@ public class Generator {
 	}
 	
 	
-	
-	public void generate() {
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC : GENERATE A GAME WITH RANDOM SHAPES
+	 */
+	public void generateSolution() {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
@@ -340,13 +346,49 @@ public class Generator {
 			}
 		}
 		System.out.println(game);
-		for (Shape[] shapes:board)
+		/*for (Shape[] shapes:board)
+		{
+			for (Shape shape:shapes)
+			{
+				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
+			}
+		}*/
+	}
+	
+	/**
+	 * 
+	 * @param game
+	 */
+	public void shuffleGame(Game game)
+	{
+		Random rand = new Random();
+		for (Shape[] shapes:game.getBoard())
 		{
 			for (Shape shape:shapes)
 			{
 				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 			}
 		}
+	}
+	
+	public void generate()
+	{
+		this.generateSolution();
+		this.shuffleGame(this.game);
+	}
+	
+	
+
+	/** Generate a solution with exactly cc connected component, we will favour the empty shapes 
+	 * 
+	 * @param cc
+	 */
+	public void generate(int cc)
+	{
+		
+		
+		
+		
 		
 	}
 }
