@@ -42,6 +42,17 @@ public class Game {
 		board = new Shape[height][width];
 	}
 
+	public Game(int width, int height) {
+		if(width<1) {
+			throw new IllegalArgumentException("Width must be >= 1");
+		}
+		if(height<1) {
+			throw new IllegalArgumentException("Height must be >= 1");
+		}
+		this.width = width;
+		this.height = height;
+		board = new Shape[height][width];
+	}
 
 	public Game(File file) {
 		load(file);
@@ -87,7 +98,8 @@ public class Game {
 		return this.maxcc;
 	}
 
-	public void generate(int nbcc) {
+	
+	public void generate() {
 		Generator generator = new Generator(this);
 		generator.generate();
 	}
@@ -96,7 +108,17 @@ public class Game {
 		Generator generator = new Generator(this);
 		generator.generateSolution();
 	}
+	
+	public void generate(int nbcc) {
+		Generator generator = new Generator(this);
+		generator.generate(nbcc);
+	}
 
+	public void generateSolution(int nbcc) {
+		Generator generator = new Generator(this);
+		generator.generateSolution(nbcc);
+	}
+	
 	private void load(File file) {
 
 	}
@@ -324,9 +346,6 @@ public class Game {
 		return true;
 		
 	}
-<<<<<<< HEAD
-	return true;
-}*/
 	
 	
 	/*
@@ -369,10 +388,7 @@ public class Game {
 		return cc;
 		
 	}
-=======
-	
-	
->>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
+
 	
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();

@@ -40,16 +40,28 @@ public class Main /*extends Application*/  {
 	// generate grid and store it to outputFile...
 	//... 
     	//FIXME fix the generator
+    	if (maxcc!=-1) {
     	try {
-        	Game game = new Game(width, height,1);
-        	game.generate(1);
+        	Game game = new Game(width, height,maxcc);
+        	game.generate(maxcc);
 			game.write(outputFile);
 			System.out.println(game);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: "+outputFile);
 		}
-    	
+    	}
+    	else {
+    		try {
+            	Game game = new Game(width, height);
+            	game.generate();
+    			game.write(outputFile);
+    			System.out.println(game);
+    		} catch (FileNotFoundException e) {
+    			System.out.println("File not found: "+outputFile);
+    		}
+        }
     }
+    	
 
     private static boolean solve(String inputFile, String outputFile, int threads){
 	// load grid from inputFile, solve it and store result to outputFile...
@@ -64,12 +76,9 @@ public class Main /*extends Application*/  {
     		}
     		return true;
     	}
-<<<<<<< HEAD
-    	SolverSnail solver = new SolverSnail(game);
+    	//SolverSnail solver = new SolverSnail(game);
     	//SolverChoco solver = new SolverChoco(game);
-=======
     	SolverLineByLine solver = new SolverLineByLine(game);
->>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 		long startTime = System.currentTimeMillis();
     	Game gameSolved = solver.solve();
 		//Game gameSolved = solver.solve_choco();
@@ -131,8 +140,11 @@ public class Main /*extends Application*/  {
 		height = Integer.parseInt(gridformat[1]); 
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
 		outputFile = cmd.getOptionValue( "o" );
-
-		generate(width, height, outputFile); 
+		if( cmd.hasOption( "x" ) )
+		{
+			maxcc = Integer.parseInt(cmd.getOptionValue( "x" ));
+		} 
+		generate(width, height, outputFile);
 	    }
 	    else if( cmd.hasOption( "s" ) ) {
 		System.out.println("Running phineloops solver.");
@@ -165,6 +177,7 @@ public class Main /*extends Application*/  {
 
         System.exit(0); // exit with success                            
     }
+    
     
     static Game loadFile(String inputFile){
     	File file = new File(inputFile);
