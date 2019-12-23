@@ -1,10 +1,14 @@
 package fr.dauphine.javaavance.phineloops.model;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
+
 public class XShape extends Shape {
+
+	private int[] domain = {0};
 
 	private int type = 4;
 	private int nbConnection = 4;
@@ -19,6 +23,10 @@ public class XShape extends Shape {
 	}
 
 
+	
+	public int[] getDomainWithPruning(Game game) {
+		return domain;
+	}
 	
 	public String getSymbol() {
 		return "╋";
@@ -42,5 +50,10 @@ public class XShape extends Shape {
 	public void rotateTo(int orientation) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public int[] getDomain() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -22,7 +22,7 @@ public class Generator {
 	private static int WEST = 3;
 	private int node = 0;
 	private int road = 0;
-	private int maxCc; //DON'T PUT MORE CONNECTED COMPONENTS THAN CC ! 
+	private int maxCc; 
 
 
 
@@ -31,9 +31,7 @@ public class Generator {
 		this.maxCc = game.getMaxCC(); 
 	}
 
-
-
-	public void generate() {
+	public void generateSolution() {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
@@ -340,17 +338,53 @@ public class Generator {
 			}
 		}
 		System.out.println(game);
-		for (Shape[] shapes:board)
+		/*for (Shape[] shapes:board)
+		{
+			for (Shape shape:shapes)
+			{
+				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
+			}
+		}*/
+	}
+	
+	/**
+	 * 
+	 * @param game
+	 */
+	public void shuffleGame(Game game)
+	{
+		Random rand = new Random();
+		for (Shape[] shapes:game.getBoard())
 		{
 			for (Shape shape:shapes)
 			{
 				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 			}
 		}
-
 	}
-
-	public void generate(int nbcc) {
+	
+	public void generate()
+	{
+		this.generateSolution();
+		this.shuffleGame(this.game);
+	}
+	
+	/**
+	 * 
+	 * @param nbcc
+	 */
+	public void generate(int nbcc)
+	{
+		this.generateSolution(nbcc);
+		this.shuffleGame(this.game);	
+	}
+		
+		
+	/**
+	 * 
+	 * @param nbcc
+	 */
+	public void generateSolution(int nbcc) {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
@@ -991,14 +1025,12 @@ public class Generator {
 			}
 		}
 		System.out.println(game);
-		for (Shape[] shapes:board)
+		/*for (Shape[] shapes:board)
 		{
 			for (Shape shape:shapes)
 			{
 				for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 			}
-		}
-
+		}*/
 	}
-
 }

@@ -2,8 +2,11 @@ package fr.dauphine.javaavance.phineloops;
 
 import org.junit.Test;
 
+
 import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.LShape;
+import fr.dauphine.javaavance.phineloops.model.QShape;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.TShape;
 import fr.dauphine.javaavance.phineloops.model.XShape;
@@ -89,6 +92,42 @@ public class GameTest {
 		game.addShape(s5);
 		
 		Assert.assertEquals(false, game.isShapeFullyConnected(s2));
+	}
+	
+	//To Update
+	@Test
+	public void areShapesConnected() throws Exception
+	{
+		Shape s1 = new LShape(1,1,1);
+		Shape s2 = new LShape(2,0,1);
+		Shape s3 = new QShape(0,1,2);
+		Shape s4 = new QShape(0,1,0);
+		game.addShape(new LShape(1,1,1));
+		game.addShape(new LShape(2,0,1));
+		game.addShape(new QShape(0,1,2));
+		game.addShape(new QShape(0,1,0));
+		Assert.assertTrue(game.areShapesConnected(s1, s2));
+		s2.setOrientation(0);
+		Assert.assertFalse(game.areShapesConnected(s1, s2));
+		Assert.assertFalse(game.areShapesConnected(s2, s3));
+	}
+	
+	//To update
+	@Test
+	public void lookingButNotConnected() throws Exception
+	{
+		Shape s1 = new LShape(1,1,1);
+		Shape s2 = new LShape(2,0,1);
+		Shape s3 = new QShape(0,1,2);
+		Shape s4 = new QShape(0,1,0);
+		game.addShape(new LShape(1,1,1));
+		game.addShape(new LShape(2,0,1));
+		game.addShape(new QShape(0,1,2));
+		game.addShape(new QShape(0,1,0));
+		Assert.assertTrue(game.areShapesConnected(s1, s2));
+		s2.setOrientation(0);
+		Assert.assertFalse(game.areShapesConnected(s1, s2));
+		Assert.assertFalse(game.areShapesConnected(s2, s3));
 	}
 
 }

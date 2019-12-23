@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class EmptyShape extends Shape {
-	
+	private int[] domain = {0};
 	private int type = 0;
 	private int nbConnection = 0;
 	
@@ -16,9 +16,12 @@ public class EmptyShape extends Shape {
 
 	
 	
+	public int[] getDomainWithPruning(Game game) {
+		return domain;
+	}
 	
 	public String getSymbol() {
-		return "  ";
+		return " ";
 	}
 	
 	public int getMaxRotation() {
@@ -44,5 +47,13 @@ public class EmptyShape extends Shape {
 	@Override
 	public void rotateTo(int orientation) {
 		
+	}
+
+
+
+	@Override
+	public int[] getDomain() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -53,13 +53,22 @@ public abstract class Shape {
 	
 	
 	
-	
+	public abstract int[] getDomain();
 	
 	//public abstract void rotate();
 	
 	public abstract int getMaxRotation();
 	
 	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC ALBAN 
+	 */
+	public  abstract int[] getDomainWithPruning(Game game);
 	
 	public abstract String getSymbol();
 	
@@ -106,6 +115,9 @@ public abstract class Shape {
 		return orientation;
 	}
 	
+	public void setOrientation(int orientation) {
+	}
+	
 	public int getI() {
 		return i;
 	}
@@ -116,6 +128,15 @@ public abstract class Shape {
 	
 	public boolean[] getConnections(){
 		return connections;
+	}
+	
+	public int getVConnections() {
+		int vconnection=0;
+		for (boolean bl: connections)
+		{
+			if(bl==true) vconnection++;
+		}
+		return vconnection;
 	}
 	
 	
