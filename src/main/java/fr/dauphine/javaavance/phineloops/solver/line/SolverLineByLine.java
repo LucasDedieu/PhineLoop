@@ -143,21 +143,21 @@ public class SolverLineByLine {
 		do {
 			nbFreeze = refreeze(game);
 			total+=nbFreeze;
-			//System.out.println("New shape froze : "+nbFreeze);
+			System.out.println("New shape froze : "+nbFreeze);
 		}while(nbFreeze>0);
 		reduceDomainBorder(game);
 		reduceDomain(game);
-		total+=freezeShapeWithOneOrientation(game);
+		//total+=freezeShapeWithOneOrientation(game);
 		do {
 			do {
 				nbFreeze = refreeze(game);
 				total+=nbFreeze;
-				//System.out.println("New shape froze : "+nbFreeze);
+				System.out.println("New shape froze : "+nbFreeze);
 			}while(nbFreeze>0);
 			//Reduce domain
 			reduceDomain(game);
 			//System.out.println("Domain reduce : "+reduceDomain(testGame));
-			shapeWithOneOrientation = freezeShapeWithOneOrientation(game);
+			//shapeWithOneOrientation = freezeShapeWithOneOrientation(game);
 			total+=shapeWithOneOrientation;
 			//System.out.println("Only one orientation remaining : "+shapeWithOneOrientation);
 		}while(shapeWithOneOrientation>0);
