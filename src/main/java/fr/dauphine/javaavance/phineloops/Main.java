@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,8 +22,9 @@ import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
+import fr.dauphine.javaavance.phineloops.solver.line.LineByLineThread;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
-import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLineMultiThread;
+import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLineMultiThreadOld;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 
 
@@ -69,6 +73,7 @@ public class Main /*extends Application*/  {
 	// ...
     	Game game = loadFile(inputFile);
     	System.out.println("original game :\n"+game);
+    	/*
     	if(Checker.check(game)) {
         	try {
     			game.write(outputFile);
@@ -76,11 +81,21 @@ public class Main /*extends Application*/  {
     			e.printStackTrace();
     		}
     		return true;
-    	}
+    	}*/
     	//SolverSnail solver = new SolverSnail(game);
     	//SolverChoco solver = new SolverChoco(game);
     	SolverLineByLine solver = new SolverLineByLine(game);
-		long startTime = System.currentTimeMillis();
+    	//Executor exec = Executors.newFixedThreadPool(threads);
+    	//CountDownLatch latch = new CountDownLatch(1);
+    	long startTime = System.currentTimeMillis();
+    	//exec.execute(new LineByLineThread(game, latch ));
+    	//try {
+		//	latch.await();
+		//} catch (InterruptedException e1) {
+		//	e1.printStackTrace();
+		//}
+		
+    	//Game gameSolved = ThreadController.getInstance().getSolvedGame();
     	Game gameSolved = solver.solve();
 		//Game gameSolved = solver.solve_choco();
     	if(gameSolved == null) {

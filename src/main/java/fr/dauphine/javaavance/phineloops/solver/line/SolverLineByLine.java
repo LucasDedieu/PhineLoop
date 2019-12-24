@@ -42,14 +42,16 @@ public class SolverLineByLine {
 			}
 		}
 		prepare(testGame);
-		System.out.println("Begin solve");
+		shuffle(testGame);
+		//System.out.println("Begin solve");
 		int i =height-1;
 		int j=width-1;
 		StateLineByLine initialState = new StateLineByLine(i,j,0);
 		stack.push(initialState);
-		boolean hasPop = false;
+		//int nbPop =0;
+		//boolean hasPop = false;
 		while(!stack.isEmpty()) {
-			nb++;
+			//nb++;
 			StateLineByLine iteration = stack.peek();
 			i = iteration.getI();
 			j = iteration.getJ();
@@ -65,52 +67,56 @@ public class SolverLineByLine {
 			//Case frozen shape
 			if(shape.isFroze()) {
 				stack.pop();
-				if(!testGame.isShapeWellConnectedWithSouthAndEast(shape)) {
-					hasPop =true;
-					continue;
-				}
 			}
 
-
 			/*
-			else if(!hasPop && !testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape)&& testGame.isShapeWellConnectedWithFrozenNeighbors(shape)) {
-				//empty
+			//Shape is already well connected
+			else if(!hasPop  && shape.getPossibleOrientation()[shape.getOrientation()] &&!testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape) && testGame.isShapeWellConnectedWithNorthAndWestFrozenNeighbors(shape)) {
+				
 			}*/
+
+
 			//Can rotate ?		
 			else if(iteration.canRotate(shape)) {
 				boolean isWellPlaced = false;
 				do{
 					//do {
-					iteration.rotate(shape);
-					//}while(!shape.getPossibleOrientation()[shape.getOrientation()]);
-					if(!testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape) && testGame.isShapeWellConnectedWithNorthAndWestFrozenNeighbors(shape)) {
+						iteration.rotate(shape);
+					//}while(iteration.canRotate(shape) && );
+					
+					if(shape.getPossibleOrientation()[shape.getOrientation()] &&  testGame.isShapeWellConnectedWithSouthAndEast(shape)) {
 						isWellPlaced = true;
 					}
 				}while(!isWellPlaced && iteration.canRotate(shape));
 				//if shape has no possible good rotation -> backtrack
 				if(!isWellPlaced) {
 					stack.pop();
-					hasPop = true;
+					//nbPop++;
+					//hasPop = true;
 					continue;
 				}	
 			}
 			//Case shape already test all rotation	
 			else{	
 				stack.pop();
-				hasPop = true;
+				//nbPop++;
+				//hasPop = true;
 				continue;
 			}
 
 			//When the shape is well placed, we prepare next iteration
 			StateLineByLine nextIteration = null;
-			hasPop = false;
+			//hasPop = false;
 			//Case last shape of the board
 			if(i==0 && j ==0) {
 				if(testGame.isShapeFullyConnected(shape)) {
+					//System.out.println("Nombre itération :"+nb);
+					//System.out.println("Nombre pop :"+nbPop);
 					return testGame;
 				}
 				stack.pop();
-				hasPop=true;
+				//nbPop++;
+				//hasPop=true;
 				continue;
 			}
 			else {	
@@ -129,25 +135,40 @@ public class SolverLineByLine {
 	}
 
 
-	private void prepare(Game testGame) {
-		firstFreeze(testGame);
+	private void prepare(Game game) {
+		firstFreeze(game);
+		int total = 0;
 		int nbFreeze =0;
 		int shapeWithOneOrientation=0;
 		do {
+			nbFreeze = refreeze(game);
+			total+=nbFreeze;
+			//System.out.println("New shape froze : "+nbFreeze);
+		}while(nbFreeze>0);
+		reduceDomainBorder(game);
+		reduceDomain(game);
+		total+=freezeShapeWithOneOrientation(game);
+		do {
 			do {
-				nbFreeze = refreeze(testGame);
+				nbFreeze = refreeze(game);
+				total+=nbFreeze;
 				//System.out.println("New shape froze : "+nbFreeze);
 			}while(nbFreeze>0);
 			//Reduce domain
-			reduceDomain(testGame);
+			reduceDomain(game);
 			//System.out.println("Domain reduce : "+reduceDomain(testGame));
-			shapeWithOneOrientation = freezeShapeWithOneOrientation(testGame);
+			shapeWithOneOrientation = freezeShapeWithOneOrientation(game);
+			total+=shapeWithOneOrientation;
 			//System.out.println("Only one orientation remaining : "+shapeWithOneOrientation);
 		}while(shapeWithOneOrientation>0);
-		
+		System.out.println("Nb freeze :"+total);
+
+	}
+
+	private void shuffle(Game game) {
 		//Shuffle
 		Random rand = new Random();
-    	for (Shape[] shapes:testGame.getBoard()){
+		for (Shape[] shapes:game.getBoard()){
 			for (Shape shape:shapes){
 				if(!shape.isFroze()) {
 					for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
@@ -716,6 +737,23 @@ public class SolverLineByLine {
 			shape.setFroze(true);
 			return 1;
 		}	
+		else if( shape.getType() == 2) {
+			if (bottomNeighbor!=null && topNeighbor!= null && bottomNeighbor.isFroze() && topNeighbor.isFroze()){
+				while(!game.isShapeWellConnectedWithNorthAndSouth(shape)) {
+					shape.rotate();
+				}
+				shape.setFroze(true);
+				return 1;
+			}	
+			if (leftNeighbor!=null && rightNeighbor!= null && leftNeighbor.isFroze() && rightNeighbor.isFroze()){
+				while(!game.isShapeWellConnectedWithEastAndWest(shape)) {
+					shape.rotate();
+				}
+				shape.setFroze(true);
+				return 1;
+			}	
+		}
+
 		return 0;
 	}
 
@@ -769,6 +807,7 @@ public class SolverLineByLine {
 
 	private int freezeQShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
+		int orientation = shape.getOrientation();
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
 		Shape bottomNeighbor = null;
@@ -785,7 +824,7 @@ public class SolverLineByLine {
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(shape.getOrientation() == 0) {
+		if(orientation == 0) {
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
@@ -804,7 +843,7 @@ public class SolverLineByLine {
 			}
 			return frozen;
 		}
-		else if(shape.getOrientation() == 1) {
+		else if(orientation == 1) {
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
@@ -822,7 +861,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 2) {
+		else if(orientation == 2) {
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
@@ -840,7 +879,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 3) {
+		else if(orientation == 3) {
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
@@ -863,6 +902,7 @@ public class SolverLineByLine {
 
 	private int freezeTShapeNeighbors(Shape[][] board,  int i, int j, Shape shape) {
 		int frozen =0;
+		int orientation = shape.getOrientation();
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
 		Shape bottomNeighbor = null;
@@ -879,7 +919,7 @@ public class SolverLineByLine {
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(shape.getOrientation() == 0) {
+		if(orientation == 0) {
 			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
@@ -897,7 +937,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		if(shape.getOrientation() == 1) {
+		if(orientation == 1) {
 			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
@@ -915,7 +955,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 2) {
+		else if(orientation == 2) {
 			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
@@ -933,7 +973,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 3) {
+		else if(orientation == 3) {
 			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
@@ -956,6 +996,7 @@ public class SolverLineByLine {
 
 	private int freezeLShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
+		int orientation = shape.getOrientation();
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
 		Shape bottomNeighbor = null;
@@ -972,7 +1013,7 @@ public class SolverLineByLine {
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(shape.getOrientation() == 0) {
+		if(orientation == 0) {
 
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
@@ -992,7 +1033,7 @@ public class SolverLineByLine {
 			}
 			return frozen;
 		}
-		else if(shape.getOrientation() == 1) {
+		else if(orientation == 1) {
 
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
@@ -1011,7 +1052,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 2) {
+		else if(orientation == 2) {
 
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
@@ -1030,7 +1071,7 @@ public class SolverLineByLine {
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
-		else if(shape.getOrientation() == 3) {
+		else if(orientation == 3) {
 
 			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
@@ -1054,6 +1095,7 @@ public class SolverLineByLine {
 
 	private int freezeIShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
+		int orientation = shape.getOrientation();
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
 		Shape bottomNeighbor = null;
@@ -1070,7 +1112,7 @@ public class SolverLineByLine {
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(shape.getOrientation() == 0) {
+		if(orientation == 0) {
 			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
@@ -1203,6 +1245,47 @@ public class SolverLineByLine {
 		return nb;
 	}
 
+	private int reduceDomainBorder(Game game) {
+		Shape[][] board = game.getBoard();
+		int nb = 0;
+		for(int i = 0; i<height;i++) {
+			for(int j = 0; j<width;j++) {
+				Shape shape = board[i][j];
+				if(!shape.isFroze()) {
+					int shapeType = shape.getType();
+					if(i==0) {						
+						switch(shapeType) {
+						case 1 :shape.removePossibleOrientation(new int[]{0});break;
+						case 5 :shape.removePossibleOrientation(new int[]{0,3});break;
+						}			
+					}
+					else if(j==0) {
+						switch(shapeType) {
+						case 1 :shape.removePossibleOrientation(new int[]{3});break;
+						case 5 :shape.removePossibleOrientation(new int[]{2,3});break;
+						}
+					}
+					else if(i==height-1) {
+						switch(shapeType) {
+						case 1 :shape.removePossibleOrientation(new int[]{2});break;
+						case 5 :shape.removePossibleOrientation(new int[]{1,2});break;
+						}
+					}
+					
+					else if(j==width-1) {
+						switch(shapeType) {
+						case 1 :shape.removePossibleOrientation(new int[]{1});break;
+						case 5 :shape.removePossibleOrientation(new int[]{0,1});break;
+						}
+
+					}
+				}
+
+			}
+		}
+		return nb;
+	}
+
 	private int freezeShapeWithOneOrientation(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb=0;
@@ -1217,7 +1300,7 @@ public class SolverLineByLine {
 					if(b==true) {nbO++;}
 				}
 				if(nbO==1) {
-					while(!game.isShapeWellConnectedWithFrozenNeighbors(shape)) {
+					while(!game.isShapeWellConnectedWithFrozenNeighbors(shape) || game.iShapeConnectedToBoardBorder(shape)) {
 						shape.rotate();
 					}
 					shape.setFroze(true);

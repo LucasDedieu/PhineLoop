@@ -48,6 +48,12 @@ public class ThreadController {
 		}
 	}
 	
+	public synchronized void setSolvedGame(Game solvedGame) {
+		if(this.solvedGame == null) {
+			this.solvedGame = solvedGame;
+		}
+	}
+	
 	public String getMessage() {
 		return ("rotate first method :"+rotateFirst+"   top left method :"+topLeft);
 	}

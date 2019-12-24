@@ -21,7 +21,7 @@ public class EmptyShape extends Shape {
 	}
 	
 	public String getSymbol() {
-		return " ";
+		return "  ";
 	}
 	
 	public int getMaxRotation() {

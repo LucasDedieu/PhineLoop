@@ -37,6 +37,8 @@ public class StateLineByLine {
 		r++;
 		shape.rotate();
 	}
+	
+	
 
 	public void setJ(int j) {
 		this.j=j;
@@ -61,5 +63,7 @@ public class StateLineByLine {
 		return sb.toString();
 		
 	}
+
+
 	
 }

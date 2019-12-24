@@ -474,8 +474,9 @@ public class Game {
 			return;
 		}
 		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
-
-
+     
+		
+    
 	}
 
 	@Override
@@ -489,19 +490,5 @@ public class Game {
 		}
 		return sb.toString();
 	}
-
-
-	
-
-
-	
-
-
-
-
-
-
-
-
 
 }

@@ -10,7 +10,7 @@ import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
-public class SolverLineByLineMultiThread {
+public class SolverLineByLineMultiThreadOld {
 	private Game originalGame ;
 	private int height;
 	private int width;
@@ -19,7 +19,7 @@ public class SolverLineByLineMultiThread {
 	private Shape[][] board;
 	int nb=0;
 
-	public SolverLineByLineMultiThread(Game game) {
+	public SolverLineByLineMultiThreadOld(Game game) {
 		this.originalGame = game;
 		this.height = game.getHeight();
 		this.width = game.getWidth();
@@ -28,10 +28,10 @@ public class SolverLineByLineMultiThread {
 	
 	public Game solve(){
 		CountDownLatch latch = new CountDownLatch(1);
-		Thread t1 = new Thread(new LineByLineThread(latch, originalGame, false, true));
-		Thread t2 = new Thread(new LineByLineThread(latch, originalGame, true, true));
-		Thread t3 = new Thread(new LineByLineThread(latch, originalGame, true, true));
-		Thread t4 = new Thread(new LineByLineThread(latch, originalGame, false, true));
+		Thread t1 = new Thread(new LineByLineThreadOld(latch, originalGame, false, true));
+		Thread t2 = new Thread(new LineByLineThreadOld(latch, originalGame, true, true));
+		Thread t3 = new Thread(new LineByLineThreadOld(latch, originalGame, true, true));
+		Thread t4 = new Thread(new LineByLineThreadOld(latch, originalGame, false, true));
 		t1.setDaemon(true);
 		t2.setDaemon(true);
 		t1.start();
