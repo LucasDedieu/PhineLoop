@@ -12,6 +12,7 @@ public class EmptyShape extends Shape {
 	public EmptyShape(int orientation,int i,int j) {
 		super(orientation,i,j);
 		this.possibleOrientation = new boolean[]{true};
+		this.domainSize = 1;
 	}
 
 	
@@ -21,7 +22,7 @@ public class EmptyShape extends Shape {
 	}
 	
 	public String getSymbol() {
-		return "  ";
+		return "┋";
 	}
 	
 	public int getMaxRotation() {

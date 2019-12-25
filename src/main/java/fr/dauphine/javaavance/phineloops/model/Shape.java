@@ -18,6 +18,7 @@ public abstract class Shape {
 	private int j;
 	private boolean isFroze;
 	public boolean[] possibleOrientation;
+	protected int domainSize;
 	
 	
 
@@ -95,10 +96,27 @@ public abstract class Shape {
 		for(int o : orientations) {
 			possibleOrientation[o] = false;
 		}
+		domainSize=0;
+		for(int i=0;i<possibleOrientation.length;i++) {
+			if(possibleOrientation[i]) {
+				domainSize++;
+			}
+		}
+		
 	}
 	
 	public boolean[] getPossibleOrientation() {
 		return possibleOrientation;
+	}
+	
+	public void setPossibleOrientation(boolean[] d) {
+		this.possibleOrientation=d;
+		domainSize=0;
+		for(int i=0;i<possibleOrientation.length;i++) {
+			if(possibleOrientation[i]) {
+				domainSize++;
+			}
+		}
 	}
 	
 	/*
@@ -157,6 +175,11 @@ public abstract class Shape {
 
 	public void setFroze(boolean isFixed) {
 		this.isFroze = isFixed;
+	}
+
+	public int  getDomainSize() {
+		return domainSize;
+		
 	}
 	
 	

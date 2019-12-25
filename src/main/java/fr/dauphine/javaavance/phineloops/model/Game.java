@@ -15,16 +15,16 @@ import java.util.Objects;
 import fr.dauphine.javaavance.phineloops.generator.Generator;
 
 public class Game {
-	private static int NORTH = 0;
-	private static int EAST = 1;
-	private static int SOUTH = 2;
-	private static int WEST = 3;
+	public static int NORTH = 0;
+	public static int EAST = 1;
+	public static int SOUTH = 2;
+	public static int WEST = 3;
 	private int width;
 	private int height;
 	private int maxcc;
 	private Shape[][] board;
 
-	public Game(int width, int height, int maxcc) {
+	public Game(int height, int width, int maxcc) {
 		if(width<1) {
 			throw new IllegalArgumentException("Width must be >= 1");
 		}
@@ -42,15 +42,15 @@ public class Game {
 		board = new Shape[height][width];
 	}
 
-	public Game(int width, int height) {
+	public Game( int height, int width) {
 		if(width<1) {
 			throw new IllegalArgumentException("Width must be >= 1");
 		}
 		if(height<1) {
 			throw new IllegalArgumentException("Height must be >= 1");
 		}
-		this.width = width;
 		this.height = height;
+		this.width = width;
 		board = new Shape[height][width];
 	}
 
@@ -484,7 +484,41 @@ public class Game {
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) {
-				sb.append(board[i][j].getSymbol());
+				Shape shape = board[i][j];
+				/*
+				boolean f = shape.isFroze();
+				if(f) {
+					sb.append("\033[36m");
+				}
+				else if(shape.getDomainSize() == 0) {
+					sb.append("\033[92m");
+				}
+				else if(shape.getDomainSize() == 1) {
+					sb.append("\033[35m");
+				}
+				else if(shape.getDomainSize() == 2) {
+					sb.append("\033[31m");
+				}
+				else if(shape.getDomainSize() == 3) {
+					sb.append("\033[33m");
+				}*/
+				sb.append(shape.getSymbol());/*
+				if(f) {
+					sb.append("\033[0m");
+				}
+				else if(shape.getDomainSize() == 0) {
+					sb.append("\033[0m");
+				}
+				else if(shape.getDomainSize() == 1) {
+					sb.append("\033[0m");
+				}
+				else if(shape.getDomainSize() == 2) {
+					sb.append("\033[0m");
+				}
+				else if(shape.getDomainSize() == 3) {
+					sb.append("\033[0m");
+				}*/
+				
 			}
 			sb.append("\n");
 		}
