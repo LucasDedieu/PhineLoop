@@ -31,9 +31,9 @@ public class Game {
 		if(height<1) {
 			throw new IllegalArgumentException("Height must be >= 1");
 		}
-		if(maxcc<0) {
+		if(maxcc<=0 || maxcc>(width*height)/2) {
 			//|| maxcc<= (width*height)/2 / The smallest connected component you can put in a grid fill 2 cases => maxcc must be < numberOfCases/2
-			throw new IllegalArgumentException("Maximum cc must be positive and you have to put at least less cc than the number of cases");
+			throw new IllegalArgumentException("Maximum cc must be positive and you have to put at least less cc than the number of cases divided by 2");
 			//FIXME
 		}
 		this.width = width;
@@ -438,6 +438,12 @@ public class Game {
 		return cc;
 		
 	}
+	
+	
+	/*public Shape reservedBy(Shape shape1)
+	{
+		
+	}*/
 
 	
 	
@@ -466,6 +472,39 @@ public class Game {
 		return neighbors;
 	}
 
+	public Shape[] getToConnectNeighbors(Shape shape){
+		int i = shape.getI();
+		int j = shape.getJ();
+		
+		ArrayList<Shape> aux = new ArrayList<Shape>();
+		//Shape[] neighbors = new Shape[4];
+		boolean[] connections = shape.getConnections();
+		
+		//north neighbor
+		if(i-1>=0 && connections[NORTH] && board[i-1][j]!=null && board[i-1][j].getType()==0 ) {
+			aux.add(board[i-1][j]);
+		}
+		//south neighbor
+		if(i+1<height && connections[SOUTH] && board[i+1][j]!=null && board[i+1][j].getType()==0 ) {
+			aux.add(board[i+1][j]);
+		}
+		//east neighbor
+		if(j+1<width  && connections[EAST] && board[i][j+1]!=null && board[i][j+1].getType()==0 ) {
+			aux.add(board[i][j+1]);
+		}
+		//west neighbor
+		if(j-1>=0  && connections[WEST] && board[i][j-1]!=null && board[i][j-1].getType()==0 ) {
+			aux.add(board[i][j-1]);
+		}
+		Shape[] neighbors = new Shape[aux.size()];
+		for (int k=0;k<aux.size();k++)
+		{
+			neighbors[k]=aux.get(k);
+		}
+		return neighbors;
+	}
+	
+	
 	public void addShape(Shape shape) throws Exception {
 		if(shape == null) {
 			return;
@@ -477,9 +516,27 @@ public class Game {
 			return;
 		}
 		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
-     
-		
-    
+	}
+	
+	public int getQOrientationForOpenConnection(Shape shape)
+	{
+		int qorientation=0;
+		if(!isShapeWellConnectedWithNorth(shape)) qorientation= 2;
+		else if (!isShapeWellConnectedWithEast(shape)) qorientation= 3;
+		else if (!isShapeWellConnectedWithSouth(shape)) qorientation= 0;
+		else if (!isShapeWellConnectedWithWest(shape)) qorientation= 1;
+		return qorientation;
+	}
+	
+	public boolean hasEmptyNeighbor(Shape shape)
+	{
+		boolean hasEmptyNeighbor=false;
+		Shape[] nb=this.getNeighbors(shape);
+		for (Shape sh:nb)
+		{
+			if(sh!=null && sh.getType()==0) hasEmptyNeighbor=true;
+		}
+		return hasEmptyNeighbor;
 	}
 
 	@Override

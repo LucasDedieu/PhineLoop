@@ -18,7 +18,12 @@ public abstract class Shape {
 	private int j;
 	private boolean isFroze;
 	public boolean[] possibleOrientation;
+
+	private Shape reservedBy;
+	private boolean wasAlreadyReserved;
+
 	protected int domainSize;
+
 	
 	
 
@@ -144,6 +149,20 @@ public abstract class Shape {
 		return j;
 	}
 	
+	/**
+	 * @param i the i to set
+	 */
+	public void setI(int i) {
+		this.i = i;
+	}
+
+	/**
+	 * @param j the j to set
+	 */
+	public void setJ(int j) {
+		this.j = j;
+	}
+
 	public boolean[] getConnections(){
 		return connections;
 	}
@@ -175,6 +194,16 @@ public abstract class Shape {
 
 	public void setFroze(boolean isFixed) {
 		this.isFroze = isFixed;
+	}
+
+
+	public Shape getReservedBy() {
+		return reservedBy;
+	}
+
+	public void setReservedBy(Shape reservedBy) {
+		this.reservedBy = reservedBy;
+		this.wasAlreadyReserved=true;
 	}
 
 	public int  getDomainSize() {
