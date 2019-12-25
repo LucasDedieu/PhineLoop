@@ -11,6 +11,7 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class SolverLineByLineMultiThreadOld {
+	/*
 	private Game originalGame ;
 	private int height;
 	private int width;
@@ -73,7 +74,7 @@ public class SolverLineByLineMultiThreadOld {
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
 			}*/
-
+/*
 			//Case XShape or EmptyShape (do not rotate)
 			int shapeType = shape.getType();
 			if(shapeType == 0 || shapeType ==4) {
@@ -134,4 +135,5 @@ public class SolverLineByLineMultiThreadOld {
 		}
 		return null;
 	}
+	*/
 }

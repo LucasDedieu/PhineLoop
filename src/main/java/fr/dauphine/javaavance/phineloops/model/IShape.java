@@ -17,6 +17,7 @@ public class IShape extends Shape {
 	public IShape(int orientation, int i, int j) {
 		super(orientation, i, j);
 		this.possibleOrientation = new boolean[]{true, true};
+		this.domainSize = 2;
 		switch(orientation)
 		{
 		case 0:

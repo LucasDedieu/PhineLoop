@@ -16,7 +16,7 @@ public class GeneratorTest {
 	{
 		Game game = new Game(3, 3,0);
 		game.generateSolution();
-        Assert.assertTrue(Checker.check(game));
+        Assert.assertTrue(Checker.check(new Game(game)));
 	}
 
 }

@@ -14,6 +14,7 @@ public class QShape extends Shape {
 	public QShape(int orientation, int i, int j) {
 		super(orientation, i, j);
 		this.possibleOrientation = new boolean[]{true, true, true, true};
+		this.domainSize = 4;
 		switch(orientation)
 		{
 		case 0:

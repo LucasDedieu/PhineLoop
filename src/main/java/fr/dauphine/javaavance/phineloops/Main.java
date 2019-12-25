@@ -21,6 +21,7 @@ import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.csp.SolverCSP;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
 import fr.dauphine.javaavance.phineloops.solver.line.LineByLineThread;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
@@ -41,13 +42,13 @@ public class Main /*extends Application*/  {
     private static Integer maxcc = -1; 
     
 
-    private static void generate(int width, int height, String outputFile){
+    private static void generate(int width,int height, String outputFile){
 	// generate grid and store it to outputFile...
 	//... 
     	//FIXME fix the generator
     	if (maxcc!=-1) {
     	try {
-        	Game game = new Game(width, height,maxcc);
+        	Game game = new Game(height, width,maxcc);
         	game.generate(maxcc);
 			game.write(outputFile);
 			System.out.println(game);
@@ -57,7 +58,7 @@ public class Main /*extends Application*/  {
     	}
     	else {
     		try {
-            	Game game = new Game(width, height);
+            	Game game = new Game(height, width);
             	game.generate();
     			game.write(outputFile);
     			System.out.println(game);
@@ -84,6 +85,7 @@ public class Main /*extends Application*/  {
     	}*/
     	//SolverSnail solver = new SolverSnail(game);
     	//SolverChoco solver = new SolverChoco(game);
+    	//SolverCSP solver = new SolverCSP(game);
     	SolverLineByLine solver = new SolverLineByLine(game);
     	//Executor exec = Executors.newFixedThreadPool(threads);
     	//CountDownLatch latch = new CountDownLatch(1);
@@ -206,9 +208,9 @@ public class Main /*extends Application*/  {
 			BufferedReader br=new BufferedReader(fr); 
 			String line;
 			//First we get the width and height
-			int width = Integer.parseInt(br.readLine());
 			int height = Integer.parseInt(br.readLine());
-			game = new Game(width, height, 1);
+			int width = Integer.parseInt(br.readLine());
+			game = new Game(height, width, 1);
 			//while((line=br.readLine())!=null) {
 				for(int i=0; i<height;i++) {
 					for(int j =0; j<width;j++) {

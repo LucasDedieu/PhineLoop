@@ -9,6 +9,7 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class LineByLineThreadOld implements Runnable {
+	
 	private Game originalGame ;
 	private int height;
 	private int width;
@@ -32,6 +33,7 @@ public class LineByLineThreadOld implements Runnable {
 	
 	@Override
 	public void run() {
+		/*
 		Game solvedGame;
 		if(topLeft) {
 			solvedGame = solveTopLeft();
@@ -41,9 +43,9 @@ public class LineByLineThreadOld implements Runnable {
 		}
 		ThreadController.getInstance().setSolvedGame(solvedGame, rotateFirst,topLeft);
 		latch.countDown();
-		
+		*/
 	}
-	
+/*	
 	public Game solveBottomRight() {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
@@ -72,7 +74,7 @@ public class LineByLineThreadOld implements Runnable {
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
 			}*/
-
+/*
 			//Case XShape or EmptyShape (do not rotate)
 			int shapeType = shape.getType();
 			if(shapeType == 0 || shapeType ==4) {
@@ -165,7 +167,7 @@ public class LineByLineThreadOld implements Runnable {
 			if(nb%10000000==0) {
 				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+iteration);
 			}*/
-
+/*
 			//Case XShape or EmptyShape (do not rotate)
 			int shapeType = shape.getType();
 			if(shapeType == 0 || shapeType ==4) {
@@ -226,5 +228,5 @@ public class LineByLineThreadOld implements Runnable {
 		}
 		return null;
 	}
-
+*/
 }

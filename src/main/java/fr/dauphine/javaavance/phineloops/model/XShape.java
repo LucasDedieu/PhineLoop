@@ -16,6 +16,7 @@ public class XShape extends Shape {
 	public XShape(int orientation,int i, int j) {
 		super(orientation,i,j);
 		this.possibleOrientation = new boolean[]{true};
+		this.domainSize = 1;
 		connections[NORTH]=true; connections[SOUTH] = true; connections[WEST] =true; connections[EAST] =true;
 	}
 	@Override
