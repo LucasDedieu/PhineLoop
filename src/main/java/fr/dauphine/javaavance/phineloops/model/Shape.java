@@ -181,6 +181,26 @@ public abstract class Shape {
 		return domainSize;
 		
 	}
+
+	public boolean isConnectedTo(Shape s) {
+		if(i == s.getI()) {
+			return Math.abs(j-s.getJ()) == 1;
+		}
+		if(j == s.getJ()) {
+			return Math.abs(i-s.getI()) == 1;
+		}
+		return false;
+	}
+
+	public void setI(int i) {
+		this.i = i;
+	}
+
+	public void setJ(int j) {
+		this.j = j;
+	}
+	
+	
 	
 	
 }

@@ -1,12 +1,9 @@
 package fr.dauphine.javaavance.phineloops.solver.line;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.concurrent.CountDownLatch;
 
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
-import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class LineByLineThread implements Runnable {
 	private Game originalGame ;

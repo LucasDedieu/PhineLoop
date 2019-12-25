@@ -73,8 +73,8 @@ public class Main /*extends Application*/  {
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
-    	System.out.println("original game :\n"+game);
-    	/*
+    	//System.out.println("original game :\n"+game);
+    	
     	if(Checker.check(game)) {
         	try {
     			game.write(outputFile);
@@ -82,7 +82,7 @@ public class Main /*extends Application*/  {
     			e.printStackTrace();
     		}
     		return true;
-    	}*/
+    	}
     	//SolverSnail solver = new SolverSnail(game);
     	//SolverChoco solver = new SolverChoco(game);
     	//SolverCSP solver = new SolverCSP(game);
@@ -106,12 +106,22 @@ public class Main /*extends Application*/  {
     	long deltaTime = System.currentTimeMillis() - startTime;
     	System.out.println("time : "+deltaTime+" ms");
     	System.out.println("\n__________________________\n"+gameSolved);
-    	try {
-			gameSolved.write(outputFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+    	for(int i =0;i<gameSolved.getHeight();i++) {
+			for(int j=0; j<gameSolved.getWidth();j++) {
+				Shape shape = gameSolved.getBoard()[i][j];
+				shape.setI(i);
+				shape.setJ(j);
+			}
 		}
-    	return true;
+    	if(Checker.check(gameSolved)) {
+    		try {
+    			gameSolved.write(outputFile);
+    		} catch (FileNotFoundException e) {
+    			e.printStackTrace();
+    		}
+        	return true;
+    	}
+    	return false;
   
     }
 

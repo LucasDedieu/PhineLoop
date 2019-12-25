@@ -3,7 +3,9 @@ package fr.dauphine.javaavance.phineloops.solver.line;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
+import java.util.Set;
 
+import fr.dauphine.javaavance.phineloops.controller.ClusterManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
@@ -32,121 +34,138 @@ public class SolverLineByLine {
 	public Game solve() {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
-		for(int i = 0; i<height;i++) {
-			for(int j = 0; j<width;j++) {
-				Shape shape = board[i][j];
-				if(shape.getType() == 4 && (i==0||j==0||i==height-1||j==width-1)) {
-					//unsolvable
-					return null;
-				}
-			}
+		
+		//Is game solvable
+		if(checkIfXShapeOnBorder(testBoard)) {
+			return null;
 		}
+		
+		//Freeze all shapes that have only one possible orientation
 		try {
 			prepare(testGame);
 		} catch (Exception e) {
 			return null;
 		}
-		//System.out.println(testGame);
-		//shuffle(testGame);
-		System.out.println("Begin solve");
-		int i =height-1;
-		int j=width-1;
-		StateLineByLine initialState = new StateLineByLine(testBoard[i][j],0);
-		stack.push(initialState);
-		//int nbPop =0;
-		//boolean hasPop = false;
-		double startTime = System.currentTimeMillis();
-		while(!stack.isEmpty() ) {
-			if(height<=128 && width <=128) {
-				if(System.currentTimeMillis()-startTime>8000) {
+		
+		//Prepare cluster
+		ClusterManager.getInstance().findClusters(testGame);
+		Set<Game> games = ClusterManager.getInstance().getClusterGames(testGame);
+
+		//Solve all games
+		for(Game game : games) {
+			try {
+				if(!solveCluster(game)) {
 					return null;
 				}
 			}
-			//nb++;
+			//case unsolvable
+			catch(Exception e) {
+				return null;
+			}
+		}
+		return testGame;
+	}
+
+
+
+	private boolean solveCluster(Game game) {
+		//System.out.println(game);
+		int height = game.getHeight();
+		int width = game.getWidth();
+		Shape[][] board = game.getBoard(); 
+		int i =height-1;
+		int j=width-1;
+		StateLineByLine initialState = new StateLineByLine(i,j,0);
+		stack.push(initialState);		
+		while(!stack.isEmpty() ) {
+			/*
+			if(height<=128 && width <=128) {
+				if(System.currentTimeMillis()-startTime>8000) {
+					return false;
+				}
+			}*/
 			StateLineByLine iteration = stack.peek();
 			i = iteration.getI();
 			j = iteration.getJ();
-			Shape shape = testBoard[i][j];
-
-			/*
-			//Print 
-			if(nb%100000000==0) {
-				System.out.println("itération :"+nb+"  stack :"+stack.size()+"\n"+testGame);
-			}
-			 */
-
+			Shape shape = board[i][j];
 			//Case frozen shape
+			
 			if(shape.isFroze()) {
 				stack.pop();
 			}
 
-			/*
-			//Shape is already well connected
-			else if(!hasPop  && shape.getPossibleOrientation()[shape.getOrientation()] &&!testGame.iShapeConnectedToBoardBorder(shape)  &&  testGame.isShapeWellConnectedWithSouthAndEast(shape) && testGame.isShapeWellConnectedWithNorthAndWestFrozenNeighbors(shape)) {
-				
-			}*/
-
-
 			//Can rotate ?		
-			else if(iteration.canRotate()) {
+			else if(iteration.canRotate(shape)) {
 				boolean isWellPlaced = false;
 				do{
-					//do {
-						iteration.rotate();
-					//}while(iteration.canRotate(shape) && );
-					
-					if(shape.getPossibleOrientation()[shape.getOrientation()] &&  testGame.isShapeWellConnectedWithSouthAndEast(shape)) {
+
+					iteration.rotate(shape);
+
+
+					if(shape.getPossibleOrientation()[shape.getOrientation()]&&  game.isShapeWellConnectedWithSouthAndEast(shape)) {
 						isWellPlaced = true;
 					}
-				}while(!isWellPlaced && iteration.canRotate());
+				}while(!isWellPlaced && iteration.canRotate(shape));
 				//if shape has no possible good rotation -> backtrack
 				if(!isWellPlaced) {
 					stack.pop();
-					//nbPop++;
-					//hasPop = true;
+
 					continue;
 				}	
 			}
 			//Case shape already test all rotation	
 			else{	
 				stack.pop();
-				//nbPop++;
-				//hasPop = true;
+
 				continue;
 			}
 
 			//When the shape is well placed, we prepare next iteration
 			StateLineByLine nextIteration = null;
-			//hasPop = false;
 			//Case last shape of the board
 			if(i==0 && j ==0) {
-				if(testGame.isShapeFullyConnected(shape)) {
-					//System.out.println("Nombre itération :"+nb);
-					//System.out.println("Nombre pop :"+nbPop);
-					return testGame;
+				if(shape.isFroze()) {
+					return true;
+				}
+				if(game.isShapeFullyConnected(shape)) {
+
+					return true;
 				}
 				stack.pop();
-				//nbPop++;
-				//hasPop=true;
+
 				continue;
 			}
 			else {	
 				//Case shape on right border
 				if(j ==0) {
-					nextIteration = new StateLineByLine(testBoard[i-1][width-1],0);
+					nextIteration = new StateLineByLine(i-1, width-1,0);
 				}
 				else{
-					nextIteration = new StateLineByLine(testBoard[i][j-1],0);
+					nextIteration = new StateLineByLine(i,j-1,0);
 				}		
 			}
 			//Add next iteration to stack
 			stack.push(nextIteration);
 		}
-		return null;
+		return false;
 	}
 
+	
+	
+	private boolean checkIfXShapeOnBorder(Shape[][] board) {
+		for(int i = 0; i<height;i++) {
+			for(int j = 0; j<width;j++) {
+				Shape shape = board[i][j];
+				if(shape.getType() == 4 && (i==0||j==0||i==height-1||j==width-1)) {
+					//unsolvable
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-	private void prepare(Game game) throws Exception {
+	private int prepare(Game game) throws Exception {
 		firstFreeze(game);
 		int total = 0;
 		int nbFreeze =0;
@@ -173,7 +192,7 @@ public class SolverLineByLine {
 			//System.out.println("Only one orientation remaining : "+shapeWithOneOrientation);
 		}while(shapeWithOneOrientation>0);
 		//System.out.println("Nb freeze :"+total);
-
+		return total;
 	}
 
 	private void shuffle(Game game) {
@@ -1332,7 +1351,7 @@ public class SolverLineByLine {
 						case 5 :shape.removePossibleOrientation(new int[]{1,2});break;
 						}
 					}
-					
+
 					else if(j==width-1) {
 						switch(shapeType) {
 						case 1 :shape.removePossibleOrientation(new int[]{1});break;

@@ -92,6 +92,9 @@ public class Game {
 	public Shape[][] getBoard() {
 		return board;
 	}
+	public void setBoard(Shape[][] board) {
+		this.board = board;
+	}
 
 	public int getMaxCC()
 	{
@@ -276,7 +279,7 @@ public class Game {
 		int i = shape.getI();
 		int j = shape.getJ();
 		Shape neighbor = null;
-		if(j+1<height) {
+		if(j+1<width) {
 			neighbor = board[i][j+1];
 		}
 		if (neighbor != null ) {
@@ -487,6 +490,7 @@ public class Game {
 				Shape shape = board[i][j];
 				/*
 				boolean f = shape.isFroze();
+				
 				if(f) {
 					sb.append("\033[36m");
 				}

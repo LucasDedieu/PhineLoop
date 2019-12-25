@@ -3,23 +3,25 @@ package fr.dauphine.javaavance.phineloops.solver.line;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class StateLineByLine {
-	//private int i;
-//	private int j;
-	private Shape shape;
+	private int i;
+	private int j;
+	
+
 	private int r;
 	
-	public StateLineByLine(Shape shape, int r) {
-		this.shape=shape;
+	public StateLineByLine(int i, int j, int r) {
 		this.r = r;
+		this.i = i;
+		this.j = j;
 	}
 
 
 	public int getI() {
-		return shape.getI();
+		return  i;
 	}
 
 	public int getJ() {
-		return shape.getJ();
+		return j;
 	}
 
 	public int getR() {
@@ -29,15 +31,17 @@ public class StateLineByLine {
 	
 
 
-	public boolean canRotate() {
+	public boolean canRotate(Shape shape) {
 		return r <shape.getMaxRotation()+1;
 	}
 	
-	public void rotate() {
+	public void rotate(Shape shape) {
 		r++;
 		shape.rotate();
 	}
 	
+	
+
 
 	public void setR(int r) {
 		this.r=r;
