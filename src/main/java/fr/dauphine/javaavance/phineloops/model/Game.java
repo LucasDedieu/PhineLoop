@@ -552,18 +552,24 @@ public class Game {
 		
 	}
 	
-	
+	public boolean isObstructed(Shape shape,ArrayList<Shape> reservations)
+	{
+		boolean io=false;
+		for (Shape sh:this.getConnectionNeighbors(shape))
+		{
+			if(sh.getType()!=0 && !reservations.contains(sh)) io=true;
+		}
+		return io;
+	}
+
+
 	/*public Shape reservedBy(Shape shape1)
 	{
 		
 	}*/
 
-	
-	/**
-	 * Return neighbors of a shape
-	 * @param shape : the shape
-	 * @return the neighbors
-	 */
+
+
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -589,12 +595,6 @@ public class Game {
 		return neighbors;
 	}
 
-	
-	/**
-	 * 
-	 * @param shape
-	 * @return
-	 */
 	public Shape[] getToConnectNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -626,8 +626,40 @@ public class Game {
 		}
 		return neighbors;
 	}
-	
-	
+
+
+	public Shape[] getConnectionNeighbors(Shape shape){
+		int i = shape.getI();
+		int j = shape.getJ();
+		
+		ArrayList<Shape> aux = new ArrayList<Shape>();
+		//Shape[] neighbors = new Shape[4];
+		boolean[] connections = shape.getConnections();
+		
+		//north neighbor
+		if(i-1>=0 && connections[NORTH] && board[i-1][j]!=null) {
+			aux.add(board[i-1][j]);
+		}
+		//south neighbor
+		if(i+1<height && connections[SOUTH] && board[i+1][j]!=null) {
+			aux.add(board[i+1][j]);
+		}
+		//east neighbor
+		if(j+1<width  && connections[EAST] && board[i][j+1]!=null) {
+			aux.add(board[i][j+1]);
+		}
+		//west neighbor
+		if(j-1>=0  && connections[WEST] && board[i][j-1]!=null) {
+			aux.add(board[i][j-1]);
+		}
+		Shape[] neighbors = new Shape[aux.size()];
+		for (int k=0;k<aux.size();k++)
+		{
+			neighbors[k]=aux.get(k);
+		}
+		return neighbors;
+	}
+
 	public void addShape(Shape shape) throws Exception {
 		if(shape == null) {
 			return;
@@ -640,17 +672,28 @@ public class Game {
 		}
 		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
 	}
-	
-	public int getQOrientationForOpenConnection(Shape shape)
+
+	public int getQOrientationForOpenConnection(Shape shape) //F
 	{
 		int qorientation=0;
-		if(!isShapeWellConnectedWithNorth(shape)) qorientation= 2;
-		else if (!isShapeWellConnectedWithEast(shape)) qorientation= 3;
-		else if (!isShapeWellConnectedWithSouth(shape)) qorientation= 0;
-		else if (!isShapeWellConnectedWithWest(shape)) qorientation= 1;
+		Shape[] scwNeighbours = this.getNeighbors(shape.getReservedBy().get(0));//Sinon passer pas les coordonnées 
+		if(!isShapeWellConnectedWithNorth(shape.getReservedBy().get(0)) && scwNeighbours[NORTH]==shape) qorientation= 2;
+		else if (!isShapeWellConnectedWithEast(shape.getReservedBy().get(0)) && scwNeighbours[EAST]==shape) qorientation= 3;
+		else if (!isShapeWellConnectedWithSouth(shape.getReservedBy().get(0)) && scwNeighbours[SOUTH]==shape) qorientation= 0;
+		else if (!isShapeWellConnectedWithWest(shape.getReservedBy().get(0)) && scwNeighbours[WEST]==shape) qorientation= 1;
 		return qorientation;
 	}
-	
+
+	public int getTOrientationForOpenConnection(Shape shape)
+	{
+		int torientation=0;
+		if(!isShapeWellConnectedWithNorth(shape)) torientation= 2;
+		else if (!isShapeWellConnectedWithEast(shape)) torientation= 3;
+		else if (!isShapeWellConnectedWithSouth(shape)) torientation= 0;
+		else if (!isShapeWellConnectedWithWest(shape)) torientation= 1;
+		return torientation;
+	}
+
 	public boolean hasEmptyNeighbor(Shape shape)
 	{
 		boolean hasEmptyNeighbor=false;
@@ -662,8 +705,6 @@ public class Game {
 		return hasEmptyNeighbor;
 	}
 
-	
-	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -672,7 +713,6 @@ public class Game {
 				Shape shape = board[i][j];
 				/*
 				boolean f = shape.isFroze();
-				
 				if(f) {
 					sb.append("\033[36m");
 				}
@@ -711,4 +751,4 @@ public class Game {
 		return sb.toString();
 	}
 
-}
+	}

@@ -1,5 +1,7 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+import java.util.ArrayList;
+
 public abstract class Shape {
 	protected static int NORTH = 0;
 	protected static int EAST = 1;
@@ -13,8 +15,7 @@ public abstract class Shape {
 	private boolean isFroze;
 	public boolean[] possibleOrientation;
 
-	private Shape reservedBy;
-	private boolean wasAlreadyReserved;
+	private ArrayList<Shape> reservedBy = new ArrayList<Shape>();
 
 	protected int domainSize;
 
@@ -208,20 +209,23 @@ public abstract class Shape {
 		this.isFroze = isFixed;
 	}
 
-
-	public Shape getReservedBy() {
+	public ArrayList<Shape> getReservedBy() {
 		return reservedBy;
 	}
-
+	
+	/**
+	 * 
+	 * @param reservedBy
+	 */
 	public void setReservedBy(Shape reservedBy) {
-		this.reservedBy = reservedBy;
-		this.wasAlreadyReserved=true;
+		this.reservedBy.add(reservedBy);
 	}
 
 	public int  getDomainSize() {
 		return domainSize;
 		
 	}
+
 
 	public boolean isConnectedTo(Shape s) {
 		if(i == s.getI()) {
