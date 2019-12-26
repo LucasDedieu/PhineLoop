@@ -69,18 +69,14 @@ public class Main /*extends Application*/  {
     }
     	
 
-    private static boolean solve(String inputFile, String outputFile, int threads){
+    private static boolean solve(String inputFile, String outputFile, int threads) throws FileNotFoundException{
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
     	//System.out.println("original game :\n"+game);
     	
     	if(Checker.check(game)) {
-        	try {
-    			game.write(outputFile);
-    		} catch (FileNotFoundException e) {
-    			e.printStackTrace();
-    		}
+    		game.write(outputFile);
     		return true;
     	}
     	//SolverSnail solver = new SolverSnail(game);
@@ -98,14 +94,15 @@ public class Main /*extends Application*/  {
 		//}
 		
     	//Game gameSolved = ThreadController.getInstance().getSolvedGame();
-    	Game gameSolved = solver.solve();
+    	Game gameSolved = solver.solve(threads);
 		//Game gameSolved = solver.solve_choco();
     	if(gameSolved == null) {
+    		game.write(outputFile);
     		return false;
     	}
     	long deltaTime = System.currentTimeMillis() - startTime;
-    	System.out.println("time : "+deltaTime+" ms");
-    	System.out.println("\n__________________________\n"+gameSolved);
+    	System.out.println("Total time : "+deltaTime+" ms");
+    	//System.out.println("\n__________________________\n"+gameSolved);
     	for(int i =0;i<gameSolved.getHeight();i++) {
 			for(int j=0; j<gameSolved.getWidth();j++) {
 				Shape shape = gameSolved.getBoard()[i][j];
@@ -114,15 +111,10 @@ public class Main /*extends Application*/  {
 			}
 		}
     	if(Checker.check(gameSolved)) {
-    		try {
-    			gameSolved.write(outputFile);
-    		} catch (FileNotFoundException e) {
-    			e.printStackTrace();
-    		}
+    		gameSolved.write(outputFile);
         	return true;
     	}
     	return false;
-  
     }
 
     private static boolean check(String inputFile){
@@ -135,7 +127,7 @@ public class Main /*extends Application*/  {
     	
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
     	//Application.launch(args);
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();

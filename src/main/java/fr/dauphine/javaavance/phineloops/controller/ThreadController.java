@@ -9,6 +9,7 @@ public class ThreadController {
 	private Game solvedGame;
 	private boolean rotateFirst;
 	private boolean topLeft;
+	private boolean stop =false;
 	
 	
 	private ThreadController() {
@@ -56,5 +57,14 @@ public class ThreadController {
 	
 	public String getMessage() {
 		return ("rotate first method :"+rotateFirst+"   top left method :"+topLeft);
+	}
+	
+	public boolean isStop() {
+		return stop;
+	}
+	
+	public void stop() {
+		this.stop = true;
+		
 	}
 }

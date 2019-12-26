@@ -4,6 +4,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import fr.dauphine.javaavance.phineloops.controller.ClusterManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
@@ -31,26 +35,59 @@ public class SolverLineByLine {
 	}
 
 
-	public Game solve() {
+	public Game solve(int threads) {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
-		
+
 		//Is game solvable
 		if(checkIfXShapeOnBorder(testBoard)) {
 			return null;
 		}
-		
+
+		long startTime = System.currentTimeMillis();
 		//Freeze all shapes that have only one possible orientation
 		try {
 			prepare(testGame);
 		} catch (Exception e) {
 			return null;
 		}
+		long deltaTime = System.currentTimeMillis()-startTime;
+		System.out.println("Freeze time :"+deltaTime+" ms");
 		
-		//Prepare cluster
+		
+		//Find cluster
+		startTime = System.currentTimeMillis();
 		ClusterManager.getInstance().findClusters(testGame);
+		deltaTime = System.currentTimeMillis()-startTime;
+		System.out.println("Find Cluster time :"+deltaTime+" ms");
+		
+		//Prepare games
+		startTime = System.currentTimeMillis();
 		Set<Game> games = ClusterManager.getInstance().getClusterGames(testGame);
+		deltaTime = System.currentTimeMillis()-startTime;
+		System.out.println("Delimit games times :"+deltaTime+" ms");
 
+		//Prepare producer
+		BlockingQueue<Game> queue = new LinkedBlockingQueue<Game>(games);
+		CountDownLatch latch = new CountDownLatch(games.size());
+
+		startTime = System.currentTimeMillis();
+		//Start consumers
+		for(int i =0; i<threads; i++) {
+			Thread consumer = new Thread(new LineByLineConsumer(queue, latch));
+			consumer.start();
+		}
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		deltaTime = System.currentTimeMillis() - startTime;
+		System.out.println("Solving time :"+deltaTime+" ms");
+		return testGame;
+
+
+		/*
 		//Solve all games
 		for(Game game : games) {
 			try {
@@ -64,6 +101,7 @@ public class SolverLineByLine {
 			}
 		}
 		return testGame;
+		 */
 	}
 
 
@@ -89,7 +127,7 @@ public class SolverLineByLine {
 			j = iteration.getJ();
 			Shape shape = board[i][j];
 			//Case frozen shape
-			
+
 			if(shape.isFroze()) {
 				stack.pop();
 			}
@@ -150,8 +188,8 @@ public class SolverLineByLine {
 		return false;
 	}
 
-	
-	
+
+
 	private boolean checkIfXShapeOnBorder(Shape[][] board) {
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
@@ -174,7 +212,7 @@ public class SolverLineByLine {
 			nbFreeze = refreeze(game);
 			total+=nbFreeze;
 			//System.out.println("New shape froze : "+nbFreeze);
-		}while(nbFreeze>0);
+		}while(nbFreeze>10);
 		reduceDomainBorder(game);
 		reduceDomain(game);
 		total+=freezeShapeWithOneOrientation(game);
@@ -183,7 +221,7 @@ public class SolverLineByLine {
 				nbFreeze = refreeze(game);
 				total+=nbFreeze;
 				//System.out.println("New shape froze : "+nbFreeze);
-			}while(nbFreeze>0);
+			}while(nbFreeze>10);
 			//Reduce domain
 			reduceDomain(game);
 			//System.out.println("Domain reduce : "+reduceDomain(testGame));

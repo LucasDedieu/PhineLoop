@@ -18,7 +18,7 @@ public class LineByLineThread implements Runnable {
 	@Override
 	public void run() {
 		SolverLineByLine solver = new SolverLineByLine(originalGame);
-		Game solvedGame  = solver.solve();
+		Game solvedGame  = solver.solve(1);
 		ThreadController.getInstance().setSolvedGame(solvedGame);
 		latch.countDown();
 	}
