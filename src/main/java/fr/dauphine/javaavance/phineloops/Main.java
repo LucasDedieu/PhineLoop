@@ -174,46 +174,44 @@ public class Main /*extends Application*/  {
                 
 	try{    
 	    if( cmd.hasOption( "g" ) ) {
-		System.out.println("Running phineloops generator.");
-		String[] gridformat = cmd.getOptionValue( "g" ).split("x");
-		width = Integer.parseInt(gridformat[0]);
-		height = Integer.parseInt(gridformat[1]); 
-		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
-		outputFile = cmd.getOptionValue( "o" );
-		if( cmd.hasOption( "x" ) )
-		{
-			maxcc = Integer.parseInt(cmd.getOptionValue( "x" ));
-		} 
-		generate(width, height, outputFile);
+			System.out.println("Running phineloops generator.");
+			String[] gridformat = cmd.getOptionValue( "g" ).split("x");
+			width = Integer.parseInt(gridformat[0]);
+			height = Integer.parseInt(gridformat[1]); 
+			if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
+			outputFile = cmd.getOptionValue( "o" );
+			if( cmd.hasOption( "x" ) ){
+				maxcc = Integer.parseInt(cmd.getOptionValue( "x" ));
+			} 
+			generate(width, height, outputFile);
 	    }
 	    else if( cmd.hasOption( "s" ) ) {
-		System.out.println("Running phineloops solver.");
-		inputFile = cmd.getOptionValue( "s" );
-		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
-		outputFile = cmd.getOptionValue( "o" );
-		int threads =0;
-		String method = "line";
-		if(cmd.hasOption("t")) {
-			threads= Integer.parseInt(cmd.getOptionValue( "t" ));
-		}
-		if(cmd.hasOption("m")) {
-			method= cmd.getOptionValue( "m" );
-		}
-		boolean solved = solve(inputFile, outputFile, threads,method ); 
-
-		System.out.println("SOLVED: " + solved);   
+			System.out.println("Running phineloops solver.");
+			inputFile = cmd.getOptionValue( "s" );
+			if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
+			outputFile = cmd.getOptionValue( "o" );
+			int threads =0;
+			String method = "line";
+			if(cmd.hasOption("t")) {
+				threads= Integer.parseInt(cmd.getOptionValue( "t" ));
+			}
+			if(cmd.hasOption("m")) {
+				method= cmd.getOptionValue( "m" );
+			}
+			boolean solved = solve(inputFile, outputFile, threads,method ); 
+	
+			System.out.println("SOLVED: " + solved);   
 	    }
         
 	    else if( cmd.hasOption( "c" )) {
-		System.out.println("Running phineloops checker.");
-		inputFile = cmd.getOptionValue( "c" );
-            		
-		boolean solved = check(inputFile); 
-
-		System.out.println("SOLVED: " + solved);           
+			System.out.println("Running phineloops checker.");
+			inputFile = cmd.getOptionValue( "c" );
+			boolean solved = check(inputFile); 
+	
+			System.out.println("SOLVED: " + solved);           
 	    }
 	    else {
-		throw new ParseException("You must specify at least one of the following options: -generate -check -solve ");           
+	    	throw new ParseException("You must specify at least one of the following options: -generate -check -solve ");           
 	    }
 	} catch (ParseException e) {
             System.err.println("Error parsing commandline : " + e.getMessage());
@@ -229,16 +227,18 @@ public class Main /*extends Application*/  {
     static Game loadFile(String inputFile){
     	File file = new File(inputFile);
     	Game game = null;
+    	int nb = 0;
     	try {
 			FileReader fr = new FileReader(file);
-			BufferedReader br=new BufferedReader(fr); 
+			BufferedReader br = new BufferedReader(fr); 
 			String line;
 			//First we get the width and height
-			int height = Integer.parseInt(br.readLine());
-			int width = Integer.parseInt(br.readLine());
+			height = Integer.parseInt(br.readLine());
+			width = Integer.parseInt(br.readLine());
 			if(height<0 || width<0) {
+				br.close();	
 				return null;
-			}
+			}	
 			game = new Game(height, width, 1);
 			//while((line=br.readLine())!=null) {
 				for(int i=0; i<height;i++) {
@@ -246,8 +246,10 @@ public class Main /*extends Application*/  {
 						line = br.readLine();
 						Shape shape = Shape.getShapeFromStringId(line, i, j);
 						if(shape == null) {
+							br.close();	
 							return null;
 						}
+						nb++;
 						try {
 							game.addShape(shape);
 						} catch (Exception e) {
@@ -260,6 +262,10 @@ public class Main /*extends Application*/  {
     	}
     	catch(IOException e) {
     		e.printStackTrace();
+    	}
+    	if(nb != height*width) {
+    		//Wrong file
+    		return null;
     	}
     	return game;   	
     }
