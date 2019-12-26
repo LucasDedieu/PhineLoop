@@ -6,9 +6,10 @@ import java.util.Stack;
 
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.Solver;
 
 
-public class SolverSnail {
+public class SolverSnail implements Solver{
 	private Game originalGame ;
 	private int height;
 	private int width;
@@ -29,7 +30,7 @@ public class SolverSnail {
 	}
 
 
-	public Game solve() {
+	public Game solve(int threads) {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
 		int maxStackSize = height*width;

@@ -21,6 +21,7 @@ import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.Solver;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverCSP;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
 import fr.dauphine.javaavance.phineloops.solver.line.LineByLineThread;
@@ -69,20 +70,38 @@ public class Main /*extends Application*/  {
     }
     	
 
-    private static boolean solve(String inputFile, String outputFile, int threads) throws FileNotFoundException{
+    private static boolean solve(String inputFile, String outputFile, int threads,String method) throws FileNotFoundException{
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
+    	//inputFile is not a valid game file
+    	if(game == null) {
+    		return false;
+    	}
     	//System.out.println("original game :\n"+game);
     	
+    	//Check if game is already solved
     	if(Checker.check(game)) {
     		game.write(outputFile);
     		return true;
     	}
-    	//SolverSnail solver = new SolverSnail(game);
-    	//SolverChoco solver = new SolverChoco(game);
-    	//SolverCSP solver = new SolverCSP(game);
-    	SolverLineByLine solver = new SolverLineByLine(game);
+    	
+    	Solver solver;
+    	if(method.equals("snail")) {
+    		 solver = new SolverSnail(game);
+    	}
+    	else if(method.equals("line")) {
+    		solver = new SolverLineByLine(game);
+    	}
+    	else if(method.equals("csp")) {
+    		 solver = new SolverCSP(game);
+    	}
+    	else if(method.equals("choco")) {
+    		solver = new SolverChoco(game);
+    	}
+    	else {
+    		 solver = new SolverLineByLine(game);
+    	}
     	//Executor exec = Executors.newFixedThreadPool(threads);
     	//CountDownLatch latch = new CountDownLatch(1);
     	long startTime = System.currentTimeMillis();
@@ -139,6 +158,7 @@ public class Main /*extends Application*/  {
         options.addOption("s", "solve", true, "Solve the grid stored in <arg>.");   
         options.addOption("o", "output", true, "Store the generated or solved grid in <arg>. (Use only with --generate and --solve.)");
         options.addOption("t", "threads", true, "Maximum number of solver threads. (Use only with --solve.)");
+        options.addOption("m", "method", true, "Specify what method should be use for solver (line or snail or csp). (Use only with --solve.)");
         options.addOption("x", "nbcc", true, "Maximum number of connected components. (Use only with --generate.)");
         options.addOption("G", "gui", true, "Run with the graphic user interface.");
         options.addOption("h", "help", false, "Display this help");
@@ -172,10 +192,14 @@ public class Main /*extends Application*/  {
 		if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 		outputFile = cmd.getOptionValue( "o" );
 		int threads =0;
+		String method = "line";
 		if(cmd.hasOption("t")) {
 			threads= Integer.parseInt(cmd.getOptionValue( "t" ));
 		}
-		boolean solved = solve(inputFile, outputFile, threads); 
+		if(cmd.hasOption("m")) {
+			method= cmd.getOptionValue( "m" );
+		}
+		boolean solved = solve(inputFile, outputFile, threads,method ); 
 
 		System.out.println("SOLVED: " + solved);   
 	    }
@@ -212,12 +236,18 @@ public class Main /*extends Application*/  {
 			//First we get the width and height
 			int height = Integer.parseInt(br.readLine());
 			int width = Integer.parseInt(br.readLine());
+			if(height<0 || width<0) {
+				return null;
+			}
 			game = new Game(height, width, 1);
 			//while((line=br.readLine())!=null) {
 				for(int i=0; i<height;i++) {
 					for(int j =0; j<width;j++) {
 						line = br.readLine();
 						Shape shape = Shape.getShapeFromStringId(line, i, j);
+						if(shape == null) {
+							return null;
+						}
 						try {
 							game.addShape(shape);
 						} catch (Exception e) {

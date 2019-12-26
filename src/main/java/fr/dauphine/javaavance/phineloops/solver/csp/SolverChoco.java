@@ -18,7 +18,7 @@ import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 
-public class SolverChoco {
+public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Solver{
 	private Game game;
 	//Connections
 	private static int NORTH = 0;
@@ -246,5 +246,11 @@ public class SolverChoco {
 				currentShapeWithNeighbour[v]=transitiveCSN.get(v);
 			}
 			return currentShapeWithNeighbour;
+		}
+
+
+		@Override
+		public Game solve(int threads) {
+			return solve_choco();
 		}
 }

@@ -11,8 +11,9 @@ import java.util.Set;
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.Solver;
 
-public class SolverCSP {
+public class SolverCSP implements Solver{
 	protected static int NORTH = 0;
 	protected static int EAST = 1;
 	protected static int SOUTH = 2;
@@ -34,7 +35,7 @@ public class SolverCSP {
 	}
 
 
-	public Game solve() {
+	public Game solve(int threads) {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
 		for(int i = 0; i<height;i++) {

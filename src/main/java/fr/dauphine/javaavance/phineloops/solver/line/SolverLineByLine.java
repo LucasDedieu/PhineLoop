@@ -12,8 +12,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import fr.dauphine.javaavance.phineloops.controller.ClusterManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.Solver;
 
-public class SolverLineByLine {
+public class SolverLineByLine implements Solver{
 	protected static int NORTH = 0;
 	protected static int EAST = 1;
 	protected static int SOUTH = 2;
@@ -35,19 +36,24 @@ public class SolverLineByLine {
 	}
 
 
+	/**
+	 * Solve a game
+	 * @param threads nb threads that can be use
+	 * @return solvedGame if the game has a solution. Otherwise return null
+	 */
 	public Game solve(int threads) {
-		Game testGame  = new Game(originalGame);
-		Shape[][] testBoard = testGame.getBoard();
+		Game solvedGame  = new Game(originalGame);
+		Shape[][] solvedBoard = solvedGame.getBoard();
 
 		//Is game solvable
-		if(checkIfXShapeOnBorder(testBoard)) {
+		if(checkIfXShapeOnBorder(solvedBoard)) {
 			return null;
 		}
 
 		long startTime = System.currentTimeMillis();
 		//Freeze all shapes that have only one possible orientation
 		try {
-			prepare(testGame);
+			prepare(solvedGame);
 		} catch (Exception e) {
 			return null;
 		}
@@ -57,13 +63,13 @@ public class SolverLineByLine {
 		
 		//Find cluster
 		startTime = System.currentTimeMillis();
-		ClusterManager.getInstance().findClusters(testGame);
+		ClusterManager.getInstance().findClusters(solvedGame);
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Find Cluster time :"+deltaTime+" ms");
 		
 		//Prepare games
 		startTime = System.currentTimeMillis();
-		Set<Game> games = ClusterManager.getInstance().getClusterGames(testGame);
+		Set<Game> games = ClusterManager.getInstance().getClusterGames(solvedGame);
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Delimit games times :"+deltaTime+" ms");
 
@@ -84,112 +90,19 @@ public class SolverLineByLine {
 		}
 		deltaTime = System.currentTimeMillis() - startTime;
 		System.out.println("Solving time :"+deltaTime+" ms");
-		return testGame;
-
-
-		/*
-		//Solve all games
-		for(Game game : games) {
-			try {
-				if(!solveCluster(game)) {
-					return null;
-				}
-			}
-			//case unsolvable
-			catch(Exception e) {
-				return null;
-			}
-		}
-		return testGame;
-		 */
+		return solvedGame;
 	}
 
 
 
-	private boolean solveCluster(Game game) {
-		//System.out.println(game);
-		int height = game.getHeight();
-		int width = game.getWidth();
-		Shape[][] board = game.getBoard(); 
-		int i =height-1;
-		int j=width-1;
-		StateLineByLine initialState = new StateLineByLine(i,j,0);
-		stack.push(initialState);		
-		while(!stack.isEmpty() ) {
-			/*
-			if(height<=128 && width <=128) {
-				if(System.currentTimeMillis()-startTime>8000) {
-					return false;
-				}
-			}*/
-			StateLineByLine iteration = stack.peek();
-			i = iteration.getI();
-			j = iteration.getJ();
-			Shape shape = board[i][j];
-			//Case frozen shape
-
-			if(shape.isFroze()) {
-				stack.pop();
-			}
-
-			//Can rotate ?		
-			else if(iteration.canRotate(shape)) {
-				boolean isWellPlaced = false;
-				do{
-
-					iteration.rotate(shape);
-
-
-					if(shape.getPossibleOrientation()[shape.getOrientation()]&&  game.isShapeWellConnectedWithSouthAndEast(shape)) {
-						isWellPlaced = true;
-					}
-				}while(!isWellPlaced && iteration.canRotate(shape));
-				//if shape has no possible good rotation -> backtrack
-				if(!isWellPlaced) {
-					stack.pop();
-
-					continue;
-				}	
-			}
-			//Case shape already test all rotation	
-			else{	
-				stack.pop();
-
-				continue;
-			}
-
-			//When the shape is well placed, we prepare next iteration
-			StateLineByLine nextIteration = null;
-			//Case last shape of the board
-			if(i==0 && j ==0) {
-				if(shape.isFroze()) {
-					return true;
-				}
-				if(game.isShapeFullyConnected(shape)) {
-
-					return true;
-				}
-				stack.pop();
-
-				continue;
-			}
-			else {	
-				//Case shape on right border
-				if(j ==0) {
-					nextIteration = new StateLineByLine(i-1, width-1,0);
-				}
-				else{
-					nextIteration = new StateLineByLine(i,j-1,0);
-				}		
-			}
-			//Add next iteration to stack
-			stack.push(nextIteration);
-		}
-		return false;
-	}
 
 
 
+	/**
+	 * Check if the board contain XShape on the border of the board
+	 * @param board the board
+	 * @return true if board has XShape on border
+	 */
 	private boolean checkIfXShapeOnBorder(Shape[][] board) {
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
@@ -245,6 +158,11 @@ public class SolverLineByLine {
 		}
 	}
 
+	/**
+	 * Perform a first freeze on the board. 
+	 * Freeze TShape and IShape on border, LShape on corner and XShape and EmptyShape all over the board.
+	 * @param game the game to freeze
+	 */
 	private void firstFreeze(Game game) {
 		Shape[][] board = game.getBoard();
 		for(int i = 0; i<height;i++) {
@@ -717,6 +635,13 @@ public class SolverLineByLine {
 		}
 	}
 
+	
+	/**
+	 * Freeze all the shape from the previously frozen shapes
+	 * @param game the game
+	 * @return the number of shape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int refreeze(Game game) throws Exception {
 		Shape[][] board = game.getBoard();
 		int frozen = 0;
@@ -759,6 +684,15 @@ public class SolverLineByLine {
 		return frozen;
 	}
 
+	/**
+	 * Freeze LShape or QShape in the good orientation when they are surounded by three other frozen shapes
+	 * @param game the game
+	 * @param i coordinate i from the shape
+	 * @param j coordinate i from the shape
+	 * @param shape the shape
+	 * @return nb of LShape and QShape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int freezeLShapeOrIShape(Game game, int i, int j, Shape shape) throws Exception {
 		Shape[][] board = game.getBoard();
 		Shape leftNeighbor = null;
