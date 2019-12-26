@@ -11,11 +11,21 @@ public class Cluster {
 	private int maxI;
 	private int maxJ;
 
+	
+	/**
+	 * Add a shape to cluster
+	 * @param shape
+	 */
 	public void add(Shape shape) {
 		shapeSet.add(shape);
 		computed = false;
 	}
 
+	/**
+	 * Check if cluster accept the shape
+	 * @param newShape :shape to check
+	 * @return true if shape can be accept to the cluster
+	 */
 	public boolean accept(Shape newShape) {
 		for(Shape s : shapeSet) {
 			if(newShape.isConnectedTo(s)) {
@@ -25,18 +35,32 @@ public class Cluster {
 		return false;
 	}
 
-	public boolean contains(Shape s) {
-		return shapeSet.contains(s);
+	/**
+	 * Check if cluster contains a specific shapes
+	 * @param shape : the shape
+	 * @return true if cluster contains the shape
+	 */
+	public boolean contains(Shape shape) {
+		return shapeSet.contains(shape);
 	}
+
 
 	public Set<Shape> getShapeSet(){
 		return shapeSet;
 	}
 
+	/**
+	 * Merge two clusters
+	 * @param c : cluster to merge
+	 */
 	public void merge(Cluster c) {
 		shapeSet.addAll(c.getShapeSet());
 	}
 
+	
+	/**
+	 * Compute the limit of the cluster (maxI, maxJ, minI, minJ)
+	 */
 	private void computeLimit() {
 		minI = Integer.MAX_VALUE;
 		minJ = Integer.MAX_VALUE;
@@ -60,6 +84,7 @@ public class Cluster {
 		computed = true;
 	}
 
+	
 	public int getMinI() {
 		if(!computed){
 			computeLimit();
@@ -96,7 +121,4 @@ public class Cluster {
 		sb.append(shapeSet.size());
 		return sb.toString();
 	}
-
-
-
 }

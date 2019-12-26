@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,7 +21,6 @@ public class SolverLineByLine implements Solver{
 	private Game originalGame ;
 	private int height;
 	private int width;
-	private Deque<StateLineByLine> stack;
 	//private Stack<State2> stack = new Stack<>();
 	private Shape[][] board;
 	int nb=0;
@@ -32,13 +30,12 @@ public class SolverLineByLine implements Solver{
 		this.height = game.getHeight();
 		this.width = game.getWidth();
 		this.board = game.getBoard();
-		stack = new ArrayDeque<StateLineByLine>(height*width);
 	}
 
 
 	/**
 	 * Solve a game
-	 * @param threads nb threads that can be use
+	 * @param threads : number of threads that can be use
 	 * @return solvedGame if the game has a solution. Otherwise return null
 	 */
 	public Game solve(int threads) {
@@ -94,13 +91,9 @@ public class SolverLineByLine implements Solver{
 	}
 
 
-
-
-
-
 	/**
 	 * Check if the board contain XShape on the border of the board
-	 * @param board the board
+	 * @param board :the board
 	 * @return true if board has XShape on border
 	 */
 	private boolean checkIfXShapeOnBorder(Shape[][] board) {
@@ -116,6 +109,13 @@ public class SolverLineByLine implements Solver{
 		return false;
 	}
 
+	
+	/**
+	 * Freeze all the shape that can be and reduce all the domain that can be
+	 * @param game :the game to prepare
+	 * @return number of shapes frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int prepare(Game game) throws Exception {
 		firstFreeze(game);
 		int total = 0;
@@ -146,6 +146,10 @@ public class SolverLineByLine implements Solver{
 		return total;
 	}
 
+	/**
+	 * Shuffle randomly the board
+	 * @param game :the game to shuffle
+	 */
 	private void shuffle(Game game) {
 		//Shuffle
 		Random rand = new Random();
@@ -638,7 +642,7 @@ public class SolverLineByLine implements Solver{
 	
 	/**
 	 * Freeze all the shape from the previously frozen shapes
-	 * @param game the game
+	 * @param game :the game
 	 * @return the number of shape frozen
 	 * @throws Exception if game is unsolvable
 	 */
@@ -685,12 +689,12 @@ public class SolverLineByLine implements Solver{
 	}
 
 	/**
-	 * Freeze LShape or QShape in the good orientation when they are surounded by three other frozen shapes
+	 * Freeze LShape or IShape in the good orientation when they are surounded by two other frozen shapes
 	 * @param game the game
-	 * @param i coordinate i from the shape
-	 * @param j coordinate i from the shape
-	 * @param shape the shape
-	 * @return nb of LShape and QShape frozen
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate i of the shape
+	 * @param shape :the shape
+	 * @return number of LShape and IShape frozen
 	 * @throws Exception if game is unsolvable
 	 */
 	private int freezeLShapeOrIShape(Game game, int i, int j, Shape shape) throws Exception {
@@ -789,6 +793,16 @@ public class SolverLineByLine implements Solver{
 		return 0;
 	}
 
+	
+	/**
+	 * Freeze QShape or TShape in the good orientation when they are surounded by three other frozen shapes
+	 * @param game the game
+	 * @param i :coordinate i of the shape
+	 * @param j coordinate i of the shape
+	 * @param shape :the shape
+	 * @return number of QShape and TShape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int freezeQShapeOrTShape(Game game, int i, int j, Shape shape) throws Exception {
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
@@ -857,6 +871,15 @@ public class SolverLineByLine implements Solver{
 		return 0;
 	}
 
+	
+	/**
+	 * Freeze the neighbors of a frozen QShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the QShape
+	 * @return number of QShape neighbors frozen
+	 */
 	private int freezeQShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -952,6 +975,14 @@ public class SolverLineByLine implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen TShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the TShape
+	 * @return number of TShape neighbors frozen
+	 */
 	private int freezeTShapeNeighbors(Shape[][] board,  int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1046,6 +1077,15 @@ public class SolverLineByLine implements Solver{
 		return frozen;
 	}
 
+	
+	/**
+	 * Freeze the neighbors of a frozen LShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the LShape
+	 * @return number of LShape neighbors frozen
+	 */
 	private int freezeLShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1145,6 +1185,14 @@ public class SolverLineByLine implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen IShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the IShape
+	 * @return number of IShape neighbors frozen
+	 */
 	private int freezeIShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1204,6 +1252,12 @@ public class SolverLineByLine implements Solver{
 		return frozen;
 	}
 
+	
+	/**
+	 * Reduce the domain of all the shapes according to their possible orientation 
+	 * @param game :the game
+	 * @return number of domain reduce
+	 */
 	private int reduceDomain(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb = 0;
@@ -1297,6 +1351,11 @@ public class SolverLineByLine implements Solver{
 		return nb;
 	}
 
+	/**
+	 * Reduce the domain of all the shapes on the board border 
+	 * @param game :the game
+	 * @return number of domain reduce
+	 */
 	private int reduceDomainBorder(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb = 0;
@@ -1338,6 +1397,12 @@ public class SolverLineByLine implements Solver{
 		return nb;
 	}
 
+	
+	/**
+	 * Freeze shapes that only have one possible orientation left
+	 * @param game :the game
+	 * @return number of shape frozen
+	 */
 	private int freezeShapeWithOneOrientation(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb=0;

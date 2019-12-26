@@ -1,12 +1,6 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 public abstract class Shape {
-	//protected List<Connection> connections;
-	//private ShapeType shapeType;
 	protected static int NORTH = 0;
 	protected static int EAST = 1;
 	protected static int SOUTH = 2;
@@ -27,14 +21,20 @@ public abstract class Shape {
 	
 	
 
-	
-	public Shape (/*ShapeType type,*/ int orientation, int i, int j) {
-		//this.shapeType = type;
+	public Shape (int orientation, int i, int j) {
 		this.orientation = orientation;
 		this.i=i;
 		this.j=j;
 	}
 	
+	
+	/**
+	 * Construct the shape object from its string id 
+	 * @param line :the id
+	 * @param i :the coordinate i of the shape
+	 * @param j :the coordinate i of the shape
+	 * @return shape if the id is a correct id. Otherwise return null
+	 */
 	public static Shape getShapeFromStringId(String line, int i, int j) {
 		switch(line) {
 			case"0 0": return new EmptyShape(0,i,j);
@@ -80,6 +80,11 @@ public abstract class Shape {
 	
 	public abstract int getNbConnection();
 	
+	
+	/**
+	 * Rotate the shape 90° to the right.
+	 * Change the shape connections accordly to the new rotation
+	 */
 	public void rotate() {
 		//NORTH with EAST, EAST with SOUTH, SOUTH with WEST, WEST with NORTH 
 		boolean tmp = connections[WEST];
@@ -89,14 +94,17 @@ public abstract class Shape {
 		connections[NORTH] = tmp;
 	}
 	
-	/*
-	public void rotateTo(int orientation) {
-		while(this.orientation != orientation) {
-			rotate();
-		}	
-	}*/
+	
+	/**
+	 * Rotate to a specific orientation
+	 * @param orientation : the orientation
+	 */
 	public  abstract void rotateTo(int orientation);
 
+	/**
+	 * Remove specifics orientations from shape possible orientations
+	 * @param orientations : orientations to remove
+	 */
 	public void removePossibleOrientation(int[] orientations) {
 		for(int o : orientations) {
 			possibleOrientation[o] = false;
@@ -109,6 +117,8 @@ public abstract class Shape {
 		}
 		
 	}
+	
+	
 	
 	public boolean[] getPossibleOrientation() {
 		return possibleOrientation;
@@ -124,14 +134,7 @@ public abstract class Shape {
 		}
 	}
 	
-	/*
-	public int getType() {
-		return shapeType.getId();
-	}
-	
-	public ShapeType getShapeType() {
-		return shapeType;
-	}*/
+
 	public abstract int getType();
 	
 	public int getOrientation() {
@@ -177,10 +180,18 @@ public abstract class Shape {
 	}
 	
 	
+	/**
+	 * Return the string id corresponding to the shape
+	 */
 	public String toString() {
 		return getType()+" "+orientation;
 	}
 	
+	/**
+	 * Check if shape has a specific connection
+	 * @param connection : the connection to check
+	 * @return true if shape has this orientation
+	 */
 	public boolean hasConnection(int connection) {
 		if(connections == null) {
 			return false;
@@ -188,6 +199,7 @@ public abstract class Shape {
 		return connections[connection];
 	}
 
+	
 	public boolean isFroze() {
 		return isFroze;
 	}

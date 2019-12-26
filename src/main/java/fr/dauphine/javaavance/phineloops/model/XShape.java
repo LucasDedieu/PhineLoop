@@ -1,11 +1,5 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.ArrayList;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
-
 public class XShape extends Shape {
 
 	private int[] domain = {0};

@@ -1,13 +1,5 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
-import java.util.Arrays;
-
-
 public class TShape extends Shape {
 
 	private int[] domain = {0,1,2,3};

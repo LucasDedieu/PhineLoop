@@ -54,9 +54,7 @@ public class Game {
 		board = new Shape[height][width];
 	}
 
-	public Game(File file) {
-		load(file);
-	}
+	
 
 	public Game(Game game) {
 		this.height = game.height;
@@ -74,7 +72,6 @@ public class Game {
 					case 4 : board[i][j] = new XShape(s.getOrientation(), i, j);break;
 					case 5 : board[i][j] = new LShape(s.getOrientation(), i, j);break;
 				}
-				//board[i][j] = s.getShapeType().buildShape(s.getOrientation(), i, j);
 			}
 		}
 	}
@@ -102,36 +99,49 @@ public class Game {
 	}
 
 	
+	/**
+	 * Generate a random shuffle board for the game. Board is solvable
+	 */
 	public void generate() {
 		Generator generator = new Generator(this);
 		generator.generate();
 	}
 	
+	/*
+	 *  Generate a valid board for the game
+	 */
 	public void generateSolution() {
 		Generator generator = new Generator(this);
 		generator.generateSolution();
 	}
 	
+	/**
+	 * Generate a random shuffle board for the game. Board is solvable and has a limit of connected components
+	 * @param nbcc : maximum number of connected component
+	 */
 	public void generate(int nbcc) {
 		Generator generator = new Generator(this);
 		generator.generate(nbcc);
 	}
 
+
+	/**
+	 *  Generate a valid board for the game. Board has a limit of connected components
+	 * @param nbcc: maximum number of connected component
+	 */
 	public void generateSolution(int nbcc) {
 		Generator generator = new Generator(this);
 		generator.generateSolution(nbcc);
 	}
 	
-	private void load(File file) {
-
-	}
-
-	public void solve() {
-
-	}
+	
 
 
-
+	/**
+	 * Write the board in a file
+	 * @param outputFile :the file
+	 * @throws FileNotFoundException
+	 */
 	public void write(String outputFile) throws FileNotFoundException {
 		FileOutputStream fos = new FileOutputStream(outputFile);
 		PrintStream ps = new PrintStream(fos);
@@ -142,12 +152,24 @@ public class Game {
 				ps.println(board[i][j]);
 			}
 		}
+		ps.close();
 	}
 
+	/**
+	 * Check if a shape is fully well connected with its neighbors.
+	 * @param shape : shape to check
+	 * @return true is shape well connected
+	 */
 	public boolean isShapeFullyConnected(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithWest(shape);
 	}
 
+	
+	/**
+	 * Count all the "non-border" neighbors of a shape
+	 * @param neighbors :all the neighbors of a shape
+	 * @return number of real neighbors
+	 */
 	private int countNeighbors(Shape[] neighbors) {
 		int count = 0;
 		for(int i=0;i<4;i++) {
@@ -158,6 +180,11 @@ public class Game {
 		return count;
 	}
 
+	/**
+	 * Check if a shape is connected to the border.
+	 * @param shape: shape to test
+	 * @return true if shape is connected to the border
+	 */
 	public boolean iShapeConnectedToBoardBorder(Shape shape) {
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -190,42 +217,101 @@ public class Game {
 
 
 
+	/**
+	 * Check if a shape is connected with North and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndWest(Shape shape) {
 		return isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithWest(shape);
 	}
 
+	/**
+	 * Check if a shape is connected with North and East.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndEast(Shape shape) {
 		return isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithEast(shape);
 	}
 
+	/**
+	 * Check if a shape is connected with South and East.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithSouthAndEast(Shape shape) {
 		return isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithEast(shape);
 	}
 
+	/**
+	 * Check if a shape is connected with South and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithSouthAndWest(Shape shape) {
 		return isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithWest(shape);
 	}
 	
+	/**
+	 * Check if a shape is connected with North and South.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndSouth(Shape shape) {
 		return isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithNorth(shape);
 	}
 	
+	/**
+	 * Check if a shape is connected with East and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithEastAndWest(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape);
 	}
+	
+	/**
+	 * Check if a shape is connected with East, North and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithEastAndSouthAndWest(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithSouth(shape);
 	}
+	
+	/**
+	 * Check if a shape is connected with North, South and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndSouthAndWest(Shape shape) {
 		return isShapeWellConnectedWithNorth(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithSouth(shape);
 	}
+	
+	/**
+	 * Check if a shape is connected with North, East and West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndEastAndWest(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithWest(shape)&&isShapeWellConnectedWithNorth(shape);
 	}
+	
+	/**
+	 * Check if a shape is connected with North, East and South.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndEastAndSouth(Shape shape) {
 		return isShapeWellConnectedWithEast(shape)&&isShapeWellConnectedWithSouth(shape)&&isShapeWellConnectedWithNorth(shape);
 	}
-
+ 
+	/**
+	 * Check if a shape is connected with South.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithSouth(Shape shape) {
 		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
@@ -250,6 +336,11 @@ public class Game {
 		return true;
 	}
 
+	/**
+	 * Check if a shape is connected with North.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorth(Shape shape) {
 		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
@@ -274,6 +365,12 @@ public class Game {
 		return true;
 	}
 
+	
+	/**
+	 * Check if a shape is connected with East.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithEast(Shape shape) {
 		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
@@ -298,6 +395,11 @@ public class Game {
 		return true;
 	}
 
+	/**
+	 * Check if a shape is connected with West.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithWest(Shape shape) {
 		boolean[] connections = shape.getConnections();
 		int i = shape.getI();
@@ -322,6 +424,11 @@ public class Game {
 		return true;
 	}
 
+	/**
+	 * Check if a shape is connected with North and West frozen neighbors.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithNorthAndWestFrozenNeighbors(Shape shape) {
 		//North
 		int i = shape.getI();
@@ -348,6 +455,12 @@ public class Game {
 		}
 		return true;
 	}
+	
+	/**
+	 * Check if a shape is connected with all its frozen neighbors.
+	 * @param shape :shape to test
+	 * @return true if shape well connected
+	 */
 	public boolean isShapeWellConnectedWithFrozenNeighbors(Shape shape) {
 		//North
 		int i = shape.getI();
@@ -446,7 +559,11 @@ public class Game {
 	}*/
 
 	
-	
+	/**
+	 * Return neighbors of a shape
+	 * @param shape : the shape
+	 * @return the neighbors
+	 */
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -472,6 +589,12 @@ public class Game {
 		return neighbors;
 	}
 
+	
+	/**
+	 * 
+	 * @param shape
+	 * @return
+	 */
 	public Shape[] getToConnectNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -539,6 +662,8 @@ public class Game {
 		return hasEmptyNeighbor;
 	}
 
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

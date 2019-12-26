@@ -1,9 +1,5 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
 public class QShape extends Shape {
 
 	private int[] domain = {0,1,2,3};

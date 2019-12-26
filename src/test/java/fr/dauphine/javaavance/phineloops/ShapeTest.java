@@ -1,15 +1,11 @@
 package fr.dauphine.javaavance.phineloops;
 
-import static org.junit.Assert.*;
-
-
-
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-
-import fr.dauphine.javaavance.phineloops.model.Connection;
 import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.IShape;
 import fr.dauphine.javaavance.phineloops.model.LShape;
