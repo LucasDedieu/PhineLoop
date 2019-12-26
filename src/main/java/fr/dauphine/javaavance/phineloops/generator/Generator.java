@@ -822,8 +822,6 @@ public class Generator {
 			 * departj].getI()+" "+board[departi][departj].getJ()); for(Shape sh :
 			 * toPutShapes) { System.out.println(sh.getI()+" "+sh.getJ()); }
 			 */
-			System.out.println(this.game+"\n");
-			System.out.println(i);
 			
 			for(Shape sh:toPutShapes)
 			{
