@@ -381,7 +381,6 @@ public class Generator {
 		
 			if(finParcours==2)//Quasi-Déterministe forcément un qshape vers le bas ou vers la droite en première case
 			{
-				
 			}
 			//Doit aussi contraindre par finparcours ici; on ne peut pas mettre plus de finParcours-toputShapes.size()-1 ! 
 			//We put the first piece on the board depending on the position
