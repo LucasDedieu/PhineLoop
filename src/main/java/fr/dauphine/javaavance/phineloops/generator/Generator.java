@@ -339,7 +339,7 @@ public class Generator {
 		int departj=rand.nextInt(w);
 		System.out.println(departi+" "+departj);
 		//int finParcours=rand.nextInt((int)((float)(h*w)/(float)(nbcc))); //h*x/nbcc 
-		int finParcours=(int)((float)(h*w)/(float)(nbcc));
+		int finParcours=(int)((float)(h*w)/(float)(nbcc))-2;
 		Shape[][] board = game.getBoard();
 		// Generation of the set of Legal Shapes //Should be member of game 
 		Shape topLeftCornerLegalShapes[] = {new QShape(1, w, w), new QShape(2, w, w),
@@ -376,7 +376,13 @@ public class Generator {
 				board[i][j]=new EmptyShape(0,i,j);
 			}
 		}
-			
+
+//*************************************************************First placed shape on the broard ********************************************
+		
+			if(finParcours==2)//Quasi-Déterministe forcément un qshape vers le bas ou vers la droite en première case
+			{
+				
+			}
 			//Doit aussi contraindre par finparcours ici; on ne peut pas mettre plus de finParcours-toputShapes.size()-1 ! 
 			//We put the first piece on the board depending on the position
 			if (departi==0 && departj==0)
@@ -512,6 +518,12 @@ public class Generator {
 			 * departj].getI()+" "+board[departi][departj].getJ()); for(Shape sh :
 			 * toPutShapes) { System.out.println(sh.getI()+" "+sh.getJ()); }
 			 */
+			
+			
+			
+//******************************************************* TRAVERSAL ******************************************************************			
+			
+
 		for(int i=0;i<finParcours && toPutShapes.size()!=0 && i<(finParcours-toPutShapes.size());i++)
 		{
 			//We have to regenerate the legal values because other wise they could overlap
@@ -550,13 +562,15 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for(Shape sh:topLeftCornerLegalShapes1)
 						{
+							int token=0;
 							sh.setI(departi);
 							sh.setJ(departj);
-							for(Shape reservation : board[departi][departj].getReservedBy() )
+							for(Shape reservation : nextPlacedShape.getReservedBy() )
 							{
 								if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-									feasibleShapes.add(sh);
+									token++;
 							}
+							if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						Shape placedShape = feasibleShapes.get(randomIndex);
@@ -566,7 +580,8 @@ public class Generator {
 						for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 						{
 							neighbour.setReservedBy(board[departi][departj]);
-							toPutShapes.add(neighbour); // We add the position that we will have to put a piece in to close the connected component
+							if(!toPutShapes.contains(neighbour))
+								toPutShapes.add(neighbour); // We add the position that we will have to put a piece in to close the connected component
 						}
 						/*On met une feasible shapes de left corner 
 						board[departi][departj]=rand.feasibleshapes */
@@ -576,13 +591,15 @@ public class Generator {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 						for(Shape sh:topBorderLegalShapes1)
 						{
+							int token=0;
 							sh.setI(departi);
 							sh.setJ(departj);
-							for(Shape reservation : board[departi][departj].getReservedBy() )
+							for(Shape reservation : nextPlacedShape.getReservedBy() )
 							{
 								if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-									feasibleShapes.add(sh);
+									token++;
 							}
+							if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 						}
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						Shape placedShape = feasibleShapes.get(randomIndex);
@@ -592,7 +609,8 @@ public class Generator {
 						for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 						{
 							neighbour.setReservedBy(board[departi][departj]);
-							toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+							if(!toPutShapes.contains(neighbour))
+								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 						}
 						//On met une feasible shapes de top border 
 					}
@@ -601,13 +619,15 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:topRightCornerLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);
@@ -616,8 +636,8 @@ public class Generator {
 							board[departi][departj] = placedShape;
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
-								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 							//On met une feasible shapes de top border 
 						}
@@ -626,13 +646,15 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:leftBorderLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);
@@ -642,7 +664,8 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour);// We add the connection to close to an arraylist 
 							}
 							//On met une feasible shapes de top border 
 						}
@@ -651,13 +674,15 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:rightBorderLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);
@@ -667,7 +692,8 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 							//On met une feasible shapes de top border 
 						}
@@ -676,15 +702,17 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:bottomLeftCornerLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
-							int randomIndex = rand.nextInt(feasibleShapes.size());
+							int randomIndex = rand.nextInt(feasibleShapes.size()); 
 							Shape placedShape = feasibleShapes.get(randomIndex);
 							placedShape.setI(departi);
 							placedShape.setJ(departj);//On ne peut pas connaitre leurs position à l'avance ... 
@@ -692,7 +720,8 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 							//On met une feasible shapes de top border 
 						}
@@ -701,13 +730,25 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:bottomBorderLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
+							}
+							if (feasibleShapes.isEmpty()) 
+							{
+								System.out.println("Problem");
+								System.out.println(departi+" "+departj);
+								System.out.println(board[departi][departj].getReservedBy().isEmpty());
+								for(Shape reservation : board[departi][departj].getReservedBy() )
+								{
+									System.out.println(reservation.getSymbol());
+								}	
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);
@@ -717,7 +758,8 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 							//On met une feasible shapes de top border 
 						}
@@ -726,13 +768,15 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:bottomRightCornerLegalShapes1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
 									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);
@@ -742,7 +786,8 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour))
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 							//On met n importe quelle feasible shapes 
 						}
@@ -751,13 +796,15 @@ public class Generator {
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
 							for(Shape sh:allShape1)
 							{
+								int token=0;
 								sh.setI(departi);
 								sh.setJ(departj);
-								for(Shape reservation : board[departi][departj].getReservedBy() )
+								for(Shape reservation : nextPlacedShape.getReservedBy() )
 								{
-									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-										feasibleShapes.add(sh);
+									if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,nextPlacedShape.getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
+										token++;
 								}
+								if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
 							}
 							int randomIndex = rand.nextInt(feasibleShapes.size());
 							Shape placedShape = feasibleShapes.get(randomIndex);//Mettre tout en tableau 
@@ -767,19 +814,26 @@ public class Generator {
 							for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 							{
 								neighbour.setReservedBy(board[departi][departj]);
-								toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+								if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 							}
 						}
-						System.out.println(this.game+"\n");
-						System.out.println(i);
 			/*
 			 * System.out.println(board[departi][departj].getSymbol()+" "+board[departi][
 			 * departj].getI()+" "+board[departi][departj].getJ()); for(Shape sh :
 			 * toPutShapes) { System.out.println(sh.getI()+" "+sh.getJ()); }
 			 */
+			System.out.println(this.game+"\n");
+			System.out.println(i);
+			
+			for(Shape sh:toPutShapes)
+			{
+				System.out.println(sh.getSymbol());
+			}
 				
 		}
 		//On bouche les pièces éventuellement pas fermées
+		System.out.println(this.game+"\n");
 		
 		if (!toPutShapes.isEmpty())
 		{
@@ -795,14 +849,16 @@ public class Generator {
 						Shape selectedShape = new EmptyShape(0,0,0);
 						for(Shape twoOutShapes: allShape)
 						{
-							if(twoOutShapes.getVConnections()==2);
+							if(twoOutShapes.getVConnections()==2) //Me renvoie tout le monde... 
 							feasibleShapes.add(twoOutShapes);
 						}
 						for(Shape ssh: feasibleShapes) 
 						{
+							ssh.setI(sh.getI());
+							ssh.setJ(sh.getJ());
 							if(game.areShapesConnected(ssh,sh.getReservedBy().get(0)) && game.areShapesConnected(ssh,sh.getReservedBy().get(1)))
 							{
-								selectedShape=ssh;
+								selectedShape=ssh;//Je ne set pas à i et j pour le shaps are connected ... pb 
 							}
 						}
 						board[sh.getI()][sh.getJ()]=selectedShape; 
@@ -827,7 +883,22 @@ public class Generator {
 				
 		//Now lets create another connected component, We should find an emptyShape avalaible (Has at least 1 emptyshape neighbour then we start again by putting feasible shapes considering his surrounding (border... and already put shapes)	
 		
-		//For int i <= Nbcc ... *******************************************************************TO DOOOOOOOO 
+		
+		
+		
+		
+		
+		
+//*******************************************************************OTHER CONNECTED COMPONENT**********************************************
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		for(int k=0;k<nbcc-1;k++)
 		{
 			Shape topLeftCornerLegalShapes2[] = {new QShape(1, w, w), new QShape(2, w, w),
@@ -864,6 +935,7 @@ public class Generator {
 						feasibleEntry.add(sh);
 				}
 			}
+			int resaForOthers=feasibleEntry.size();
 			int newEntryIndex = rand.nextInt(feasibleEntry.size());
 			Shape newEntry = feasibleEntry.get(newEntryIndex);
 			//Now we get the coord for the new entry
@@ -894,7 +966,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				/*On met une feasible shapes de left corner 
 				board[departi][departj]=rand.feasibleshapes */
@@ -922,7 +995,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met une feasible shapes de top border 
 			}
@@ -949,7 +1023,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met une feasible shapes de top border 
 			}
@@ -976,7 +1051,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met une feasible shapes de top border 
 			}
@@ -1030,7 +1106,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met une feasible shapes de top border 
 			}
@@ -1057,7 +1134,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met une feasible shapes de top border 
 			}
@@ -1084,7 +1162,8 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				//On met n importe quelle feasible shapes 
 			}
@@ -1112,16 +1191,19 @@ public class Generator {
 				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 				{
 					neighbour.setReservedBy(board[departi1][departj1]);
-					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 			}
 			connectedComponent.add(board[departi1][departj1]);
-			System.out.println(this.game+"\n");
+			//System.out.println(this.game+"\n");
 			/*
 			 * System.out.println(board[departi][departj].getSymbol()+" "+board[departi][
 			 * departj].getI()+" "+board[departi][departj].getJ()); for(Shape sh :
 			 * toPutShapes) { System.out.println(sh.getI()+" "+sh.getJ()); }
 			 */
+			
+			
 			
 			for(int i=0;i<finParcours && toPutShapes.size()!=0 && i<(finParcours-toPutShapes.size());i++)
 			{
@@ -1185,7 +1267,8 @@ public class Generator {
 					for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 					{
 						neighbour.setReservedBy(board[departi1][departj1]);
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+						if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+							toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 					}
 					/*On met une feasible shapes de left corner 
 					board[departi][departj]=rand.feasibleshapes */
@@ -1219,7 +1302,8 @@ public class Generator {
 					for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 					{
 						neighbour.setReservedBy(board[departi1][departj1]);
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+						if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+							toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 					}
 					//On met une feasible shapes de top border 
 				}
@@ -1252,7 +1336,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met une feasible shapes de top border 
 							}
@@ -1285,7 +1370,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met une feasible shapes de top border 
 							}
@@ -1318,7 +1404,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met une feasible shapes de top border 
 							}
@@ -1351,7 +1438,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met une feasible shapes de top border 
 							}
@@ -1384,7 +1472,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met une feasible shapes de top border 
 							}
@@ -1417,7 +1506,8 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 								//On met n importe quelle feasible shapes 
 							}
@@ -1450,17 +1540,19 @@ public class Generator {
 								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
 								{
 									neighbour.setReservedBy(board[departi1][departj1]);
-									toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
 							}
-							System.out.println(this.game+"\n");
-							System.out.println(i);
+						//	System.out.println(this.game+"\n");
+						//	System.out.println(i);
 				/*
 				 * System.out.println(board[departi][departj].getSymbol()+" "+board[departi][
 				 * departj].getI()+" "+board[departi][departj].getJ()); for(Shape sh :
 				 * toPutShapes) { System.out.println(sh.getI()+" "+sh.getJ()); }
 				 */
 				}
+			System.out.println(this.game+"\n");
 			//On bouche les pièces éventuellement pas fermées
 			
 			if (!toPutShapes.isEmpty())
@@ -1477,11 +1569,13 @@ public class Generator {
 							Shape selectedShape = null;
 							for(Shape twoOutShapes: allShape2)
 							{
-								if(twoOutShapes.getVConnections()==2);
+								if(twoOutShapes.getVConnections()==2)
 								feasibleShapes.add(twoOutShapes);
 							}
 							for(Shape ssh: feasibleShapes) 
 							{
+								ssh.setI(sh.getI());
+								ssh.setJ(sh.getJ());
 								if(game.areShapesConnected(ssh,sh.getReservedBy().get(0)) && game.areShapesConnected(ssh,sh.getReservedBy().get(1)))
 								{
 									selectedShape=ssh;
