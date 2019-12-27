@@ -8,7 +8,11 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
 
-
+/**
+ * Solver using "snail" shape picker. 
+ * @author lucas
+ *
+ */
 public class SolverSnail implements Solver{
 	private Game originalGame ;
 	private int height;
@@ -63,7 +67,7 @@ public class SolverSnail implements Solver{
 			}
 
 			switch(currentDirection) {
-			/////////////////////////////////////////////////////////////////////////////////SOUTH
+			/////////////////////////////////////////////////////////////////////////////////EAST
 			case EAST : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -116,7 +120,6 @@ public class SolverSnail implements Solver{
 					else{
 						continue;
 					}
-
 				}
 				//Add next iteration to stack
 				stack.push(nextIteration);
@@ -144,13 +147,10 @@ public class SolverSnail implements Solver{
 						continue;
 					}
 				}
-				else {
-					
-					//Case shape already test all rotation
-						
+				else {				
+					//Case shape already test all rotation					
 						stack.pop();
-						continue;
-					
+						continue;	
 				}
 				//When the shape is well placed, we prepare next iteration
 
@@ -182,8 +182,7 @@ public class SolverSnail implements Solver{
 				//Add next iteration to stack
 				stack.push(nextIteration);
 				break;
-
-				/////////////////////////////////////////////////////////////////////////////////West
+				/////////////////////////////////////////////////////////////////////////////////WEST
 			case WEST : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -208,11 +207,9 @@ public class SolverSnail implements Solver{
 				}
 				else {
 					
-					//Case shape already test all rotation
-					
+					//Case shape already test all rotation			
 						stack.pop();
 						continue;
-					
 				}
 				//When the shape is well placed, we prepare next iteration
 
@@ -270,11 +267,9 @@ public class SolverSnail implements Solver{
 				}
 				else {
 					
-					//Case shape already test all rotation
-					
+					//Case shape already test all rotation				
 						stack.pop();
-						continue;
-					
+						continue;				
 				}
 				//When the shape is well placed, we prepare next iteration
 
@@ -307,134 +302,6 @@ public class SolverSnail implements Solver{
 				stack.push(nextIteration);
 				break;
 			}
-
-
-
-
-
-			/*
-
-
-
-
-
-
-			//Can rotate ?		
-			if(iteration.canRotate(shape)) {	
-				boolean isWellPlaced = false;
-				do{
-					iteration.rotate(shape);
-					if(!testGame.iShapeConnectedToBoardBorder(shape)) {
-						switch(currentDirection) {
-						case EAST : if(testGame.isShapeWellConnectedWithNorthAndWest(shape)) {isWellPlaced = true;}break;
-						case SOUTH : if(testGame.isShapeWellConnectedWithNorthAndEast(shape)) {isWellPlaced = true;}break;
-						case WEST : if(testGame.isShapeWellConnectedWithSouthAndEast(shape)) {isWellPlaced = true;}break;
-						case NORTH : if(testGame.isShapeWellConnectedWithSouthAndWest(shape)) {isWellPlaced = true;}break;
-						}
-
-					}
-				}while(isWellPlaced == false && iteration.canRotate(shape));
-
-				//if shape has no possible good rotation -> backtrack
-				if(!isWellPlaced) {
-					stack.pop();
-					continue;
-				}
-			}
-			else {
-				String shapeClassName =shape.getClass().getSimpleName();
-				//Case XShape or EmptyShape (do not rotate)
-				if(shapeClassName.equals("XShape") || shapeClassName.equals("EmptyShape") ) {
-					stack.pop();
-					switch(currentDirection) {
-					case EAST : if(!testGame.isShapeWellConnectedWithNorthAndWest(shape)) {continue;}break;
-					case SOUTH : if(!testGame.isShapeWellConnectedWithNorthAndEast(shape)) {continue;}break;
-					case WEST : if(!testGame.isShapeWellConnectedWithSouthAndEast(shape)) {continue;}break;
-					case NORTH : if(!testGame.isShapeWellConnectedWithSouthAndWest(shape)) {continue;}break;
-					}
-				}
-				//Case shape already test all rotation
-				else {	
-					stack.pop();
-					continue;
-				}
-			}
-
-
-			//When the shape is well placed, we prepare next iteration
-			//State3 nextIteration = null;
-			//Case last shape of the board
-			if(nbIterationInStack==maxStackSize) {
-				while(iteration.canRotate(shape)) {
-					if(testGame.isShapeFullyConnected(shape)) {
-						return testGame;
-					}
-					iteration.rotate(shape);		
-				}
-				if(testGame.isShapeFullyConnected(shape)) {
-					return testGame;
-				}
-				stack.pop();
-				continue;
-			}
-			switch(currentDirection) {
-			case EAST : 
-				if(j<width-1-level) {
-					nextIteration = new State3(currentDirection,level, i,j+1,0,nbIterationInStack+1);
-				}
-				else {
-					if(testGame.isShapeWellConnectedWithEast(shape)) {
-						nextIteration = new State3(Direction.SOUTH,level,i+1,j,0,nbIterationInStack+1);
-					}
-					else{
-						continue;
-					}
-
-				}
-				break;
-			case SOUTH : 
-				if(i<height-1-level) {
-					nextIteration = new State3(currentDirection,level,i+1,j,0,nbIterationInStack+1);
-				}
-				else {
-					if(testGame.isShapeWellConnectedWithSouth(shape)) {
-						nextIteration = new State3(Direction.WEST,level,i,j-1,0,nbIterationInStack+1);
-					}
-					else{
-						continue;
-					}
-
-				}
-				break;
-			case WEST : 
-				if(j>0+level) {
-					nextIteration = new State3(currentDirection,level,i,j-1,0,nbIterationInStack+1);
-				}
-				else {
-					if(testGame.isShapeWellConnectedWithWest(shape)) {
-						nextIteration = new State3(Direction.NORTH,level,i-1,j,0,nbIterationInStack+1);
-					}
-					else{
-						continue;
-					}
-				}
-				break;
-			case NORTH : 
-				if(i>1+level) {
-					nextIteration = new State3(currentDirection,level,i-1,j,0,nbIterationInStack+1);
-				}
-				else {
-					if(testGame.isShapeWellConnectedWithNorth(shape)) {
-						nextIteration = new State3(Direction.EAST,level+1,i,j+1,0,nbIterationInStack+1);
-					}
-					else{
-						continue;
-					}
-				}
-				break;
-			}
-			//Add next iteration to stack
-			stack.push(nextIteration);*/
 		}
 		return null;
 	}

@@ -13,6 +13,11 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
 
+/**
+ * Solver using "line by line" shape picker. Start at the bottom right of the board and climb to top left corner.
+ * @author lucas
+ *
+ */
 public class SolverLineByLine implements Solver{
 	protected static int NORTH = 0;
 	protected static int EAST = 1;
@@ -125,7 +130,7 @@ public class SolverLineByLine implements Solver{
 			nbFreeze = refreeze(game);
 			total+=nbFreeze;
 			//System.out.println("New shape froze : "+nbFreeze);
-		}while(nbFreeze>10);
+		}while(nbFreeze>0);
 		reduceDomainBorder(game);
 		reduceDomain(game);
 		total+=freezeShapeWithOneOrientation(game);

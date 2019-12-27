@@ -1,17 +1,13 @@
 package fr.dauphine.javaavance.phineloops.solver.csp;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
-import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
+
 
 public class SolverCSP implements Solver{
 	protected static int NORTH = 0;
@@ -38,24 +34,10 @@ public class SolverCSP implements Solver{
 	public Game solve(int threads) {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
-		for(int i = 0; i<height;i++) {
-			for(int j = 0; j<width;j++) {
-				Shape shape = board[i][j];
-				if(shape.getType() == 4 && (i==0||j==0||i==height-1||j==width-1)) {
-					//unsolvable
-					return null;
-				}
-			}
-		}
-		int nbFreeze = prepare(testGame);
-		System.out.println(testGame);
-		if(Checker.check(testGame)) {
-			return testGame;
-		}
-		//shuffle(testGame);
-		System.out.println("Begin solve");
-		//System.out.println(testGame);
-		Shape initShape =pickShape(testGame, null);
+		checkIfXShapeOnBorder(testBoard);
+		
+		
+		Shape initShape =pickShape(testGame);
 		for (int k = 0; k < initShape.getPossibleOrientation().length; k++) {
 			boolean b = initShape.getPossibleOrientation()[k];
 			if(b) {
@@ -64,8 +46,6 @@ public class SolverCSP implements Solver{
 				int maxStackSize = height*width - countFrozenShape(testGame);
 				StateCSP initialState = new StateCSP(testGame,initShape,0);
 				stack.push(initialState);
-				//int nbPop =0;
-				//boolean hasPop = false;
 				
 				while(!stack.isEmpty() ) {
 					StateCSP iteration = stack.peek();
@@ -83,12 +63,12 @@ public class SolverCSP implements Solver{
 								isWellPlaced=true;
 							}
 							if(!isWellPlaced) {
-								pop(testGame, iteration, stack);
+								backtrack(testGame, iteration, stack);
 								continue;
 							}
 						}
 						else {
-							pop(testGame, iteration, stack);
+							backtrack(testGame, iteration, stack);
 							continue;
 						}
 						return testGame;
@@ -102,27 +82,23 @@ public class SolverCSP implements Solver{
 							isWellPlaced=true;
 						}
 						if(!isWellPlaced) {
-							pop(testGame, iteration, stack);
+							backtrack(testGame, iteration, stack);
 							continue;
 						}
 					}
 					else {
-						pop(testGame, iteration, stack);
+						backtrack(testGame, iteration, stack);
 						continue;
 					}
 					shape.setFroze(true);
 					reduceNeighborsDomain(testGame, shape);
 					
-					Shape nextShape = pickShape(testGame,iteration);
+					Shape nextShape = pickShape(testGame);
 					if(nextShape == null) {
-						pop(testGame, iteration, stack);
+						backtrack(testGame, iteration, stack);
 						continue;
 					}
 					StateCSP nextIteration = new StateCSP(testGame,nextShape,0);
-					//nextIteration.setRightDomain(temp.getRightDomain());
-					//nextIteration.setLeftDomain(temp.getLeftDomain());
-					//nextIteration.setTopDomain(temp.getTopDomain());
-					//nextIteration.setBottomDomain(temp.getBottomDomain());
 					stack.push(nextIteration);
 				}
 			}
@@ -131,7 +107,31 @@ public class SolverCSP implements Solver{
 		return null;
 	}
 
-	private Shape pickShape(Game game, StateCSP previousIteration) {
+	
+	/**
+	 * Check if the board contain XShape on the border of the board
+	 * @param board :the board
+	 * @return true if board has XShape on border
+	 */
+	private boolean checkIfXShapeOnBorder(Shape[][] board) {
+		for(int i = 0; i<height;i++) {
+			for(int j = 0; j<width;j++) {
+				Shape shape = board[i][j];
+				if(shape.getType() == 4 && (i==0||j==0||i==height-1||j==width-1)) {
+					//unsolvable
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Pick the shape that have the less possible orientation left
+	 * @param game :the game
+	 * @return the shape with the minimum domain remaining (if there are several in this case, pick the first on the board starting at 0,0)
+	 */
+	private Shape pickShape(Game game) {
 		System.out.println(game);
 		Shape[][] board = game.getBoard();
 		int max = 4;
@@ -140,9 +140,6 @@ public class SolverCSP implements Solver{
 			for (int j = 0; j < width; j++) {
 				Shape shape = board[i][j];
 				if(!shape.isFroze() ) {
-					//if(previousIteration != null && previousIteration.isBan(shape)) {			
-					//	continue;
-					//}
 					int nb=shape.getDomainSize();
 					if(nb<max) {
 						max = nb;
@@ -158,7 +155,13 @@ public class SolverCSP implements Solver{
 	}
 
 
-	private void pop(Game game, StateCSP iteration , Deque<StateCSP> stack) {
+	/**
+	 * Do a backtrack when the solver is in a invalid state
+	 * @param game : the game
+	 * @param iteration :the current iteration
+	 * @param stack :the iteration stack
+	 */
+	private void backtrack(Game game, StateCSP iteration , Deque<StateCSP> stack) {
 		Shape shape = iteration.getShape();
 		//restore freeze
 		shape.setFroze(false);
@@ -206,6 +209,12 @@ public class SolverCSP implements Solver{
 		}
 	}
 
+	/**
+	 * Freeze all the shape that can be and reduce all the domain that can be
+	 * @param game :the game to prepare
+	 * @return number of shapes frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int prepare(Game game) {
 		firstFreeze(game);
 		int total = 0;
@@ -237,6 +246,11 @@ public class SolverCSP implements Solver{
 
 	}
 
+	/**
+	 * Count the frozen shape on the board
+	 * @param game : the game
+	 * @return the number of frozen shape
+	 */
 	private int countFrozenShape(Game game) {
 		int nb=0;
 		for (Shape[] shapes:game.getBoard()){
@@ -249,6 +263,10 @@ public class SolverCSP implements Solver{
 		return nb;
 	}
 	
+	/**
+	 * Shuffle randomly the board
+	 * @param game :the game to shuffle
+	 */
 	private void shuffle(Game game) {
 		//Shuffle
 		Random rand = new Random();
@@ -261,6 +279,11 @@ public class SolverCSP implements Solver{
 		}
 	}
 
+	/**
+	 * Perform a first freeze on the board. 
+	 * Freeze TShape and IShape on border, LShape on corner and XShape and EmptyShape all over the board.
+	 * @param game the game to freeze
+	 */
 	private void firstFreeze(Game game) {
 		Shape[][] board = game.getBoard();
 		for(int i = 0; i<height;i++) {
@@ -733,6 +756,12 @@ public class SolverCSP implements Solver{
 		}
 	}
 
+	/**
+	 * Freeze all the shape from the previously frozen shapes
+	 * @param game :the game
+	 * @return the number of shape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int refreeze(Game game) {
 		Shape[][] board = game.getBoard();
 		int frozen = 0;
@@ -775,6 +804,15 @@ public class SolverCSP implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze LShape or IShape in the good orientation when they are surounded by two other frozen shapes
+	 * @param game the game
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate i of the shape
+	 * @param shape :the shape
+	 * @return number of LShape and IShape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int freezeLShapeOrIShape(Game game, int i, int j, Shape shape) {
 		Shape[][] board = game.getBoard();
 		Shape leftNeighbor = null;
@@ -841,6 +879,15 @@ public class SolverCSP implements Solver{
 		return 0;
 	}
 
+	/**
+	 * Freeze QShape or TShape in the good orientation when they are surounded by three other frozen shapes
+	 * @param game the game
+	 * @param i :coordinate i of the shape
+	 * @param j coordinate i of the shape
+	 * @param shape :the shape
+	 * @return number of QShape and TShape frozen
+	 * @throws Exception if game is unsolvable
+	 */
 	private int freezeQShapeOrTShape(Game game, int i, int j, Shape shape) {
 		Shape leftNeighbor = null;
 		Shape rightNeighbor = null;
@@ -889,6 +936,14 @@ public class SolverCSP implements Solver{
 		return 0;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen QShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the QShape
+	 * @return number of QShape neighbors frozen
+	 */
 	private int freezeQShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -984,6 +1039,14 @@ public class SolverCSP implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen TShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the TShape
+	 * @return number of TShape neighbors frozen
+	 */
 	private int freezeTShapeNeighbors(Shape[][] board,  int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1078,6 +1141,14 @@ public class SolverCSP implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen LShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the LShape
+	 * @return number of LShape neighbors frozen
+	 */
 	private int freezeLShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1177,6 +1248,14 @@ public class SolverCSP implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Freeze the neighbors of a frozen IShape (those that have only one position possible)
+	 * @param board the board
+	 * @param i :coordinate i of the shape
+	 * @param j :coordinate j of the shape
+	 * @param shape :the IShape
+	 * @return number of IShape neighbors frozen
+	 */
 	private int freezeIShapeNeighbors(Shape[][] board, int i, int j, Shape shape) {
 		int frozen =0;
 		int orientation = shape.getOrientation();
@@ -1236,6 +1315,11 @@ public class SolverCSP implements Solver{
 		return frozen;
 	}
 
+	/**
+	 * Reduce the domain of all the shapes according to their possible orientation 
+	 * @param game :the game
+	 * @return number of domain reduce
+	 */
 	private int reduceDomain(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb = 0;
@@ -1250,6 +1334,12 @@ public class SolverCSP implements Solver{
 		return nb;
 	}
 
+	/**
+	 * Reduce the domain of shape's neighbors
+	 * @param game : the game
+	 * @param shape : the shape
+	 * @return number of domain reduce
+	 */
 	private int reduceNeighborsDomain(Game game,Shape shape) {
 		Shape[][] board = game.getBoard();
 		int i = shape.getI();
@@ -1356,6 +1446,11 @@ public class SolverCSP implements Solver{
 		return nb;
 	}
 
+	/**
+	 * Reduce the domain of all the shapes on the board border 
+	 * @param game :the game
+	 * @return number of domain reduce
+	 */
 	private int reduceDomainBorder(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb = 0;
@@ -1397,6 +1492,11 @@ public class SolverCSP implements Solver{
 		return nb;
 	}
 
+	/**
+	 * Freeze shapes that only have one possible orientation left
+	 * @param game :the game
+	 * @return number of shape frozen
+	 */
 	private int freezeShapeWithOneOrientation(Game game) {
 		Shape[][] board = game.getBoard();
 		int nb=0;
