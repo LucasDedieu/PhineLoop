@@ -6,20 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
-
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
-
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
@@ -27,9 +20,7 @@ import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 
 public class ShapesDrawer extends JFrame implements ActionListener{
-	/**
-	 * 
-	 */
+	
 
 	private static final long serialVersionUID = 1L;
 	public static final int WIDTH_SIZE = 1000;
@@ -121,11 +112,9 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 	private void addMenuBar() {
 		JMenuBar menuBar;
-		JMenu menu, submenu;
+		JMenu menu;
 		JMenuItem menuItem;
-		JRadioButtonMenuItem rbMenuItem;
-		JCheckBoxMenuItem cbMenuItem;
-
+		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
 
@@ -145,6 +134,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 				SolverLineByLine solver = new SolverLineByLine(ShapesDrawer.this.game);
 				ShapesDrawer.this.game = solver.solve(4);
 				drawGame();
+				updateButton(game);
 				
 			}
 		});
@@ -161,6 +151,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 				SolverSnail solver = new SolverSnail(ShapesDrawer.this.game);
 				ShapesDrawer.this.game = solver.solve(4);
 				drawGame();
+				updateButton(game);
 			}
 		});
 		menu.add(menuItem);
@@ -181,6 +172,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				ShapesDrawer.this.game.generate();
 				drawGame();
+				updateButton(game);
 				
 			}
 		});
@@ -209,8 +201,21 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		}
 	}
 
+	private void updateButton(Game game) {
+		Shape[][] board= game.getBoard();
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
+				buttons[i][j].setShape(board[i][j]);
+			}
+		}
+	}
+
+
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -18,4 +18,8 @@ public class ShapeButton extends JButton {
 		return shape;
 	}
 	
+	public void setShape(Shape shape) {
+		this.shape = shape;
+	}
+	
 }
