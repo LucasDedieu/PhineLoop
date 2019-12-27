@@ -4,45 +4,73 @@ package fr.dauphine.javaavance.phineloops.view;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import fr.dauphine.javaavance.phineloops.checker.Checker;
+import fr.dauphine.javaavance.phineloops.model.Game;
+import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class ShapesDrawer extends JFrame implements ActionListener{
 	/**
 	 * 
 	 */
+
 	private static final long serialVersionUID = 1L;
-	public static final int WIDTH_SIZE = 400;
-	public static final int HEIGHT_SIZE = 400;
+	public static final int WIDTH_SIZE = 1080;
+	public static final int HEIGHT_SIZE = 1080;
 	public static final int MATRIX_SIZE = 6;
+	
+	private Game game; 
+	private int height;
+	private int width;
+	private HashMap<String, ImageIcon> map = new HashMap<String, ImageIcon>();
+	private int buttonSize;
 	
 	
 	//public static GameDrawer game;
 	
-	private JButton[][] buttons;
-	private ImageIcon imageBoutton1 = new ImageIcon(getClass().getResource("/images/inf_q1.png"));
-	private ImageIcon imageBoutton2 = new ImageIcon(getClass().getResource("/images/inf_q2.png"));
-	private ImageIcon imageBoutton3 = new ImageIcon(getClass().getResource("/images/inf_q3.png"));
-	private ImageIcon imageBoutton4 = new ImageIcon(getClass().getResource("/images/inf_q4.png"));
-	private ImageIcon imageBoutton5 = new ImageIcon(getClass().getResource("/images/inf_x1.png"));
-	private ImageIcon imageBoutton6 = new ImageIcon(getClass().getResource("/images/inf_vide.png"));
-	private ImageIcon imageBoutton7 = new ImageIcon(getClass().getResource("/images/inf_l1.png"));
-	private ImageIcon imageBoutton8 = new ImageIcon(getClass().getResource("/images/inf_l2.png"));
-	private ImageIcon imageBoutton9 = new ImageIcon(getClass().getResource("/images/inf_ll1.png"));
-	private ImageIcon imageBoutton10 = new ImageIcon(getClass().getResource("/images/inf_i1.png"));
-	private ImageIcon imageBoutton11 = new ImageIcon(getClass().getResource("/images/inf_t1.png"));
-	
+	private ShapeButton[][] buttons;
 
 	
-	private ImageIcon imageBouttons[] = {imageBoutton1,imageBoutton2,imageBoutton3,imageBoutton4,imageBoutton5,imageBoutton6,
-			                             imageBoutton7,imageBoutton8,imageBoutton9,imageBoutton10,imageBoutton11};
 
-	public ShapesDrawer(int rows, int columns) {
 
-		
+	public ShapesDrawer(Game game) {
 		super();
+		this.game = game;
+		init();
+		this.setVisible(true);
+		drawGame();
+	}
+	
+	private void init() {
+		
+		map.put("0 0",  new ImageIcon(getClass().getResource("/images/00.png")));
+		map.put("1 0",  new ImageIcon(getClass().getResource("/images/10.png")));
+		map.put("1 1",  new ImageIcon(getClass().getResource("/images/11.png")));
+		map.put("1 2", new ImageIcon( getClass().getResource("/images/12.png")));
+		map.put("1 3",  new ImageIcon(getClass().getResource("/images/13.png")));
+		map.put("2 0",  new ImageIcon(getClass().getResource("/images/20.png")));
+		map.put("2 1",  new ImageIcon(getClass().getResource("/images/21.png")));
+		map.put("3 0",  new ImageIcon(getClass().getResource("/images/30.png")));
+		map.put("3 1",  new ImageIcon(getClass().getResource("/images/31.png")));
+		map.put("3 2",  new ImageIcon(getClass().getResource("/images/32.png")));
+		map.put("3 3",  new ImageIcon(getClass().getResource("/images/33.png")));
+		map.put("4 0",  new ImageIcon(getClass().getResource("/images/40.png")));
+		map.put("5 0",  new ImageIcon(getClass().getResource("/images/50.png")));
+		map.put("5 1",  new ImageIcon(getClass().getResource("/images/51.png")));
+		map.put("5 2",  new ImageIcon(getClass().getResource("/images/52.png")));
+		map.put("5 3",  new ImageIcon(getClass().getResource("/images/53.png")));
+		
+		
+		this.height = game.getHeight();
+		this.width = game.getWidth();
+		buttonSize = HEIGHT_SIZE/Math.max(height,width);
 		this.setSize(WIDTH_SIZE,HEIGHT_SIZE);
 		this.setTitle("INFINITY LOOP GAME");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,39 +78,50 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		
+		int max = Math.max(height,width); 
+		setLayout(new GridLayout(max, max));
+		buttons = new ShapeButton[height][width];
 		
-		setLayout(new GridLayout(rows, columns));
-		int k= 0;
-		buttons = new JButton[MATRIX_SIZE][MATRIX_SIZE];
-		for(int i=0; i<buttons.length; i++) {
-			
-			for(int j=0; j<buttons[0].length; j++) {
-				k=(int)(Math.random()*10); 
-				//System.out.println(k);
-				JButton cells = new JButton(imageBouttons[k]);
-				buttons[i][j] = cells;
-				
-				add(cells);
-				cells.addActionListener(this);
-				//cells.setVisible(false);
+		Shape[][] board = game.getBoard();
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
+				ShapeButton button = new ShapeButton(board[i][j]);
+				buttons[i][j] = button;
+				add(button);
+				button.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+		            	button.getShape().rotate();
+		                refreshButton(button);
+		                if(Checker.check(game)) {
+		                	JOptionPane.showMessageDialog(ShapesDrawer.this, "Well done");
+		                }
+		            }
+		        });
+			}
+		}
+	}
+	
+	 
+	private void refreshButton(ShapeButton button) {
+		String  shapeId = button.getShape().toString();
+		ImageIcon icon = new ImageIcon(map.get(shapeId).getImage().getScaledInstance(buttonSize, buttonSize, java.awt.Image.SCALE_SMOOTH));
+		button.setIcon(icon);	
+	}
+	
+	public void drawGame() {
+		Shape[][] board = game.getBoard();
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
+				String shapeId = board[i][j].toString();
+				ImageIcon icon = new ImageIcon(map.get(shapeId).getImage().getScaledInstance(buttonSize, buttonSize, java.awt.Image.SCALE_SMOOTH));
+				buttons[i][j].setIcon(icon);
 			}
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		JButton button = new JButton();
-		button = (JButton) e.getSource();
-		switch(button.getName()) {
-		 //???
-		}
 	}
-	
-	public static void main(String[] args) {
-		ShapesDrawer windowPanel = new ShapesDrawer(Constants.MATRIX_SIZE, Constants.MATRIX_SIZE);
-		//game = new Game();
-		//window.setContentPane(game);
-		windowPanel.setVisible(true);
-	}
+
 }

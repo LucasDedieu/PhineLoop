@@ -5,10 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -18,22 +14,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import fr.dauphine.javaavance.phineloops.checker.Checker;
-import fr.dauphine.javaavance.phineloops.controller.ThreadController;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverCSP;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
-import fr.dauphine.javaavance.phineloops.solver.line.LineByLineThread;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
-import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLineMultiThreadOld;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
-
-
-
-import fr.dauphine.javaavance.phineloops.view.Visualize;
-//import javafx.application.Application;
-//import javafx.stage.Stage;
+import fr.dauphine.javaavance.phineloops.view.ShapesDrawer;
 
 public class Main /*extends Application*/  {
     private static String inputFile = null;  
@@ -46,7 +34,6 @@ public class Main /*extends Application*/  {
     private static void generate(int width,int height, String outputFile){
 	// generate grid and store it to outputFile...
 	//... 
-    	//FIXME fix the generator
     	if (maxcc!=-1) {
     	try {
         	Game game = new Game(height, width,maxcc);
@@ -145,6 +132,8 @@ public class Main /*extends Application*/  {
     	return isSolution;
     	
     }
+   
+
     
     public static void main(String[] args) throws FileNotFoundException {
     	//Application.launch(args);
@@ -185,6 +174,14 @@ public class Main /*extends Application*/  {
 			} 
 			generate(width, height, outputFile);
 	    }
+	    else if(cmd.hasOption( "G" ) ){
+	    	String[] gridformat = cmd.getOptionValue( "G" ).split("x");
+			width = Integer.parseInt(gridformat[0]);
+			height = Integer.parseInt(gridformat[1]);
+			Game game = new Game(height, width);
+			game.generate();
+			ShapesDrawer ui = new ShapesDrawer(new Game(game));
+	    }
 	    else if( cmd.hasOption( "s" ) ) {
 			System.out.println("Running phineloops solver.");
 			inputFile = cmd.getOptionValue( "s" );
@@ -219,8 +216,9 @@ public class Main /*extends Application*/  {
             formatter.printHelp( "phineloops", options );         
             System.exit(1); // exit with error      
 	}
-
-        System.exit(0); // exit with success                            
+		if(!cmd.hasOption( "G")){
+			System.exit(0); // exit with success         
+		}
     }
     
     
