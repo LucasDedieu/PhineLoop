@@ -209,6 +209,7 @@ public abstract class Shape {
 		this.isFroze = isFixed;
 	}
 
+	
 	public ArrayList<Shape> getReservedBy() {
 		return reservedBy;
 	}
@@ -218,7 +219,9 @@ public abstract class Shape {
 	 * @param reservedBy
 	 */
 	public void setReservedBy(Shape reservedBy) {
+		
 		this.reservedBy.add(reservedBy);
+		
 	}
 
 	public int  getDomainSize() {

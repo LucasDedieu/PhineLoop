@@ -21,7 +21,7 @@ public class Cluster {
 	 */
 	public void add(Shape shape) {
 		shapeSet.add(shape);
-		//computed = false;
+		computed = false;
 	}
 
 	/**
@@ -30,6 +30,7 @@ public class Cluster {
 	 * @return true if shape can be accept to the cluster
 	 */
 	public boolean accept(Shape newShape) {
+		
 		for(Shape s : shapeSet) {
 			if(newShape.isConnectedTo(s)) {
 				return true;
@@ -58,6 +59,7 @@ public class Cluster {
 	 */
 	public void merge(Cluster c) {
 		shapeSet.addAll(c.getShapeSet());
+		//updateLimits(c);
 	}
 
 	
@@ -86,7 +88,10 @@ public class Cluster {
 		}
 		computed = true;
 	}
-
+	
+	
+	
+	
 	
 	public int getMinI() {
 		if(!computed){

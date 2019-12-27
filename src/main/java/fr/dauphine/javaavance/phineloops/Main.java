@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -12,6 +14,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import com.sun.corba.se.spi.orbutil.fsm.Input;
 
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
@@ -57,12 +61,13 @@ public class Main /*extends Application*/  {
     }
     	
 
-    private static boolean solve(String inputFile, String outputFile, int threads,String method) throws FileNotFoundException{
+    private static boolean solve(String inputFile, String outputFile, int threads,String method) throws IOException{
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
     	//inputFile is not a valid game file
     	if(game == null) {
+    		Files.copy(Paths.get(inputFile), Paths.get(outputFile));
     		return false;
     	}
     	//System.out.println("original game :\n"+game);
@@ -135,7 +140,7 @@ public class Main /*extends Application*/  {
    
 
     
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
     	//Application.launch(args);
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
@@ -231,8 +236,14 @@ public class Main /*extends Application*/  {
 			BufferedReader br = new BufferedReader(fr); 
 			String line;
 			//First we get the width and height
+			try {
 			height = Integer.parseInt(br.readLine());
 			width = Integer.parseInt(br.readLine());
+			}
+			catch(NumberFormatException e) {
+				br.close();
+				return null;
+			}
 			if(height<0 || width<0) {
 				br.close();	
 				return null;

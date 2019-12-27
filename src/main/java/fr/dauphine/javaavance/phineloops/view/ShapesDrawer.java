@@ -4,17 +4,27 @@ package fr.dauphine.javaavance.phineloops.view;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
 
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
+import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 
 public class ShapesDrawer extends JFrame implements ActionListener{
 	/**
@@ -22,22 +32,22 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 	 */
 
 	private static final long serialVersionUID = 1L;
-	public static final int WIDTH_SIZE = 1080;
-	public static final int HEIGHT_SIZE = 1080;
+	public static final int WIDTH_SIZE = 1000;
+	public static final int HEIGHT_SIZE = 1000;
 	public static final int MATRIX_SIZE = 6;
-	
+
 	private Game game; 
 	private int height;
 	private int width;
 	private HashMap<String, ImageIcon> map = new HashMap<String, ImageIcon>();
 	private int buttonSize;
-	
-	
+
+
 	//public static GameDrawer game;
-	
+
 	private ShapeButton[][] buttons;
 
-	
+
 
 
 	public ShapesDrawer(Game game) {
@@ -45,11 +55,14 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.game = game;
 		init();
 		this.setVisible(true);
+		addMenuBar();
 		drawGame();
 	}
-	
+
+
+
 	private void init() {
-		
+
 		map.put("0 0",  new ImageIcon(getClass().getResource("/images/00.png")));
 		map.put("1 0",  new ImageIcon(getClass().getResource("/images/10.png")));
 		map.put("1 1",  new ImageIcon(getClass().getResource("/images/11.png")));
@@ -66,8 +79,8 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		map.put("5 1",  new ImageIcon(getClass().getResource("/images/51.png")));
 		map.put("5 2",  new ImageIcon(getClass().getResource("/images/52.png")));
 		map.put("5 3",  new ImageIcon(getClass().getResource("/images/53.png")));
-		
-		
+
+
 		this.height = game.getHeight();
 		this.width = game.getWidth();
 		buttonSize = HEIGHT_SIZE/Math.max(height,width);
@@ -77,11 +90,11 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
-		
+
 		int max = Math.max(height,width); 
+		
 		setLayout(new GridLayout(max, max));
 		buttons = new ShapeButton[height][width];
-		
 		Shape[][] board = game.getBoard();
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
@@ -89,26 +102,102 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 				buttons[i][j] = button;
 				add(button);
 				button.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
-		            	button.getShape().rotate();
-		                refreshButton(button);
-		                if(Checker.check(game)) {
-		                	JOptionPane.showMessageDialog(ShapesDrawer.this, "Well done");
-		                }
-		            }
-		        });
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						button.getShape().rotate();
+						refreshButton(button);
+						if(Checker.check(game)) {
+							displayDialog();
+						}
+					}
+					
+					private void displayDialog() {
+						JOptionPane.showMessageDialog(ShapesDrawer.this, "Well done ! If you want to replay click on generate in the menu bar");		
+					}
+				});
 			}
 		}
 	}
-	
-	 
+
+	private void addMenuBar() {
+		JMenuBar menuBar;
+		JMenu menu, submenu;
+		JMenuItem menuItem;
+		JRadioButtonMenuItem rbMenuItem;
+		JCheckBoxMenuItem cbMenuItem;
+
+		//Create the menu bar.
+		menuBar = new JMenuBar();
+
+		//Build the first menu.
+		menu = new JMenu("Solve");
+		menu.setMnemonic(KeyEvent.VK_A);
+		menuBar.add(menu);
+
+		//Solver line item
+		menuItem = new JMenuItem("Solve with SolverLineByLine",
+				KeyEvent.VK_T);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SolverLineByLine solver = new SolverLineByLine(ShapesDrawer.this.game);
+				ShapesDrawer.this.game = solver.solve(4);
+				drawGame();
+				
+			}
+		});
+		menu.add(menuItem);
+		
+		//Solver snail button
+		menuItem = new JMenuItem("Solve with SolverSnail",
+				KeyEvent.VK_T);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_2, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SolverSnail solver = new SolverSnail(ShapesDrawer.this.game);
+				ShapesDrawer.this.game = solver.solve(4);
+				drawGame();
+			}
+		});
+		menu.add(menuItem);
+
+
+
+		//Build second menu in the menu bar.
+		menu = new JMenu("Generate");
+		menu.setMnemonic(KeyEvent.VK_N);
+		menuBar.add(menu);
+		
+		menuItem = new JMenuItem("Generate new grid",
+				KeyEvent.VK_T);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_8, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ShapesDrawer.this.game.generate();
+				drawGame();
+				
+			}
+		});
+		menu.add(menuItem);
+		
+		menuBar.add(menu);
+
+		this.setJMenuBar(menuBar);
+	} 
+
+
 	private void refreshButton(ShapeButton button) {
 		String  shapeId = button.getShape().toString();
 		ImageIcon icon = new ImageIcon(map.get(shapeId).getImage().getScaledInstance(buttonSize, buttonSize, java.awt.Image.SCALE_SMOOTH));
 		button.setIcon(icon);	
 	}
-	
+
 	public void drawGame() {
 		Shape[][] board = game.getBoard();
 		for(int i=0; i<height; i++) {
