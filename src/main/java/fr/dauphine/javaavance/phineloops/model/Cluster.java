@@ -3,8 +3,11 @@ package fr.dauphine.javaavance.phineloops.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 public class Cluster {
-	private Set<Shape> shapeSet = new HashSet<>();
+	//private Set<Shape> shapeSet = new HashSet<>();
+	private Set<Shape> shapeSet = new ObjectOpenHashSet<>(20);
 	private boolean computed = false;
 	private int minI;
 	private int minJ;
@@ -18,7 +21,7 @@ public class Cluster {
 	 */
 	public void add(Shape shape) {
 		shapeSet.add(shape);
-		computed = false;
+		//computed = false;
 	}
 
 	/**

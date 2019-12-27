@@ -8,13 +8,14 @@ import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.QShape;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class ClusterManager {
 	public static int NORTH = 0;
 	public static int EAST = 1;
 	public static int SOUTH = 2;
 	public static int WEST = 3;
-	private Set<Cluster> clusterSet = new HashSet<>();
+	private Set<Cluster> clusterSet = new ObjectOpenHashSet<>(100);
 	private static final ClusterManager INSTANCE = new ClusterManager();
 	
 	private ClusterManager() {
@@ -40,7 +41,7 @@ public class ClusterManager {
 	}
 	
 	public void addShape(Shape s) {
-		Set<Cluster> acceptSet = new HashSet<>();
+		Set<Cluster> acceptSet = new ObjectOpenHashSet<>();
 		for(Cluster c : clusterSet) {
 			if(c.accept(s)) {
 				c.add(s);

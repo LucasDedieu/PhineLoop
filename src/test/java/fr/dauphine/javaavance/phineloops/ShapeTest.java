@@ -16,7 +16,6 @@ public class ShapeTest {
 
 	@Test
 	public void testRotate() {
-		
 		TShape t = new TShape(2,0,0);
 		t.rotate();
 		assertEquals(3,t.getOrientation());
