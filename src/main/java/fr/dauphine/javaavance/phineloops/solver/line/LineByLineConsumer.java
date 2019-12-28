@@ -63,7 +63,7 @@ public class LineByLineConsumer implements Runnable {
 			Shape shape = board[i][j];
 			//Case frozen shape
 			
-			if(shape.isFroze()) {
+			if(shape.isFrozen()) {
 				stack.pop();
 			}
 
@@ -97,7 +97,7 @@ public class LineByLineConsumer implements Runnable {
 			StateLineByLine nextIteration = null;
 			//Case last shape of the board
 			if(i==0 && j ==0) {
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 					return true;
 				}
 				if(game.isShapeFullyConnected(shape)) {

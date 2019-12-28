@@ -9,7 +9,7 @@ import fr.dauphine.javaavance.phineloops.model.Shape;
 public class StateCSP {
 	private Shape shape;
 	//private Set<Shape> banSet;
-	private boolean[] shapeDomain;
+	private boolean[] shapeDomain = new boolean[] {true, true, true, true};
 	private boolean[] rightDomain;
 	private boolean[] leftDomain;
 	private boolean[] bottomDomain;
@@ -21,26 +21,29 @@ public class StateCSP {
 		if(shape!=null) {
 			boolean [] array = shape.getPossibleOrientation();
 			if(array!=null) {
+				shapeDomain = new boolean[array.length];
 				System.arraycopy(array, 0, shapeDomain, 0, array.length);
 			}
+			
 		}
+
 		Shape[] neighbors = game.getNeighbors(shape);
-		if(neighbors[Game.NORTH] !=null) {
+		if(neighbors[Game.NORTH] !=null && !neighbors[Game.NORTH].isFrozen() ) {
 			boolean[] array =  neighbors[Game.NORTH].getPossibleOrientation();
 			topDomain = new boolean[array.length];
 			System.arraycopy(array, 0, topDomain, 0, array.length);
 		}
-		if(neighbors[Game.SOUTH] !=null) {
+		if(neighbors[Game.SOUTH] !=null && !neighbors[Game.SOUTH].isFrozen()) {
 			boolean[] array =  neighbors[Game.SOUTH].getPossibleOrientation();
 			bottomDomain = new boolean[array.length];
 			System.arraycopy(array, 0, bottomDomain, 0, array.length);
 		}
-		if(neighbors[Game.EAST] !=null) {
+		if(neighbors[Game.EAST] !=null && !neighbors[Game.EAST].isFrozen()) {
 			boolean[] array =  neighbors[Game.EAST].getPossibleOrientation();
 			rightDomain = new boolean[array.length];
 			System.arraycopy(array, 0, rightDomain, 0, array.length);
 		}
-		if(neighbors[Game.WEST] !=null) {
+		if(neighbors[Game.WEST] !=null && !neighbors[Game.WEST].isFrozen()) {
 			boolean[] array =  neighbors[Game.WEST].getPossibleOrientation();
 			leftDomain = new boolean[array.length];
 			System.arraycopy(array, 0, leftDomain, 0, array.length);
@@ -90,22 +93,26 @@ public class StateCSP {
 
 
 	public boolean[] getRightDomain() {
+		
 		return rightDomain;
 	}
 
 
 	public boolean[] getLeftDomain() {
 		return leftDomain;
+		
 	}
 
 
 	public boolean[] getBottomDomain() {
 		return bottomDomain;
+	
 	}
 
 
 	public boolean[] getTopDomain() {
 		return topDomain;
+		
 	}
 
 
@@ -133,12 +140,6 @@ public class StateCSP {
 		return shapeDomain;
 	}
 
-
-	public void setShapeDomain(boolean[] shapeDomain) {
-		this.shapeDomain = shapeDomain;
-	}
-	
-	
 	
 	
 

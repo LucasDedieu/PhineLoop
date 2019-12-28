@@ -45,7 +45,7 @@ public class Main /*extends Application*/  {
 			game.write(outputFile);
 			System.out.println(game);
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found: "+outputFile);
+			//System.out.println("File not found: "+outputFile);
 		}
     	}
     	else {

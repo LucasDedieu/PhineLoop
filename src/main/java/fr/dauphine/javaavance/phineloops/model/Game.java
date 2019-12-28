@@ -438,7 +438,7 @@ public class Game {
 		if(i-1>=0) {
 			neighbor = board[i-1][j];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithNorth(shape)) {
 				return false;
 			}
@@ -448,7 +448,7 @@ public class Game {
 		if(j-1>=0) {
 			neighbor = board[i][j-1];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithWest(shape)) {
 				return false;
 			}
@@ -470,7 +470,7 @@ public class Game {
 		if(i-1>=0) {
 			neighbor = board[i-1][j];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithNorth(shape)) {
 				return false;
 			}
@@ -480,7 +480,7 @@ public class Game {
 		if(j-1>=0) {
 			neighbor = board[i][j-1];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithWest(shape)) {
 				return false;
 			}
@@ -490,7 +490,7 @@ public class Game {
 		if(j+1<width) {
 			neighbor = board[i][j+1];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithEast(shape)) {
 				return false;
 			}
@@ -500,7 +500,7 @@ public class Game {
 		if(i+1<height) {
 			neighbor = board[i+1][j];
 		}
-		if(neighbor != null && neighbor.isFroze()) {
+		if(neighbor != null && neighbor.isFrozen()) {
 			if(!isShapeWellConnectedWithSouth(shape)) {
 				return false;
 			}
@@ -711,8 +711,8 @@ public class Game {
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) {
 				Shape shape = board[i][j];
-				/*
-				boolean f = shape.isFroze();
+				
+				boolean f = shape.isFrozen();
 				if(f) {
 					sb.append("\033[36m");
 				}
@@ -727,8 +727,9 @@ public class Game {
 				}
 				else if(shape.getDomainSize() == 3) {
 					sb.append("\033[33m");
-				}*/
-				sb.append(shape.getSymbol());/*
+				}
+				sb.append(shape.getSymbol());
+				
 				if(f) {
 					sb.append("\033[0m");
 				}
@@ -743,7 +744,7 @@ public class Game {
 				}
 				else if(shape.getDomainSize() == 3) {
 					sb.append("\033[0m");
-				}*/
+				}
 				
 			}
 			sb.append("\n");

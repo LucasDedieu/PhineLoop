@@ -1,9 +1,12 @@
 package fr.dauphine.javaavance.phineloops.solver.csp;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.Random;
 
+import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
@@ -14,6 +17,7 @@ public class SolverCSP implements Solver{
 	protected static int EAST = 1;
 	protected static int SOUTH = 2;
 	protected static int WEST = 3;
+	private List<StateCSP> popList = new ArrayList<>();
 	private Game originalGame ;
 	private int height;
 	private int width;
@@ -34,80 +38,88 @@ public class SolverCSP implements Solver{
 	public Game solve(int threads) {
 		Game testGame  = new Game(originalGame);
 		Shape[][] testBoard = testGame.getBoard();
-		checkIfXShapeOnBorder(testBoard);
-		
-		
+		if(checkIfXShapeOnBorder(testBoard)) {
+			return null;
+		}
+		try {
+			prepare(testGame);
+		} catch (Exception e) {
+			return null;
+		}
+
+		if(Checker.check(testGame)) {
+			return testGame;
+		}
+		System.out.println(testGame);
+
 		Shape initShape =pickShape(testGame);
-		for (int k = 0; k < initShape.getPossibleOrientation().length; k++) {
-			boolean b = initShape.getPossibleOrientation()[k];
-			if(b) {
-				stack = new ArrayDeque<StateCSP>();
-				initShape.rotateTo(k);
-				int maxStackSize = height*width - countFrozenShape(testGame);
-				StateCSP initialState = new StateCSP(testGame,initShape,0);
-				stack.push(initialState);
-				
-				while(!stack.isEmpty() ) {
-					StateCSP iteration = stack.peek();
-					int i = iteration.getI();
-					int j = iteration.getJ();
-					Shape shape = iteration.getShape();	
-					System.out.println(testGame);
-					if(stack.size() == maxStackSize) {
-						if(iteration.canRotate()){
-							boolean isWellPlaced = false;
-							do{
-								iteration.rotate();	
-							}while(iteration.canRotate() && !shape.getPossibleOrientation()[shape.getOrientation()] );
-							if(shape.getPossibleOrientation()[shape.getOrientation()]) {
-								isWellPlaced=true;
-							}
-							if(!isWellPlaced) {
-								backtrack(testGame, iteration, stack);
-								continue;
-							}
-						}
-						else {
-							backtrack(testGame, iteration, stack);
-							continue;
-						}
-						return testGame;
+		stack = new ArrayDeque<StateCSP>();
+		int maxStackSize = height*width - countFrozenShape(testGame);
+		StateCSP initialState = new StateCSP(testGame,initShape,0);
+		stack.push(initialState);
+
+		while(!stack.isEmpty() ) {
+			StateCSP iteration = stack.peek();
+			int i = iteration.getI();
+			int j = iteration.getJ();
+			Shape shape = iteration.getShape();	
+			//System.out.println(testGame);
+			if(stack.size() == maxStackSize) {
+				if(iteration.canRotate()){
+					boolean isWellPlaced = false;
+					do{
+						iteration.rotate();	
+					}while(iteration.canRotate() && !shape.getPossibleOrientation()[shape.getOrientation()] );
+					if(shape.getPossibleOrientation()[shape.getOrientation()]) {
+						isWellPlaced=true;
 					}
-					if(iteration.canRotate()){
-						boolean isWellPlaced = false;
-						do{
-							iteration.rotate();	
-						}while(iteration.canRotate() && !shape.getPossibleOrientation()[shape.getOrientation()] );
-						if(shape.getPossibleOrientation()[shape.getOrientation()]) {
-							isWellPlaced=true;
-						}
-						if(!isWellPlaced) {
-							backtrack(testGame, iteration, stack);
-							continue;
-						}
-					}
-					else {
+					if(!isWellPlaced) {
 						backtrack(testGame, iteration, stack);
 						continue;
 					}
-					shape.setFroze(true);
-					reduceNeighborsDomain(testGame, shape);
-					
-					Shape nextShape = pickShape(testGame);
-					if(nextShape == null) {
-						backtrack(testGame, iteration, stack);
-						continue;
-					}
-					StateCSP nextIteration = new StateCSP(testGame,nextShape,0);
-					stack.push(nextIteration);
+				}
+				else {
+					backtrack(testGame, iteration, stack);
+					continue;
+				}
+				return testGame;
+			}
+			if(iteration.canRotate()){
+				boolean isWellPlaced = false;
+				do{
+					iteration.rotate();	
+				}while(iteration.canRotate() && !shape.getPossibleOrientation()[shape.getOrientation()] );
+				if(shape.getPossibleOrientation()[shape.getOrientation()]) {
+					isWellPlaced=true;
+				}
+				if(!isWellPlaced) {
+					backtrack(testGame, iteration, stack);
+					continue;
 				}
 			}
-			
+			else {
+				backtrack(testGame, iteration, stack);
+				continue;
+			}
+			shape.setFroze(true);
+			reduceNeighborsDomain(testGame, shape);
+
+			Shape nextShape = pickShape(testGame);
+			if(nextShape == null) {
+				backtrack(testGame, iteration, stack);
+				continue;
+			}
+			StateCSP nextIteration = new StateCSP(testGame,nextShape,0);
+			stack.push(nextIteration);
+			popList.clear();
 		}
+
+		System.out.println(testGame);
+
 		return null;
 	}
 
-	
+
 	/**
 	 * Check if the board contain XShape on the border of the board
 	 * @param board :the board
@@ -125,21 +137,21 @@ public class SolverCSP implements Solver{
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Pick the shape that have the less possible orientation left
 	 * @param game :the game
 	 * @return the shape with the minimum domain remaining (if there are several in this case, pick the first on the board starting at 0,0)
 	 */
 	private Shape pickShape(Game game) {
-		System.out.println(game);
+		//System.out.println(game);
 		Shape[][] board = game.getBoard();
 		int max = 4;
 		Shape goodShape =null;
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				Shape shape = board[i][j];
-				if(!shape.isFroze() ) {
+				if(!shape.isFrozen() ) {
 					int nb=shape.getDomainSize();
 					if(nb<max) {
 						max = nb;
@@ -168,16 +180,16 @@ public class SolverCSP implements Solver{
 		//restore neighbors domains
 		Shape[] neighbors = game.getNeighbors(shape);
 
-		if(neighbors[Game.NORTH] !=null) {
+		if(neighbors[Game.NORTH] !=null && !neighbors[Game.NORTH].isFrozen()) {
 			neighbors[Game.NORTH].setPossibleOrientation(iteration.getTopDomain());
 		}
-		if(neighbors[Game.SOUTH] !=null) {
+		if(neighbors[Game.SOUTH] !=null&& !neighbors[Game.SOUTH].isFrozen()) {
 			neighbors[Game.SOUTH].setPossibleOrientation(iteration.getBottomDomain());
 		}
-		if(neighbors[Game.EAST] !=null) {
+		if(neighbors[Game.EAST] !=null&& !neighbors[Game.EAST].isFrozen()) {
 			neighbors[Game.EAST].setPossibleOrientation(iteration.getRightDomain());
 		}
-		if(neighbors[Game.WEST] !=null) {
+		if(neighbors[Game.WEST] !=null&& !neighbors[Game.WEST].isFrozen()) {
 			neighbors[Game.WEST].setPossibleOrientation(iteration.getLeftDomain());
 		}
 		shape.setPossibleOrientation(iteration.getShapeDomain());
@@ -186,27 +198,29 @@ public class SolverCSP implements Solver{
 			return;
 		}
 		stack.pop();
-		
+		popList.add(iteration);
+
 		StateCSP previousIteration= stack.peek();
 		if(previousIteration != null) {
 			Shape previousShape = previousIteration.getShape();
-			shape.setFroze(false);
+			previousShape.setFroze(false);
 			//restore neighbors domains
-			 neighbors = game.getNeighbors(previousShape);
-	
-			if(neighbors[Game.NORTH] !=null) {
-				neighbors[Game.NORTH].setPossibleOrientation(iteration.getTopDomain());
+			neighbors = game.getNeighbors(previousShape);
+
+			if(neighbors[Game.NORTH] !=null&& !neighbors[Game.NORTH].isFrozen()) {
+				neighbors[Game.NORTH].setPossibleOrientation(previousIteration.getTopDomain());
 			}
-			if(neighbors[Game.SOUTH] !=null) {
-				neighbors[Game.SOUTH].setPossibleOrientation(iteration.getBottomDomain());
+			if(neighbors[Game.SOUTH] !=null&& !neighbors[Game.SOUTH].isFrozen()) {
+				neighbors[Game.SOUTH].setPossibleOrientation(previousIteration.getBottomDomain());
 			}
-			if(neighbors[Game.EAST] !=null) {
-				neighbors[Game.EAST].setPossibleOrientation(iteration.getRightDomain());
+			if(neighbors[Game.EAST] !=null&& !neighbors[Game.EAST].isFrozen()) {
+				neighbors[Game.EAST].setPossibleOrientation(previousIteration.getRightDomain());
 			}
-			if(neighbors[Game.WEST] !=null) {
-				neighbors[Game.WEST].setPossibleOrientation(iteration.getLeftDomain());
+			if(neighbors[Game.WEST] !=null&& !neighbors[Game.WEST].isFrozen()) {
+				neighbors[Game.WEST].setPossibleOrientation(previousIteration.getLeftDomain());
 			}		
 		}
+		
 	}
 
 	/**
@@ -223,7 +237,7 @@ public class SolverCSP implements Solver{
 		do {
 			nbFreeze = refreeze(game);
 			total+=nbFreeze;
-			System.out.println("New shape froze : "+nbFreeze);
+			//System.out.println("New shape froze : "+nbFreeze);
 		}while(nbFreeze>0);
 		reduceDomainBorder(game);
 		reduceDomain(game);
@@ -232,7 +246,7 @@ public class SolverCSP implements Solver{
 			do {
 				nbFreeze = refreeze(game);
 				total+=nbFreeze;
-				System.out.println("New shape froze : "+nbFreeze);
+				//System.out.println("New shape froze : "+nbFreeze);
 			}while(nbFreeze>0);
 			//Reduce domain
 			reduceDomain(game);
@@ -255,14 +269,14 @@ public class SolverCSP implements Solver{
 		int nb=0;
 		for (Shape[] shapes:game.getBoard()){
 			for (Shape shape:shapes){
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 					nb++;
 				}
 			}
 		}
 		return nb;
 	}
-	
+
 	/**
 	 * Shuffle randomly the board
 	 * @param game :the game to shuffle
@@ -272,7 +286,7 @@ public class SolverCSP implements Solver{
 		Random rand = new Random();
 		for (Shape[] shapes:game.getBoard()){
 			for (Shape shape:shapes){
-				if(!shape.isFroze()) {
+				if(!shape.isFrozen()) {
 					for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
 				}
 			}
@@ -289,7 +303,7 @@ public class SolverCSP implements Solver{
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
 				Shape shape = board[i][j];
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 
 				}
 				//TOP BORDER
@@ -303,11 +317,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are QShape || LShape
 							Shape rightNeighbor = board[i][j+1];
 							Shape bottomNeighbor = board[i+1][j];
-							if(!rightNeighbor.isFroze() ) {
+							if(!rightNeighbor.isFrozen() ) {
 								if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 								else if(rightNeighbor.getType() == 5) {rightNeighbor.rotateTo(2);rightNeighbor.setFroze(true);}
 							}
-							if(!bottomNeighbor.isFroze() &(bottomNeighbor.getType() == 1 || bottomNeighbor.getType() == 5 )) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
+							if(!bottomNeighbor.isFrozen() &(bottomNeighbor.getType() == 1 || bottomNeighbor.getType() == 5 )) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						}
 						//EmptyShape
 						else if(shape.getType() == 0) {
@@ -315,11 +329,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are TShape || IShape
 							Shape rightNeighbor = board[i][j+1];
 							Shape bottomNeighbor = board[i+1][j];
-							if(!rightNeighbor.isFroze()) {
+							if(!rightNeighbor.isFrozen()) {
 								if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 								else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 							}
-							if(!bottomNeighbor.isFroze()) {
+							if(!bottomNeighbor.isFrozen()) {
 								if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 								else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 							}						
@@ -336,9 +350,9 @@ public class SolverCSP implements Solver{
 							Shape leftNeighbor = board[i][j-1];
 							Shape bottomNeighbor = board[i+1][j];
 
-							if(!leftNeighbor.isFroze() && (leftNeighbor.getType() == 1  || leftNeighbor.getType() == 5 )) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
+							if(!leftNeighbor.isFrozen() && (leftNeighbor.getType() == 1  || leftNeighbor.getType() == 5 )) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 
-							if(!bottomNeighbor.isFroze()) {
+							if(!bottomNeighbor.isFrozen()) {
 								if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 								else if(bottomNeighbor.getType() == 5) {bottomNeighbor.rotateTo(3);bottomNeighbor.setFroze(true);}
 							}
@@ -349,11 +363,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are TShape || IShape
 							Shape leftNeighbor = board[i][j-1];
 							Shape bottomNeighbor = board[i+1][j];
-							if(!leftNeighbor.isFroze()) {
+							if(!leftNeighbor.isFrozen()) {
 								if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 								else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 							}
-							if(!bottomNeighbor.isFroze()) {
+							if(!bottomNeighbor.isFrozen()) {
 								if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 								else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 							}						
@@ -368,14 +382,14 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomNeighbor = board[i+1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 1 || leftNeighbor.getType()==5) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							else if(rightNeighbor.getType() == 5) {rightNeighbor.rotateTo(2);rightNeighbor.setFroze(true);}
 						}	
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if (bottomNeighbor.getType() == 1 || bottomNeighbor.getType()==2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						}
 					}
@@ -388,14 +402,14 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomNeighbor = board[i+1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 1 || leftNeighbor.getType()==5) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							else if(rightNeighbor.getType() == 5) {rightNeighbor.rotateTo(2);rightNeighbor.setFroze(true);}
 						}	
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if (bottomNeighbor.getType() ==2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 							if (bottomNeighbor.getType() ==3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 						}
@@ -407,15 +421,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomNeighbor = board[i+1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 							else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 						}						
@@ -434,11 +448,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are QShape || IShape || LShape
 							Shape rightNeighbor = board[i][j+1];
 							Shape topNeighbor = board[i-1][j];
-							if(!rightNeighbor.isFroze() ) {
+							if(!rightNeighbor.isFrozen() ) {
 								if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 								else if(rightNeighbor.getType()==5) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							}
-							if(!topNeighbor.isFroze()) {
+							if(!topNeighbor.isFrozen()) {
 								if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 								else if(topNeighbor.getType() == 5){topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 							}
@@ -449,11 +463,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are TShape || IShape
 							Shape rightNeighbor = board[i][j+1];
 							Shape topNeighbor = board[i-1][j];
-							if(!rightNeighbor.isFroze()) {
+							if(!rightNeighbor.isFrozen()) {
 								if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 								else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 							}
-							if(!topNeighbor.isFroze()) {
+							if(!topNeighbor.isFrozen()) {
 								if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 								else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 							}
@@ -468,11 +482,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are QShape || IShape || LShape
 							Shape leftNeighbor = board[i][j-1];
 							Shape topNeighbor = board[i-1][j];
-							if(!leftNeighbor.isFroze() ) {
+							if(!leftNeighbor.isFrozen() ) {
 								if(leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 								else if(leftNeighbor.getType()==5) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 							}
-							if(!topNeighbor.isFroze()) {
+							if(!topNeighbor.isFrozen()) {
 								if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 								else if(topNeighbor.getType() == 5){topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 							}
@@ -483,11 +497,11 @@ public class SolverCSP implements Solver{
 							//Check if neighbors are TShape || IShape
 							Shape leftNeighbor = board[i][j-1];
 							Shape topNeighbor = board[i-1][j];
-							if(!leftNeighbor.isFroze()) {
+							if(!leftNeighbor.isFrozen()) {
 								if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 								else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 							}	
-							if(!topNeighbor.isFroze()) {
+							if(!topNeighbor.isFrozen()) {
 								if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 								else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 							}
@@ -503,15 +517,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 5) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);} 
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							else if(rightNeighbor.getType() == 5) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 						}
@@ -525,15 +539,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 5) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);} 
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if(rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							else if(rightNeighbor.getType() == 5) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 						}	
@@ -545,15 +559,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape rightNeighbor = board[i][j+1];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 						}
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 							else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 						}
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 						}
@@ -573,15 +587,15 @@ public class SolverCSP implements Solver{
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomtNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);}
 							else if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 						}
-						if(!bottomtNeighbor.isFroze()) {
+						if(!bottomtNeighbor.isFrozen()) {
 							if(bottomtNeighbor.getType() == 1) {bottomtNeighbor.rotateTo(0);bottomtNeighbor.setFroze(true);}
 							else if(bottomtNeighbor.getType() == 5) {bottomtNeighbor.rotateTo(0);bottomtNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 5) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 						}
@@ -595,15 +609,15 @@ public class SolverCSP implements Solver{
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 							else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 5) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 5) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 						}	
@@ -615,15 +629,15 @@ public class SolverCSP implements Solver{
 						Shape rightNeighbor = board[i][j+1];
 						Shape bottomNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!rightNeighbor.isFroze()) {
+						if(!rightNeighbor.isFrozen()) {
 							if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 							else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 						}
@@ -641,15 +655,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape bottomNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 5) {bottomNeighbor.rotateTo(3);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 5) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 						}
@@ -663,15 +677,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape bottomNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 5) {bottomNeighbor.rotateTo(3);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 5) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 						}
@@ -683,15 +697,15 @@ public class SolverCSP implements Solver{
 						Shape leftNeighbor = board[i][j-1];
 						Shape bottomNeighbor = board[i+1][j];
 						Shape topNeighbor = board[i-1][j];
-						if(!leftNeighbor.isFroze()) {
+						if(!leftNeighbor.isFrozen()) {
 							if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 							else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 						}
-						if(!bottomNeighbor.isFroze()) {
+						if(!bottomNeighbor.isFrozen()) {
 							if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 							else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 						}	
-						if(!topNeighbor.isFroze()) {
+						if(!topNeighbor.isFrozen()) {
 							if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 							else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 						}
@@ -707,19 +721,19 @@ public class SolverCSP implements Solver{
 					Shape rightNeighbor = board[i][j+1];
 					Shape bottomNeighbor = board[i+1][j];
 					Shape topNeighbor = board[i-1][j];
-					if(!leftNeighbor.isFroze()) {
+					if(!leftNeighbor.isFrozen()) {
 						if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);}
 						else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);} 
 					}
-					if(!rightNeighbor.isFroze()) {
+					if(!rightNeighbor.isFrozen()) {
 						if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);}
 						else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);} 
 					}
-					if(!bottomNeighbor.isFroze()) {
+					if(!bottomNeighbor.isFrozen()) {
 						if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 						else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);}
 					}	
-					if(!topNeighbor.isFroze()) {
+					if(!topNeighbor.isFrozen()) {
 						if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 						else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);}
 					}
@@ -733,19 +747,19 @@ public class SolverCSP implements Solver{
 					Shape rightNeighbor = board[i][j+1];
 					Shape bottomNeighbor = board[i+1][j];
 					Shape topNeighbor = board[i-1][j];
-					if(!leftNeighbor.isFroze()) {
+					if(!leftNeighbor.isFrozen()) {
 						if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);}
 						else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);} 
 					}
-					if(!rightNeighbor.isFroze()) {
+					if(!rightNeighbor.isFrozen()) {
 						if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);}
 						else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);} 
 					}
-					if(!bottomNeighbor.isFroze()) {
+					if(!bottomNeighbor.isFrozen()) {
 						if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);}
 						else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);}
 					}	
-					if(!topNeighbor.isFroze()) {
+					if(!topNeighbor.isFrozen()) {
 						if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);}
 						else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);}
 					}
@@ -768,7 +782,7 @@ public class SolverCSP implements Solver{
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
 				Shape shape = board[i][j];
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 					//QShape
 					if(shape.getType() == 1) {
 						frozen += freezeQShapeNeighbors(board,  i, j, shape);
@@ -831,28 +845,28 @@ public class SolverCSP implements Solver{
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(topNeighbor!=null && rightNeighbor!= null && topNeighbor.isFroze() && rightNeighbor.isFroze()){
+		if(topNeighbor!=null && rightNeighbor!= null && topNeighbor.isFrozen() && rightNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithNorthAndEast(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(topNeighbor!=null && leftNeighbor!= null && topNeighbor.isFroze() && leftNeighbor.isFroze()){
+		else if(topNeighbor!=null && leftNeighbor!= null && topNeighbor.isFrozen() && leftNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithNorthAndWest(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(bottomNeighbor!=null && rightNeighbor!= null && bottomNeighbor.isFroze() && rightNeighbor.isFroze()){
+		else if(bottomNeighbor!=null && rightNeighbor!= null && bottomNeighbor.isFrozen() && rightNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithSouthAndEast(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(bottomNeighbor!=null && leftNeighbor!= null && bottomNeighbor.isFroze() && leftNeighbor.isFroze()){
+		else if(bottomNeighbor!=null && leftNeighbor!= null && bottomNeighbor.isFrozen() && leftNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithSouthAndWest(shape)) {
 				shape.rotate();
 			}
@@ -860,14 +874,14 @@ public class SolverCSP implements Solver{
 			return 1;
 		}	
 		else if( shape.getType() == 2) {
-			if (bottomNeighbor!=null && topNeighbor!= null && bottomNeighbor.isFroze() && topNeighbor.isFroze()){
+			if (bottomNeighbor!=null && topNeighbor!= null && bottomNeighbor.isFrozen() && topNeighbor.isFrozen()){
 				while(!game.isShapeWellConnectedWithNorthAndSouth(shape)) {
 					shape.rotate();
 				}
 				shape.setFroze(true);
 				return 1;
 			}	
-			if (leftNeighbor!=null && rightNeighbor!= null && leftNeighbor.isFroze() && rightNeighbor.isFroze()){
+			if (leftNeighbor!=null && rightNeighbor!= null && leftNeighbor.isFrozen() && rightNeighbor.isFrozen()){
 				while(!game.isShapeWellConnectedWithEastAndWest(shape)) {
 					shape.rotate();
 				}
@@ -905,28 +919,28 @@ public class SolverCSP implements Solver{
 		if(i-1>=0) {
 			topNeighbor = board[i-1][j];
 		}
-		if(topNeighbor!=null && rightNeighbor!= null && leftNeighbor!=null && topNeighbor.isFroze() && rightNeighbor.isFroze()&&leftNeighbor.isFroze()){
+		if(topNeighbor!=null && rightNeighbor!= null && leftNeighbor!=null && topNeighbor.isFrozen() && rightNeighbor.isFrozen()&&leftNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithNorthAndEastAndWest(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(topNeighbor!=null && bottomNeighbor!= null && leftNeighbor!=null && topNeighbor.isFroze() && leftNeighbor.isFroze()&& bottomNeighbor.isFroze()){
+		else if(topNeighbor!=null && bottomNeighbor!= null && leftNeighbor!=null && topNeighbor.isFrozen() && leftNeighbor.isFrozen()&& bottomNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithNorthAndSouthAndWest(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(topNeighbor!=null && rightNeighbor!= null && bottomNeighbor!=null && bottomNeighbor.isFroze() && rightNeighbor.isFroze() && topNeighbor.isFroze()){
+		else if(topNeighbor!=null && rightNeighbor!= null && bottomNeighbor!=null && bottomNeighbor.isFrozen() && rightNeighbor.isFrozen() && topNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithNorthAndEastAndSouth(shape)) {
 				shape.rotate();
 			}
 			shape.setFroze(true);
 			return 1;
 		}
-		else if(bottomNeighbor!=null && rightNeighbor!= null && leftNeighbor!=null && bottomNeighbor.isFroze() && leftNeighbor.isFroze() && rightNeighbor.isFroze()){
+		else if(bottomNeighbor!=null && rightNeighbor!= null && leftNeighbor!=null && bottomNeighbor.isFrozen() && leftNeighbor.isFrozen() && rightNeighbor.isFrozen()){
 			while(!game.isShapeWellConnectedWithEastAndSouthAndWest(shape)) {
 				shape.rotate();
 			}
@@ -964,74 +978,74 @@ public class SolverCSP implements Solver{
 			topNeighbor = board[i-1][j];
 		}
 		if(orientation == 0) {
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 			return frozen;
 		}
 		else if(orientation == 1) {
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 2) {
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 3) {
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
@@ -1067,73 +1081,73 @@ public class SolverCSP implements Solver{
 			topNeighbor = board[i-1][j];
 		}
 		if(orientation == 0) {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		if(orientation == 1) {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 2) {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 3) {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
@@ -1170,19 +1184,19 @@ public class SolverCSP implements Solver{
 		}
 		if(orientation == 0) {
 
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
@@ -1190,57 +1204,57 @@ public class SolverCSP implements Solver{
 		}
 		else if(orientation == 1) {
 
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 2) {
 
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else if(orientation == 3) {
 
-			if(leftNeighbor !=null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor !=null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor !=null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor !=null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor !=null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor !=null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor !=null && !topNeighbor.isFroze()) {
+			if(topNeighbor !=null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
@@ -1276,37 +1290,37 @@ public class SolverCSP implements Solver{
 			topNeighbor = board[i-1][j];
 		}
 		if(orientation == 0) {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(0);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 3) {leftNeighbor.rotateTo(3);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(0);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 3) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 1) {bottomNeighbor.rotateTo(0);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 1) {topNeighbor.rotateTo(2);topNeighbor.setFroze(true);frozen++;}
 			}
 		}
 		else {
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				if (leftNeighbor.getType() == 2) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;}
 				else if (leftNeighbor.getType() == 1) {leftNeighbor.rotateTo(1);leftNeighbor.setFroze(true);frozen++;} 
 			}
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				if (rightNeighbor.getType() == 2) {rightNeighbor.rotateTo(1);rightNeighbor.setFroze(true);frozen++;}
 				else if (rightNeighbor.getType() == 1) {rightNeighbor.rotateTo(3);rightNeighbor.setFroze(true);frozen++;} 
 			}
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				if(bottomNeighbor.getType() == 2) {bottomNeighbor.rotateTo(1);bottomNeighbor.setFroze(true);frozen++;}
 				else if(bottomNeighbor.getType() == 3) {bottomNeighbor.rotateTo(2);bottomNeighbor.setFroze(true);frozen++;}
 			}	
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				if (topNeighbor.getType() == 2) {topNeighbor.rotateTo(1);topNeighbor.setFroze(true);frozen++;}
 				else if(topNeighbor.getType() == 3) {topNeighbor.rotateTo(0);topNeighbor.setFroze(true);frozen++;}
 			}
@@ -1326,7 +1340,7 @@ public class SolverCSP implements Solver{
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
 				Shape shape = board[i][j];
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 					nb+=reduceNeighborsDomain(game, shape);
 				}
 			}
@@ -1345,7 +1359,7 @@ public class SolverCSP implements Solver{
 		int i = shape.getI();
 		int j = shape.getJ();
 		int nb=0;
-		if(shape.isFroze()) {
+		if(shape.isFrozen()) {
 			Shape leftNeighbor = null;
 			Shape rightNeighbor = null;
 			Shape bottomNeighbor = null;
@@ -1363,7 +1377,7 @@ public class SolverCSP implements Solver{
 				topNeighbor = board[i-1][j];
 			}
 			//LEFT NEIGHBOR
-			if(leftNeighbor != null && !leftNeighbor.isFroze()) {
+			if(leftNeighbor != null && !leftNeighbor.isFrozen()) {
 				int type = leftNeighbor.getType();
 				if(shape.getConnections()[WEST]) {
 					switch(type) {
@@ -1383,7 +1397,7 @@ public class SolverCSP implements Solver{
 				}
 			}
 			//RIGHT NEIGHBOR
-			if(rightNeighbor != null && !rightNeighbor.isFroze()) {
+			if(rightNeighbor != null && !rightNeighbor.isFrozen()) {
 				int type = rightNeighbor.getType();
 				if(shape.getConnections()[EAST]) {
 					switch(type) {
@@ -1403,7 +1417,7 @@ public class SolverCSP implements Solver{
 				}
 			}
 			//BOTTOM NEIGHBOR
-			if(bottomNeighbor != null && !bottomNeighbor.isFroze()) {
+			if(bottomNeighbor != null && !bottomNeighbor.isFrozen()) {
 				int type = bottomNeighbor.getType();
 				if(shape.getConnections()[SOUTH]) {
 					switch(type) {
@@ -1423,7 +1437,7 @@ public class SolverCSP implements Solver{
 				}
 			}
 			//TOP NEIGHBOR
-			if(topNeighbor != null && !topNeighbor.isFroze()) {
+			if(topNeighbor != null && !topNeighbor.isFrozen()) {
 				int type = topNeighbor.getType();
 				if(shape.getConnections()[NORTH]) {
 					switch(type) {
@@ -1457,33 +1471,66 @@ public class SolverCSP implements Solver{
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
 				Shape shape = board[i][j];
-				if(!shape.isFroze()) {
+				if(!shape.isFrozen()) {
 					int shapeType = shape.getType();
-					if(i==0) {						
-						switch(shapeType) {
-						case 1 :shape.removePossibleOrientation(new int[]{0});break;
-						case 5 :shape.removePossibleOrientation(new int[]{0,3});break;
-						}			
+					//TOP BORDER
+					if(i==0) {	
+						//TOP LEFT CORNER
+						if(j==0) {
+							//LShape are frozen on corner
+							if(shapeType ==1) {
+								shape.removePossibleOrientation(new int[]{0,3});
+							}	
+						}
+						//TOP RIGHT CORNER
+						else if(j==width-1) {
+							if(shapeType ==1) {
+								shape.removePossibleOrientation(new int[]{0,1});
+							}	
+						}
+						else {
+							switch(shapeType) {
+							case 1 :shape.removePossibleOrientation(new int[]{0});break;
+							case 5 :shape.removePossibleOrientation(new int[]{0,3});break;
+							}
+						}
 					}
+					//BOTTOM BORDER
+					else if(i==height-1) {
+						//BOTTOM LEFT CORNER
+						if(j==0) {
+							if(shapeType ==1) {
+								shape.removePossibleOrientation(new int[]{2,3});
+							}	
+						}
+						//BOTTOM RIGHT CORNER
+						else if(j==width-1) {
+							if(shapeType ==1) {
+								shape.removePossibleOrientation(new int[]{1,2});
+							}	
+						}
+						else {
+							switch(shapeType) {	
+							case 1 :shape.removePossibleOrientation(new int[]{2});break;
+							case 5 :shape.removePossibleOrientation(new int[]{1,2});break;
+							}
+						}
+
+					}
+					//LEFT BORDER
 					else if(j==0) {
 						switch(shapeType) {
 						case 1 :shape.removePossibleOrientation(new int[]{3});break;
 						case 5 :shape.removePossibleOrientation(new int[]{2,3});break;
 						}
-					}
-					else if(i==height-1) {
-						switch(shapeType) {
-						case 1 :shape.removePossibleOrientation(new int[]{2});break;
-						case 5 :shape.removePossibleOrientation(new int[]{1,2});break;
-						}
-					}
 
+					}
+					//RIGHT BORDER
 					else if(j==width-1) {
 						switch(shapeType) {
 						case 1 :shape.removePossibleOrientation(new int[]{1});break;
 						case 5 :shape.removePossibleOrientation(new int[]{0,1});break;
 						}
-
 					}
 				}
 
@@ -1503,7 +1550,7 @@ public class SolverCSP implements Solver{
 		for(int i = 0; i<height;i++) {
 			for(int j = 0; j<width;j++) {
 				Shape shape = board[i][j];
-				if(shape.isFroze()) {
+				if(shape.isFrozen()) {
 					continue;
 				}
 				int nbO = 0;

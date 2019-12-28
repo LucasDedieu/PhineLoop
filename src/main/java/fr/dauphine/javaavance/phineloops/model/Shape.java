@@ -12,7 +12,7 @@ public abstract class Shape {
 	protected int orientation;
 	private int i;
 	private int j;
-	private boolean isFroze;
+	private boolean isFrozen;
 	public boolean[] possibleOrientation;
 
 	private ArrayList<Shape> reservedBy = new ArrayList<Shape>();
@@ -126,7 +126,10 @@ public abstract class Shape {
 	}
 	
 	public void setPossibleOrientation(boolean[] d) {
-		this.possibleOrientation=d;
+
+		this.possibleOrientation = new boolean[d.length];
+		System.arraycopy(d, 0, possibleOrientation, 0, d.length);
+		
 		domainSize=0;
 		for(int i=0;i<possibleOrientation.length;i++) {
 			if(possibleOrientation[i]) {
@@ -201,12 +204,13 @@ public abstract class Shape {
 	}
 
 	
-	public boolean isFroze() {
-		return isFroze;
+	public boolean isFrozen() {
+		return isFrozen;
 	}
 
-	public void setFroze(boolean isFixed) {
-		this.isFroze = isFixed;
+	public void setFroze(boolean isFrozen) {
+		
+		this.isFrozen = isFrozen;
 	}
 
 	

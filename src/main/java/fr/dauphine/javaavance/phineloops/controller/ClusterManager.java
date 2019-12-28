@@ -32,7 +32,7 @@ public class ClusterManager {
 		for(int i = 0; i<game.getHeight(); i++) {
 			for(int j = 0; j<game.getWidth(); j++) {
 				Shape s = board[i][j];
-				if(!s.isFroze()) {
+				if(!s.isFrozen()) {
 					addShape(board[i][j]);
 				}
 			}
@@ -105,7 +105,7 @@ public class ClusterManager {
 		for(int i = 0; i<h; i++) {
 			for(int j = 0; j<w; j++) {
 				Shape shape = subBoard[i][j];
-				 if(!shape.isFroze() && !c.contains(shape)) {
+				 if(!shape.isFrozen() && !c.contains(shape)) {
 					 subBoard[i][j] = new EmptyShape(0, i, j);
 					 subBoard[i][j].setFroze(true);
 				 }
