@@ -59,7 +59,7 @@ public class SolverLineByLine implements Solver{
 		}
 		long deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Freeze time :"+deltaTime+" ms");
-		System.out.println(solvedGame);
+		//System.out.println(solvedGame);
 		
 		//Find cluster
 		startTime = System.currentTimeMillis();
@@ -71,9 +71,9 @@ public class SolverLineByLine implements Solver{
 		//Prepare games
 		startTime = System.currentTimeMillis();
 		Set<Game> games = ClusterManager.getInstance().getClusterGames(solvedGame);
-		for(Game game : games) {
-			System.out.println(game);
-		}
+		//for(Game game : games) {
+		//	System.out.println(game);
+		//}
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Delimit games times :"+deltaTime+" ms");
 
