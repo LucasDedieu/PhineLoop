@@ -14,7 +14,7 @@ public class MyPropagator extends Propagator<IntVar>{
 	private Shape[] neighbourhood;
 	
 
-	public MyPropagator(IntVar[] intVarNeighbourhood, Game game, Shape[] neighbourhood) {
+	public MyPropagator(IntVar[] intVarNeighbourhood, Shape[] neighbourhood, Game game) {
 		super(intVarNeighbourhood);
 		this.intVarNeighbourhood = intVarNeighbourhood;
 		this.game = game;

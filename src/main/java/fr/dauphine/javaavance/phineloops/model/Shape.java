@@ -28,6 +28,11 @@ public abstract class Shape {
 		this.j=j;
 	}
 	
+	public Shape(int orientation)
+	{
+		this.orientation=orientation;
+	}
+	
 	
 	/**
 	 * Construct the shape object from its string id 

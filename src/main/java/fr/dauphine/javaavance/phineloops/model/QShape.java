@@ -153,7 +153,7 @@ public class QShape extends Shape {
 	@Override
 	public int[] getDomain() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.domain;
 	}
 
 }
