@@ -46,6 +46,7 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 	
 	public Game solve_choco() {
 		Model model = new Model("Phineloops model");
+		//prepare(game);
 		Shape[][] board= game.getBoard();
 		Game game_solved;
 		//We define an annex board for the shapetypes so we can reduce the domain to simply their orientations 
@@ -53,95 +54,22 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		IntVar[][] vars = new IntVar[height][width];
 		//We get the domains of the variables which are their orientations 
 		for(int i=0; i<height;i++) {
-			for(int j =0; j<width;j++) {
-				int[] domain = board[i][j].getDomain(); // Can maybe reduce the domain there ... 
-				vars[i][j] = model.intVar(domain);
+			for(int j =0; j<width;j++) 
+			{
+					int[] domain = board[i][j].getDomainWithPruning(game); // We prune the domain regarding the position on the board of the shapes 
+					vars[i][j] = model.intVar(domain);
 			}
 		}
 		
-		//Now lets post the constraint, there is unary contraint for the border and the corner variables that they don't have an orientation that gives them a connection to an empty space
 		for(int i=0; i<height;i++) {
-			for(int j =0; j<width;j++) { //Now we prune the unfeasible value of the domain considering their position on the grid 
-				if (board[i][j].getType()!=EMPTYSHAPE && i==0 )  
-				{
-					vars[i][j].ne(0).post();
-					if (board[i][j].getType()==TSHAPE) 
-					{
-						vars[i][j].ne(1).post();
-						vars[i][j].ne(3).post();
-					}
-					if (board[i][j].getType()==LSHAPE) 
-					{
-						vars[i][j].ne(3).post();
-					}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && j==0 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE:  
-							vars[i][j].ne(3).post();
-							break;
-						case ISHAPE:
-							vars[i][j].ne(1).post();
-							break;
-						case TSHAPE: case LSHAPE: 
-							vars[i][j].ne(2).post();
-							vars[i][j].ne(3).post();
-							break;
-						default: break;
-					}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && i==height-1 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE:  
-							vars[i][j].ne(2).post();
-							break;
-						case ISHAPE:
-							vars[i][j].ne(0).post();
-							break;
-						case LSHAPE: 
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							break;
-						case TSHAPE: 
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							vars[i][j].ne(3).post();
-							break;
-						default: break;
-					}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && j==width-1 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE: case ISHAPE: 
-							vars[i][j].ne(1).post();
-							break;
-						case TSHAPE:  
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							break;
-						case LSHAPE:
-							vars[i][j].ne(0).post();
-							vars[i][j].ne(1).post();
-							break;
-						default: break;
-					}
-				}
-				
-				if (board[i][j].getType()!=EMPTYSHAPE && board[i][j].getType()!=XSHAPE)
-				{
-					//Constraint myConstraint = new Constraint("All shapes connected Constraint", new ShapeConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board),new InstanciatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board));
-					Constraint myConstraint = new Constraint("Simple connection with shapes Constraint",new MyPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game));
-					myConstraint.post();
-				}
+			for(int j =0; j<width;j++) { 
+				if (vars[i][j].isInstantiated()) board[i][j].setOrientation(vars[i][j].getValue());
+				Constraint myConstraint = new Constraint("Simple connection with shapes Constraint",
+							new MyPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game)
+							,new InstantiatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game));
+				myConstraint.post();
 			}
 		}
-		
 		
 		//Now let's get the solution 
 		Solver plsolver = model.getSolver();
@@ -161,14 +89,14 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 	}		
 	
 	
-		/*
-		 * 
-		 * 
-		 * 
-		 * 
-		 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
-		 */
-		private Model makeModel() {
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
+	 */
+	private Model makeModel() {
 		// TODO Auto-generated method stub
 		Model model = new Model("Phineloops model");
 		Shape[][] board= game.getBoard();
@@ -188,79 +116,7 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		for(int i=0; i<height;i++) 
 		{
 			for(int j =0; j<width;j++) 
-			{ 
-				//Now we prune the unfeasible value of the domain considering their position on the grid 
-				if (board[i][j].getType()!=EMPTYSHAPE && i==0 )  
-				{
-					vars[i][j].ne(0).post();
-					if (board[i][j].getType()==TSHAPE) 
-						{
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(3).post();
-						}
-						if (board[i][j].getType()==LSHAPE) 
-						{
-							vars[i][j].ne(3).post();
-						}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && j==0 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE:  
-							vars[i][j].ne(3).post();
-							break;
-						case ISHAPE:
-							vars[i][j].ne(1).post();
-							break;
-						case TSHAPE: case LSHAPE: 
-							vars[i][j].ne(2).post();
-							vars[i][j].ne(3).post();
-							break;
-						default: break;
-					}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && i==height-1 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE:  
-							vars[i][j].ne(2).post();
-							break;
-						case ISHAPE:
-							vars[i][j].ne(0).post();
-							break;
-						case LSHAPE: 
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							break;
-						case TSHAPE: 
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							vars[i][j].ne(3).post();
-							break;
-						default: 
-							break;
-						}
-				}
-				if (board[i][j].getType()!=EMPTYSHAPE && j==width-1 )  
-				{
-					switch (board[i][j].getType())
-					{
-						case QSHAPE: case ISHAPE: 
-							vars[i][j].ne(1).post();
-							break;
-						case TSHAPE:  
-							vars[i][j].ne(1).post();
-							vars[i][j].ne(2).post();
-							break;
-						case LSHAPE:
-							vars[i][j].ne(0).post();
-							vars[i][j].ne(1).post();
-							break;
-						default: break;
-					}
-				}	
+			{ 	
 				if (board[i][j].getType()!=EMPTYSHAPE && board[i][j].getType()!=XSHAPE)
 				{
 					//Constraint myConstraint = new Constraint("All shapes connected Constraint", new ShapeConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board),new InstanciatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board));
@@ -270,83 +126,81 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 			}
 		}
 		return model;
-		}
-
+	}
 		
-		/*
-		 * 
-		 * 
-		 * 
-		 * 
-		 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
-		 */
-		public Game solve_choco_with_multithreading(int nbThreads) // Ou autre classe qui hérite de solverChoco 
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
+	 */
+	public Game solve_choco_with_multithreading(int nbThreads) // Ou autre classe qui hérite de solverChoco 
+	{
+		ParallelPortfolio portfolio = new ParallelPortfolio();
+		int nbModels = nbThreads;
+		for(int s=0;s<nbModels;s++)
 		{
-			ParallelPortfolio portfolio = new ParallelPortfolio();
-			int nbModels = nbThreads;
-			for(int s=0;s<nbModels;s++)
-			{
-				portfolio.addModel(makeModel());
-			}
-			portfolio.solve();
-			return null;
+			portfolio.addModel(makeModel());
 		}
+		portfolio.solve();
+		return null;
+	}
 
-		/**
-		 * 
-		 * @param currentPiece
-		 * @param currentPieceIntVar
-		 * @param vars
-		 * @return
-		 */
-		public IntVar[] getIntVarNeighbourhood(Shape currentPiece,IntVar currentPieceIntVar,IntVar[][] vars)
+	/**
+	 * 
+	 * @param currentPiece
+	 * @param currentPieceIntVar
+	 * @param vars
+	 * @return
+	 */
+	public IntVar[] getIntVarNeighbourhood(Shape currentPiece,IntVar currentPieceIntVar,IntVar[][] vars)
+	{
+		Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
+		ArrayList<IntVar> transitiveCVN = new ArrayList<IntVar>();
+		transitiveCVN.add(currentPieceIntVar);
+		for (int v=0;v<shapeNeighbour.length;v++)
 		{
-			Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
-			ArrayList<IntVar> transitiveCVN = new ArrayList<IntVar>();
-			transitiveCVN.add(currentPieceIntVar);
-			for (int v=0;v<shapeNeighbour.length;v++)
+			if (shapeNeighbour[v]!=null) 
 			{
-				if (shapeNeighbour[v]!=null) 
-				{
-					transitiveCVN.add(vars[shapeNeighbour[v].getI()][shapeNeighbour[v].getJ()]); //Les domaines d'orientation de ses voisins 
-				}
+				transitiveCVN.add(vars[shapeNeighbour[v].getI()][shapeNeighbour[v].getJ()]); //Les domaines d'orientation de ses voisins 
 			}
-			IntVar[] currentVarWithNeighbours=new IntVar[transitiveCVN.size()];
-			for (int v=0;v<transitiveCVN.size();v++)
-			{
-				currentVarWithNeighbours[v]=transitiveCVN.get(v);
-			}
-			return currentVarWithNeighbours;
 		}
+		IntVar[] currentVarWithNeighbours=new IntVar[transitiveCVN.size()];
+		for (int v=0;v<transitiveCVN.size();v++)
+		{
+			currentVarWithNeighbours[v]=transitiveCVN.get(v);
+		}
+		return currentVarWithNeighbours;
+	}
 		
-		/**
-		 * 
-		 * @param currentPiece
-		 * @return
-		 */
-		public Shape[] getNeighbourhood(Shape currentPiece)
+	/**
+	* 
+	* @param currentPiece
+	* @return
+	*/
+	public Shape[] getNeighbourhood(Shape currentPiece)
+	{
+		Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
+		ArrayList<Shape> transitiveCSN = new ArrayList<Shape>();
+		transitiveCSN.add(currentPiece);
+		for (int v=0;v<shapeNeighbour.length;v++)
 		{
-			Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
-			ArrayList<Shape> transitiveCSN = new ArrayList<Shape>();
-			transitiveCSN.add(currentPiece);
-			for (int v=0;v<shapeNeighbour.length;v++)
+			if (shapeNeighbour[v]!=null) 
 			{
-				if (shapeNeighbour[v]!=null) 
-				{
-					transitiveCSN.add(shapeNeighbour[v]);
-				}
+				transitiveCSN.add(shapeNeighbour[v]);
 			}
-			Shape[] currentShapeWithNeighbour=new Shape[transitiveCSN.size()];
-			for (int v=0;v<transitiveCSN.size();v++)
-			{
-				currentShapeWithNeighbour[v]=transitiveCSN.get(v);
-			}
-			return currentShapeWithNeighbour;
 		}
-
-
-		@Override
-		public Game solve(int threads) {
-			return solve_choco();
+		Shape[] currentShapeWithNeighbour=new Shape[transitiveCSN.size()];
+		for (int v=0;v<transitiveCSN.size();v++)
+		{
+			currentShapeWithNeighbour[v]=transitiveCSN.get(v);
 		}
+		return currentShapeWithNeighbour;
+	}
+
+	@Override
+	public Game solve(int threads) {
+		return solve_choco();
+	}
 }

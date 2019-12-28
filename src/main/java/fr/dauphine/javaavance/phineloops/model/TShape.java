@@ -44,17 +44,17 @@ public class TShape extends Shape {
 	public int[] getDomainWithPruning(Game game) {
 		if (super.getI()==0 && super.getJ()==0)
 			return null;
-		else if (super.getI()==0 && super.getJ()!=0)
+		else if (super.getI()==0 && super.getJ()<game.getWidth()-1)
 			return new int[]{2};
 		else if (super.getI()==0 && super.getJ()==game.getWidth()-1)
 			return null;
-		else if (super.getI()!=0 && super.getJ()==0)
+		else if (super.getI()<game.getHeight() && super.getJ()==0)
 			return new int[]{1};
-		else if (super.getI()!=0 && super.getJ()!=game.getWidth()-1)
+		else if (super.getI()<game.getHeight() && super.getJ()==game.getWidth()-1)
 			return new int[]{3};
 		else if (super.getI()==game.getHeight()-1 && super.getJ()==0)
 			return null;
-		else if (super.getI()==game.getHeight()-1 && super.getJ()!=0)
+		else if (super.getI()==game.getHeight()-1 && super.getJ()<game.getWidth()-1)
 			return new int[]{0};
 		else if (super.getI()==game.getHeight()-1 && super.getJ()==game.getWidth()-1)
 			return null;

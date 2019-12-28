@@ -30,37 +30,23 @@ public class Generator {
 		this.maxCc = game.getMaxCC();
 	}
 
+	/**
+	 * 	Generate a random set of shapes that form a solution 
+	 */
 	public void generateSolution() {
 		int h = game.getHeight();
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
-		// Generation of the set of Legal Shapes //Should be member of game 
-		Shape topLeftCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(2, w, w),
-				new LShape(1, 0, 0) };
-		Shape topBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(2, w, w),
-				new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
-				new LShape(2, 0, 0) };
-		Shape topRightCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(2, w, w), new QShape(3, w, w),
-				new LShape(2, 0, 0) };
-		Shape leftBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(0, w, w),
-				new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
-				new LShape(1, 0, 0) };
-		Shape bottomLeftCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
-				new LShape(0, 0, 0) };
-		Shape bottomBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
-				new LShape(3, 0, 0) };
-		Shape bottomRightCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(3, w, w),
-				new LShape(3, 0, 0) };
-		Shape rightBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(3, w, w),
-				new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
-				new LShape(3, 0, 0) };
-		// restriction for connected components case
-		// Shape rightTripleBorderLegalShape[]
-		List<Shape> allShape = Arrays.asList(new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-				new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
-				new LShape(2, 0, 0), new LShape(3, 0, 0));
+		// Generation of the set of Legal Shapes (Should be member of game ?)
+		Shape topLeftCornerLegalShapes[] = generateTopLeftCornerLegalShapes();
+		Shape topBorderLegalShapes[] = generateTopBorderLegalShapes();
+		Shape topRightCornerLegalShapes[] = generateTopRightCornerLegalShapes();
+		Shape leftBorderLegalShapes[] = generateLeftBorderLegalShapes();
+		Shape bottomLeftCornerLegalShapes[] = generateBottomLeftCornerLegalShapes();
+		Shape bottomBorderLegalShapes[] = generateBottomBorderLegalShapes();
+		Shape bottomRightCornerLegalShapes[] = generateBottomRightCornerLegalShapes();
+		Shape rightBorderLegalShapes[] = generateRightBorderLegalShapes();
+		List<Shape> allShape = generateAllShapes();
 		
 		Random rand = new Random();
 
@@ -95,7 +81,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i == 0 && j == (w - 1)) // Top Right Corner
+				}
+				else if (i == 0 && j == (w - 1)) // Top Right Corner
 				{
 					if (board[i][j - 1].getConnections()[EAST]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -116,7 +103,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i < h - 1 && j == 0) // Left Border
+				} 
+				else if (i < h - 1 && j == 0) // Left Border
 				{
 					if (board[i - 1][j].getConnections()[SOUTH]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -137,7 +125,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i < h - 1 && j == w - 1) // Right Border
+				} 
+				else if (i < h - 1 && j == w - 1) // Right Border
 				{
 
 					if (board[i][j - 1].getConnections()[EAST] && board[i - 1][j].getConnections()[SOUTH]) {
@@ -173,7 +162,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i == h - 1 && j == 0) // Bottom Left Corner
+				} 
+				else if (i == h - 1 && j == 0) // Bottom Left Corner
 				{
 					if (board[i - 1][j].getConnections()[SOUTH]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -194,7 +184,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i == h - 1 && j < w - 1) // Bottom Border
+				} 
+				else if (i == h - 1 && j < w - 1) // Bottom Border
 				{
 					if (board[i][j - 1].getConnections()[EAST] && board[i - 1][j].getConnections()[SOUTH]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -229,7 +220,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else if (i == h - 1 && j == w - 1) // Bottom Right Corner
+				} 
+				else if (i == h - 1 && j == w - 1) // Bottom Right Corner
 				{
 					if (board[i][j - 1].getConnections()[EAST] && board[i - 1][j].getConnections()[SOUTH]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -264,7 +256,8 @@ public class Generator {
 						int randomIndex = rand.nextInt(feasibleShapes.size());
 						board[i][j] = feasibleShapes.get(randomIndex);
 					}
-				} else // Rest of cases
+				} 
+				else // Rest of cases
 				{
 					if (board[i][j - 1].getConnections()[EAST] && board[i - 1][j].getConnections()[SOUTH]) {
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
@@ -303,10 +296,6 @@ public class Generator {
 			}
 		}
 		System.out.println(game);
-		/*
-		 * for (Shape[] shapes:board) { for (Shape shape:shapes) { for (int
-		 * i=0;i<rand.nextInt(4);i++) shape.rotate(); } }
-		 */
 	}
 
 	
@@ -314,7 +303,7 @@ public class Generator {
 	
 	
 	/**
-	 * 	Shuffle to a random position, the shapes of the board given in parameters 
+	 * 	Shuffle the shapes of the board given in parameters to a random position 
 	 * @param game
 	 */
 	public void shuffleGame(Game game) {
@@ -331,44 +320,30 @@ public class Generator {
 	 *  Generate a solvable board with exactly nbcc connected components 
 	 * @param nbcc
 	 */
-	public void generateSolution(int nbcc) //On va choisir une case aléatoirement dans le board, on va ajouter un nombre aléaotoire de pièces toute connecté, parcourant de manière aléatoire la grille, jusqu'à ce qu'on arrive à nbcc, on va alors remplir les cases vides d'empty shapes 
+	public void generateSolution(int nbcc) 
 	{
 		Random rand= new Random();
 		int h = game.getHeight();
 		int w = game.getWidth();
+		//We define a random box of the grid in which the connected component will start putting his shapes 
 		int departi=rand.nextInt(h);
 		int departj=rand.nextInt(w);
-		//int finParcours=rand.nextInt((int)((float)(h*w)/(float)(nbcc))); //h*x/nbcc 
-		int finParcours=(int)((float)(h*w)/(float)(nbcc))-2;
+		int finParcours=(int)((float)(h*w)/(float)(nbcc))-2; //We give each connected component an assigned number of boxes that they can put their shapes in
 		Shape[][] board = game.getBoard();
-		// Generation of the set of Legal Shapes //Should be member of game 
-		Shape topLeftCornerLegalShapes[] = {new QShape(1, w, w), new QShape(2, w, w),
-						new LShape(1, 0, 0) };
-		Shape topBorderLegalShapes[] = { new QShape(1, w, w), new QShape(2, w, w),
-						new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
-						new LShape(2, 0, 0) };
-		Shape topRightCornerLegalShapes[] = { new QShape(2, w, w), new QShape(3, w, w),
-						new LShape(2, 0, 0) };
-		Shape leftBorderLegalShapes[] = { new QShape(1, w, w), new QShape(0, w, w),
-						new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
-						new LShape(1, 0, 0) };
-		Shape bottomLeftCornerLegalShapes[] = {new QShape(0, w, w), new QShape(1, w, w),
-						new LShape(0, 0, 0) };
-		Shape bottomBorderLegalShapes[] = {new QShape(0, w, w), new QShape(1, w, w),
-						new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
-						new LShape(3, 0, 0) };
-		Shape bottomRightCornerLegalShapes[] = {new QShape(0, w, w), new QShape(3, w, w),
-						new LShape(3, 0, 0) };
-		Shape rightBorderLegalShapes[] = {new QShape(0, w, w), new QShape(3, w, w),
-						new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
-						new LShape(3, 0, 0) };
-		List<Shape> allShape = Arrays.asList(new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-				new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
-				new LShape(2, 0, 0), new LShape(3, 0, 0));
+		// Generation of the set of Legal Shapes (Should be member of game ?)
+		Shape topLeftCornerLegalShapes[] = generateTopLeftCornerLegalShapes();
+		Shape topBorderLegalShapes[] = generateTopBorderLegalShapes();
+		Shape topRightCornerLegalShapes[] = generateTopRightCornerLegalShapes();
+		Shape leftBorderLegalShapes[] = generateLeftBorderLegalShapes();
+		Shape bottomLeftCornerLegalShapes[] = generateBottomLeftCornerLegalShapes();
+		Shape bottomBorderLegalShapes[] = generateBottomBorderLegalShapes();
+		Shape bottomRightCornerLegalShapes[] = generateBottomRightCornerLegalShapes();
+		Shape rightBorderLegalShapes[] = generateRightBorderLegalShapes();
+		List<Shape> allShape = generateAllShapes();
 		ArrayList<Shape> toPutShapes = new ArrayList<Shape>();
 		ArrayList<Shape> connectedComponent = new ArrayList<Shape>();
-		//On initialise la grille d'emptyshapes d'abord
+		
+		//We initialize the boxes with emptyshapes first since it's the shape we will favour
 		for (int i=0;i<h;i++)
 		{
 			for(int j=0;j<w;j++)
@@ -376,24 +351,24 @@ public class Generator {
 				board[i][j]=new EmptyShape(0,i,j);
 			}
 		}
-
-//*************************************************************First placed shape on the broard ********************************************
 		
-			if(finParcours==2)//Quasi-Déterministe forcément un qshape vers le bas ou vers la droite en première case
+		//Imagine if you get a grid of 4x4 ...
+		if(finParcours==2)//Quasi-Déterministe forcément un qshape vers le bas ou vers la droite en première case
+		{
+			
+		}
+
+		//We put the first piece on the board depending on the position
+		if (departi==0 && departj==0)
+		{
+			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
+			Shape placedShape = topLeftCornerLegalShapes[randomIndex];
+			placedShape.setI(departi);
+			placedShape.setJ(departj);//On ne peut pas connaitre leurs position à l'avance ... 
+			board[departi][departj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
 			{
-			}
-			//Doit aussi contraindre par finparcours ici; on ne peut pas mettre plus de finParcours-toputShapes.size()-1 ! 
-			//We put the first piece on the board depending on the position
-			if (departi==0 && departj==0)
-			{
-				int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-				Shape placedShape = topLeftCornerLegalShapes[randomIndex];
-				placedShape.setI(departi);
-				placedShape.setJ(departj);//On ne peut pas connaitre leurs position à l'avance ... 
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
+				neighbour.setReservedBy(board[departi][departj]);
 					toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
 				/*On met une feasible shapes de left corner 
@@ -525,30 +500,6 @@ public class Generator {
 		for(int i=0;i<finParcours && toPutShapes.size()!=0 && i<(finParcours-toPutShapes.size());i++)
 		{
 			//We have to regenerate the legal values because other wise they could overlap
-			Shape topLeftCornerLegalShapes1[] = {new QShape(1, w, w), new QShape(2, w, w),
-					new LShape(1, 0, 0) };
-			Shape topBorderLegalShapes1[] = { new QShape(1, w, w), new QShape(2, w, w),
-					new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
-					new LShape(2, 0, 0) };
-			Shape topRightCornerLegalShapes1[] = { new QShape(2, w, w), new QShape(3, w, w),
-					new LShape(2, 0, 0) };
-			Shape leftBorderLegalShapes1[] = { new QShape(1, w, w), new QShape(0, w, w),
-					new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
-					new LShape(1, 0, 0) };
-			Shape bottomLeftCornerLegalShapes1[] = {new QShape(0, w, w), new QShape(1, w, w),
-					new LShape(0, 0, 0) };
-			Shape bottomBorderLegalShapes1[] = {new QShape(0, w, w), new QShape(1, w, w),
-					new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
-					new LShape(3, 0, 0) };
-			Shape bottomRightCornerLegalShapes1[] = {new QShape(0, w, w), new QShape(3, w, w),
-					new LShape(3, 0, 0) };
-			Shape rightBorderLegalShapes1[] = {new QShape(0, w, w), new QShape(3, w, w),
-					new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
-					new LShape(3, 0, 0) };
-			List<Shape> allShape1 = Arrays.asList(new QShape(0, w, w), new QShape(1, w, w),
-			new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-			new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
-			new LShape(2, 0, 0), new LShape(3, 0, 0));
 			int nextPlacedShapeIndex = rand.nextInt(toPutShapes.size()); // -1 ? 
 			Shape nextPlacedShape = toPutShapes.get(nextPlacedShapeIndex);
 			toPutShapes.remove(nextPlacedShapeIndex);
@@ -558,7 +509,7 @@ public class Generator {
 			if (departi==0 && departj==0)
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-						for(Shape sh:topLeftCornerLegalShapes1)
+						for(Shape sh:generateTopLeftCornerLegalShapes())
 						{
 							int token=0;
 							sh.setI(departi);
@@ -587,7 +538,7 @@ public class Generator {
 					else if (departi==0 && departj<w-1)
 					{
 						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-						for(Shape sh:topBorderLegalShapes1)
+						for(Shape sh:generateTopBorderLegalShapes())
 						{
 							int token=0;
 							sh.setI(departi);
@@ -615,7 +566,7 @@ public class Generator {
 					else if (departi == 0 && departj == (w - 1))
 					{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:topRightCornerLegalShapes1)
+							for(Shape sh:generateTopRightCornerLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -642,7 +593,7 @@ public class Generator {
 						else if (departi<(h-1) && departj==0)
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:leftBorderLegalShapes1)
+							for(Shape sh:generateLeftBorderLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -670,7 +621,7 @@ public class Generator {
 						else if (departi<(h-1) && departj==(w-1))
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:rightBorderLegalShapes1)
+							for(Shape sh:generateRightBorderLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -698,7 +649,7 @@ public class Generator {
 						else if (departi==h-1 && departj==0)
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:bottomLeftCornerLegalShapes1)
+							for(Shape sh:generateBottomLeftCornerLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -726,7 +677,7 @@ public class Generator {
 						else if (departi==h-1 && departj<(w-1))
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:bottomBorderLegalShapes1)
+							for(Shape sh:generateBottomBorderLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -754,7 +705,7 @@ public class Generator {
 						else if (departi==h-1 && departj==(w-1))
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:bottomRightCornerLegalShapes1)
+							for(Shape sh:generateBottomRightCornerLegalShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -782,7 +733,7 @@ public class Generator {
 						else 
 						{
 							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							for(Shape sh:allShape1)
+							for(Shape sh:generateAllShapes())
 							{
 								int token=0;
 								sh.setI(departi);
@@ -809,46 +760,7 @@ public class Generator {
 		}
 		//On bouche les pièces éventuellement pas fermées
 		
-		if (!toPutShapes.isEmpty())
-		{
-			for(Shape sh:toPutShapes)
-			{
-				switch(sh.getReservedBy().size())
-				{
-					case 1:
-						board[sh.getI()][sh.getJ()]=new QShape(game.getQOrientationForOpenConnection(sh),sh.getI(),sh.getJ());
-						break;
-					case 2:
-						ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-						Shape selectedShape = new EmptyShape(0,0,0);
-						for(Shape twoOutShapes: allShape)
-						{
-							if(twoOutShapes.getVConnections()==2) //Me renvoie tout le monde... 
-							feasibleShapes.add(twoOutShapes);
-						}
-						for(Shape ssh: feasibleShapes) 
-						{
-							ssh.setI(sh.getI());
-							ssh.setJ(sh.getJ());
-							if(game.areShapesConnected(ssh,sh.getReservedBy().get(0)) && game.areShapesConnected(ssh,sh.getReservedBy().get(1)))
-							{
-								selectedShape=ssh;//Je ne set pas à i et j pour le shaps are connected ... pb 
-							}
-						}
-						board[sh.getI()][sh.getJ()]=selectedShape; 
-						break;
-						//board[sh.getI()][sh.getJ()]=(I Shape)
-					case 3:
-						board[sh.getI()][sh.getJ()]=new TShape(game.getTOrientationForOpenConnection(sh),sh.getI(),sh.getJ());
-						break;
-					case 4:
-						board[sh.getI()][sh.getJ()]=new XShape(0,sh.getI(),sh.getJ());
-						break;
-					default: 
-						break;
-				}
-			}
-		}
+		connectedComponentCloser(toPutShapes,board);
 		//FLUSH TOPUTSHAPES 
 		toPutShapes.clear();			
 		//}while(toPutShapes.size()!=0);
@@ -874,30 +786,15 @@ public class Generator {
 		
 		for(int k=0;k<nbcc-1;k++)
 		{
-			Shape topLeftCornerLegalShapes2[] = {new QShape(1, w, w), new QShape(2, w, w),
-					new LShape(1, 0, 0) };
-			Shape topBorderLegalShapes2[] = { new QShape(1, w, w), new QShape(2, w, w),
-							new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
-							new LShape(2, 0, 0) };
-			Shape topRightCornerLegalShapes2[] = { new QShape(2, w, w), new QShape(3, w, w),
-							new LShape(2, 0, 0) };
-			Shape leftBorderLegalShapes2[] = { new QShape(1, w, w), new QShape(0, w, w),
-							new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
-							new LShape(1, 0, 0) };
-			Shape bottomLeftCornerLegalShapes2[] = {new QShape(0, w, w), new QShape(1, w, w),
-							new LShape(0, 0, 0) };
-			Shape bottomBorderLegalShapes2[] = {new QShape(0, w, w), new QShape(1, w, w),
-							new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
-							new LShape(3, 0, 0) };
-			Shape bottomRightCornerLegalShapes2[] = {new QShape(0, w, w), new QShape(3, w, w),
-							new LShape(3, 0, 0) };
-			Shape rightBorderLegalShapes2[] = {new QShape(0, w, w), new QShape(3, w, w),
-							new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
-							new LShape(3, 0, 0) };
-			List<Shape> allShape2 = Arrays.asList(new QShape(0, w, w), new QShape(1, w, w),
-					new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-					new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
-					new LShape(2, 0, 0), new LShape(3, 0, 0));
+			Shape topLeftCornerLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape topBorderLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape topRightCornerLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape leftBorderLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape bottomLeftCornerLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape bottomBorderLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape bottomRightCornerLegalShapes2[] = generateRightBorderLegalShapes();
+			Shape rightBorderLegalShapes2[] = generateRightBorderLegalShapes();
+			List<Shape> allShape2 = generateAllShapes();
 			//We choose another emptyshapes in the board for a new entry 
 			ArrayList<Shape> feasibleEntry = new ArrayList<Shape>();
 			for(Shape[] shapelines:board)
@@ -908,7 +805,7 @@ public class Generator {
 						feasibleEntry.add(sh);
 				}
 			}
-			int resaForOthers=feasibleEntry.size();
+			//int resaForOthers=feasibleEntry.size();
 			int newEntryIndex = rand.nextInt(feasibleEntry.size());
 			Shape newEntry = feasibleEntry.get(newEntryIndex);
 			//Now we get the coord for the new entry
@@ -1180,31 +1077,6 @@ public class Generator {
 			
 			for(int i=0;i<finParcours && toPutShapes.size()!=0 && i<(finParcours-toPutShapes.size());i++)
 			{
-				//We have to regenerate the legal values because other wise they could overlap
-				Shape topLeftCornerLegalShapes11[] = {new QShape(1, w, w), new QShape(2, w, w),
-						new LShape(1, 0, 0) };
-				Shape topBorderLegalShapes11[] = { new QShape(1, w, w), new QShape(2, w, w),
-						new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
-						new LShape(2, 0, 0) };
-				Shape topRightCornerLegalShapes11[] = { new QShape(2, w, w), new QShape(3, w, w),
-						new LShape(2, 0, 0) };
-				Shape leftBorderLegalShapes11[] = { new QShape(1, w, w), new QShape(0, w, w),
-						new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
-						new LShape(1, 0, 0) };
-				Shape bottomLeftCornerLegalShapes11[] = {new QShape(0, w, w), new QShape(1, w, w),
-						new LShape(0, 0, 0) };
-				Shape bottomBorderLegalShapes11[] = {new QShape(0, w, w), new QShape(1, w, w),
-						new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
-						new LShape(3, 0, 0) };
-				Shape bottomRightCornerLegalShapes11[] = {new QShape(0, w, w), new QShape(3, w, w),
-						new LShape(3, 0, 0) };
-				Shape rightBorderLegalShapes11[] = {new QShape(0, w, w), new QShape(3, w, w),
-						new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
-						new LShape(3, 0, 0) };
-				List<Shape> allShape11 = Arrays.asList(new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-				new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
-				new LShape(2, 0, 0), new LShape(3, 0, 0));
 				int nextPlacedShapeIndex = rand.nextInt(toPutShapes.size()); // -1 ? 
 				Shape nextPlacedShape = toPutShapes.get(nextPlacedShapeIndex);
 				toPutShapes.remove(nextPlacedShapeIndex);
@@ -1214,7 +1086,7 @@ public class Generator {
 				if (departi1==0 && departj1==0)
 				{
 					ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-					for(Shape sh:topLeftCornerLegalShapes11)
+					for(Shape sh:generateTopLeftCornerLegalShapes())
 					{
 						boolean willWork=true;
 						sh.setI(departi1);
@@ -1249,7 +1121,7 @@ public class Generator {
 				else if (departi1==0 && departj1<w-1)
 				{
 					ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-					for(Shape sh:topBorderLegalShapes11)
+					for(Shape sh:generateTopBorderLegalShapes())
 					{
 						boolean willWork=true;
 						sh.setI(departi1);
@@ -1283,7 +1155,7 @@ public class Generator {
 				else if (departi1 == 0 && departj1 == (w - 1))
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:topRightCornerLegalShapes11)
+								for(Shape sh:generateTopRightCornerLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1317,7 +1189,7 @@ public class Generator {
 				else if (departi1<(h-1) && departj1==0)
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:leftBorderLegalShapes11)
+								for(Shape sh:generateLeftBorderLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1351,7 +1223,7 @@ public class Generator {
 				else if (departi1<(h-1) && departj1==(w-1))
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:rightBorderLegalShapes11)
+								for(Shape sh:generateRightBorderLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1385,7 +1257,7 @@ public class Generator {
 				else if (departi1==h-1 && departj1==0)
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:bottomLeftCornerLegalShapes11)
+								for(Shape sh:generateBottomLeftCornerLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1419,7 +1291,7 @@ public class Generator {
 				else if (departi1==h-1 && departj1<(w-1))
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:bottomBorderLegalShapes11)
+								for(Shape sh:generateBottomBorderLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1453,7 +1325,7 @@ public class Generator {
 				else if (departi1==h-1 && departj1==(w-1))
 							{
 								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:bottomRightCornerLegalShapes11)
+								for(Shape sh:generateBottomRightCornerLegalShapes())
 								{
 									boolean willWork=true;
 									sh.setI(departi1);
@@ -1482,84 +1354,46 @@ public class Generator {
 									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
 										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 								}
-								//On met n importe quelle feasible shapes 
-							}
-				else 
-							{
-								ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-								for(Shape sh:allShape11)
-								{
-									boolean willWork=true;
-									sh.setI(departi1);
-									sh.setJ(departj1);
-									Shape[] shneighbor = game.getConnectionNeighbors(sh);
-									for(Shape nb:shneighbor)
-									{
-										if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
-									}
-									//Il ne rentre pas dans la boucle si il y a un seul élément ... 
-										for(Shape toConnectsh:nextPlacedShape.getReservedBy())
-										{
-											if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
-										}
-									//I need to know who has put the shape as his neighbour in the board 
-									if (willWork) feasibleShapes.add(sh);
-								}
-								int randomIndex = rand.nextInt(feasibleShapes.size());
-								Shape placedShape = feasibleShapes.get(randomIndex);//Mettre tout en tableau 
-								placedShape.setI(departi1);
-								placedShape.setJ(departj1);//On ne peut pas connaitre leurs position à l'avance ... 
-								board[departi1][departj1] = placedShape;
-								for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
-								{
-									neighbour.setReservedBy(board[departi1][departj1]);
-									if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
-										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-								}
-							}
+					//On met n importe quelle feasible shapes 
 				}
-			
-			//Closer
-			if (!toPutShapes.isEmpty())
-			{
-				for(Shape sh:toPutShapes)
+				else 
 				{
-					switch(sh.getReservedBy().size())
+					ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
+					for(Shape sh:generateAllShapes())
 					{
-						case 1:
-							board[sh.getI()][sh.getJ()]=new QShape(game.getQOrientationForOpenConnection(sh),sh.getI(),sh.getJ());
-							break;
-						case 2:
-							ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-							Shape selectedShape = null;
-							for(Shape twoOutShapes: allShape2)
-							{
-								if(twoOutShapes.getVConnections()==2)
-								feasibleShapes.add(twoOutShapes);
-							}
-							for(Shape ssh: feasibleShapes) 
-							{
-								ssh.setI(sh.getI());
-								ssh.setJ(sh.getJ());
-								if(game.areShapesConnected(ssh,sh.getReservedBy().get(0)) && game.areShapesConnected(ssh,sh.getReservedBy().get(1)))
-								{
-									selectedShape=ssh;
-								}
-							}
-							board[sh.getI()][sh.getJ()]=selectedShape; 
-							break;
-							//board[sh.getI()][sh.getJ()]=(I Shape)
-						case 3:
-							board[sh.getI()][sh.getJ()]=new TShape(game.getTOrientationForOpenConnection(sh),sh.getI(),sh.getJ());
-							break;
-						case 4:
-							board[sh.getI()][sh.getJ()]=new XShape(0,sh.getI(),sh.getJ());
-							break;
-						default: 
-							break;
+						boolean willWork=true;
+						//We assign the tested shape to the position of the toPutShapes so it can be tested
+						sh.setI(departi1);
+						sh.setJ(departj1);
+						Shape[] shneighbor = game.getConnectionNeighbors(sh);
+						//We test if the shape will connect to his neighbors 
+						for(Shape nb:shneighbor)
+						{
+							if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
+						}
+						// ... then we have to put shape that can be connected to all his reservedBy neighbors 
+						for(Shape toConnectsh:nextPlacedShape.getReservedBy())
+						{
+							if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
+						}
+						if (willWork) feasibleShapes.add(sh);
+					}
+					//Now we get a random shapes among the feasible one 
+					int randomIndex = rand.nextInt(feasibleShapes.size());
+					Shape placedShape = feasibleShapes.get(randomIndex);
+					placedShape.setI(departi1);
+					placedShape.setJ(departj1);
+					board[departi1][departj1] = placedShape;
+					for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+					{
+									neighbour.setReservedBy(board[departi1][departj1]);
+							if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
+										toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 					}
 				}
 			}
+			//Closer
+			connectedComponentCloser(toPutShapes,board);
 			toPutShapes.clear();
 		}
 		System.out.println(game);
@@ -1616,6 +1450,13 @@ public class Generator {
 		toPutShapes.clear();
 	}
 	
+	
+	
+	private void generateConnectedComponent()
+	{
+		
+	}
+	
 	/**
 	 * Generate a solvable game board with random shapes 
 	 */
@@ -1623,6 +1464,7 @@ public class Generator {
 		this.generateSolution();
 		this.shuffleGame(this.game);
 	}
+
 
 	/**
 	 * 	Generate a solvable game board with random shapes and a maximum number of connected components
@@ -1728,13 +1570,14 @@ public class Generator {
 	 * 
 	 * @return AllShapes
 	 */
-	private ArrayList<Shape> generateAllShapes()
+	private List<Shape> generateAllShapes()
 	{
-		return (ArrayList<Shape>) Arrays.asList(new EmptyShape(0, 0, 0), 
+		List<Shape> allshapes = Arrays.asList(new EmptyShape(0, 0, 0), 
 				new QShape(0, 0, 0), new QShape(1, 0, 0), new QShape(2, 0, 0), new QShape(3, 0, 0), 
 				new IShape(0, 0, 0), new IShape(1, 0, 0), 
 				new TShape(0, 0, 0), new TShape(1, 0, 0), new TShape(2, 0, 0),new TShape(3, 0, 0), 
 				new XShape(0, 0, 0), 
 				new LShape(0, 0, 0), new LShape(1, 0, 0), new LShape(2, 0, 0), new LShape(3, 0, 0));
+		return allshapes;
 	}
 }

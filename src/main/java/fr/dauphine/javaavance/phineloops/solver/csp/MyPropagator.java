@@ -9,14 +9,12 @@ import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class MyPropagator extends Propagator<IntVar>{
-	private IntVar[] intVarNeighbourhood;
 	private Game game;
 	private Shape[] neighbourhood;
 	
 
 	public MyPropagator(IntVar[] intVarNeighbourhood, Shape[] neighbourhood, Game game) {
 		super(intVarNeighbourhood);
-		this.intVarNeighbourhood = intVarNeighbourhood;
 		this.game = game;
 		this.neighbourhood = neighbourhood;
 	}
@@ -51,6 +49,7 @@ public class MyPropagator extends Propagator<IntVar>{
 						vars[0].removeValue(orientation,null);
 				neighbourhood[0]=auxshape;
 		}
+		if (vars[0].isInstantiated()) neighbourhood[0].setOrientation(vars[0].getValue());
 	}
 
 	@Override
