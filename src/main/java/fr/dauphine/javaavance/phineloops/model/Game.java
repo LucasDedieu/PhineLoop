@@ -711,7 +711,7 @@ public class Game {
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) {
 				Shape shape = board[i][j];
-				
+				/*
 				boolean f = shape.isFrozen();
 				if(f) {
 					sb.append("\033[36m");
@@ -727,9 +727,9 @@ public class Game {
 				}
 				else if(shape.getDomainSize() == 3) {
 					sb.append("\033[33m");
-				}
+				}*/
 				sb.append(shape.getSymbol());
-				
+				/*
 				if(f) {
 					sb.append("\033[0m");
 				}
@@ -744,7 +744,7 @@ public class Game {
 				}
 				else if(shape.getDomainSize() == 3) {
 					sb.append("\033[0m");
-				}
+				}*/
 				
 			}
 			sb.append("\n");
