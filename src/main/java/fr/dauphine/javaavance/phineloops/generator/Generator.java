@@ -67,7 +67,7 @@ public class Generator {
 		{
 			for (int j = 0; j < w; j++) 
 			{
-				if (i == 0 && j == 0) // Top Left Corner
+				if (i == 0 && j == 0) //Top Left Corner
 				{
 					int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
 					board[i][j] = topLeftCornerLegalShapes[randomIndex];
