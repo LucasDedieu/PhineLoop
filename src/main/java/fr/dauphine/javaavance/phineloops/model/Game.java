@@ -71,22 +71,42 @@ public class Game {
 	}
 
 
-
+	/**
+	 * 
+	 * @return the width of the board
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * 
+	 * @return the height of the board
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * 
+	 * @return the board of the game
+	 */
 	public Shape[][] getBoard() {
 		return board;
 	}
+	
+	/**
+	 * 
+	 * @param the board to put for the game
+	 */
 	public void setBoard(Shape[][] board) {
 		this.board = board;
 	}
 
+	/**
+	 * 
+	 * @return the game maximal number of connected components
+	 */
 	public int getMaxCC()
 	{
 		return this.maxcc;
@@ -506,12 +526,11 @@ public class Game {
 	}
 	
 	
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * JAVA DOC ALBAN 
+	/**
+	 *  Check if the shapes are connected
+	 * @param shape1 first shape
+	 * @param shape2 second shape
+	 * @return true if the shapes are connected 
 	 */
 	public boolean areShapesConnected(Shape shape1,Shape shape2)
 	{
@@ -524,12 +543,11 @@ public class Game {
 	}
 	
 	
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * JAVA DOC ALBAN 
+	/**
+	 *  Check if one shape is looking at another one but they are not connected
+	 * @param shape1 the shape that is looking 
+	 * @param shape2 the shape to test if it is looking back
+	 * @return true if the first shape has an orientation that points toward the second but they are not connected
 	 */
 	public boolean lookingButNotConnected(Shape shape1,Shape shape2)
 	{
@@ -547,6 +565,12 @@ public class Game {
 		
 	}
 	
+	/**
+	 * Check is a shape is obstructed in a specific orientation 
+	 * @param shape the shape to test 
+	 * @param reservations the shapes that have put shape 
+	 * @return true if it has a shape in his way but it wasn't put by it 
+	 */
 	public boolean isObstructed(Shape shape,ArrayList<Shape> reservations)
 	{
 		boolean io=false;
@@ -558,13 +582,11 @@ public class Game {
 	}
 
 
-	/*public Shape reservedBy(Shape shape1)
-	{
-		
-	}*/
-
-
-
+	/**
+	 *  Get the neighbors of a shape
+	 * @param shape the shape to get neighbors from 
+	 * @return an Array containing the neighbors
+	 */
 	public Shape[] getNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -590,12 +612,16 @@ public class Game {
 		return neighbors;
 	}
 
+	/**
+	 * Get the free neighbor of a shape
+	 * @param shape the shape to test 
+	 * @return the free neighbor of a shape
+	 */
 	public Shape[] getToConnectNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
 		
 		ArrayList<Shape> aux = new ArrayList<Shape>();
-		//Shape[] neighbors = new Shape[4];
 		boolean[] connections = shape.getConnections();
 		
 		//north neighbor
@@ -622,7 +648,11 @@ public class Game {
 		return neighbors;
 	}
 
-
+	/**
+	 * Get the connection neighbors (neighbors without the null ones)
+	 * @param shape the shape to get 
+	 * @return an Array with the neighbors connections 
+	 */
 	public Shape[] getConnectionNeighbors(Shape shape){
 		int i = shape.getI();
 		int j = shape.getJ();
@@ -655,6 +685,11 @@ public class Game {
 		return neighbors;
 	}
 
+	/**
+	 * Add a shape to the board 
+	 * @param shape the shape to add
+	 * @throws Exception if a shape is already on the shape position on the board
+	 */
 	public void addShape(Shape shape) throws Exception {
 		if(shape == null) {
 			return;
@@ -668,6 +703,11 @@ public class Game {
 		throw new Exception("There is already a shape at "+shapeI+","+shapeJ);
 	}
 
+	/**
+	 * Return the good orientation of a Qshape for a connection 
+	 * @param shape
+	 * @return the orientation
+	 */
 	public int getQOrientationForOpenConnection(Shape shape) //F
 	{
 		int qorientation=0;
@@ -679,6 +719,11 @@ public class Game {
 		return qorientation;
 	}
 
+	/**
+	 * Return the good orientation of a Thape for a connection 
+	 * @param shape the shape to connect with
+	 * @return the orientation
+	 */
 	public int getTOrientationForOpenConnection(Shape shape)
 	{
 		int torientation=0;
@@ -688,7 +733,12 @@ public class Game {
 		else if (!isShapeWellConnectedWithWest(shape)) torientation= 1;
 		return torientation;
 	}
-
+	
+	/**
+	 * Check if the shape has an empty neighbor
+	 * @param shape
+	 * @return true it has an empty neighbor
+	 */
 	public boolean hasEmptyNeighbor(Shape shape)
 	{
 		boolean hasEmptyNeighbor=false;
