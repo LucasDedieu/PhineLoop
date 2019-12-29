@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class CellClusterManager {
 	
-	private Set<Cluster> clusterSet = new HashSet<>();
+	private Set<CellCluster> clusterSet = new HashSet<>();
 
 	private static final CellClusterManager SINGLETON = new CellClusterManager();
 
@@ -23,55 +23,55 @@ public class CellClusterManager {
 	
 	
 	public void addCell(Cell cell) {
-		Set<Cluster> acceptSet = new HashSet<>();
-		for(Cluster cluster: clusterSet) {
-			if (cluster.accept(cell)) {
-				cluster.add(cell);
-				acceptSet.add(cluster);
+		Set<CellCluster> acceptSet = new HashSet<>();
+		for(CellCluster cellCluster: clusterSet) {
+			if (cellCluster.accept(cell)) {
+				cellCluster.add(cell);
+				acceptSet.add(cellCluster);
 			}
 		}
 		
 		if (acceptSet.isEmpty()) {
-			Cluster cluster = new Cluster();
-			cluster.add(cell);
-			clusterSet.add(cluster);
+			CellCluster cellCluster = new CellCluster();
+			cellCluster.add(cell);
+			clusterSet.add(cellCluster);
 		} else {
 			mergeClusters(acceptSet);
 		}
 	}
 	
 	
-	private void mergeClusters(Set<Cluster> mergeSet) {
+	private void mergeClusters(Set<CellCluster> mergeSet) {
 		if (mergeSet.size() == 1) {
 			return; 
 		}
 		
-		Cluster kept = mergeSet.iterator().next();
+		CellCluster kept = mergeSet.iterator().next();
 		
 		mergeSet.remove(kept);
 		
-		for(Cluster c: mergeSet) {
+		for(CellCluster c: mergeSet) {
 			kept.merge(c);
 			clusterSet.remove(c);
 		}
 	}
 	
-	public Set<Cluster> getClusterSet() {
+	public Set<CellCluster> getClusterSet() {
 		return clusterSet;
 	}
 
-	public Cluster getCluster(Cell cell) {
+	public CellCluster getCluster(Cell cell) {
 
-		for(Cluster cluster : clusterSet) {
-			if (cluster.contains(cell)) {
-				return cluster;
+		for(CellCluster cellCluster : clusterSet) {
+			if (cellCluster.contains(cell)) {
+				return cellCluster;
 			}
 		}
 		
 		return null;
 	}
 
-	public Cell[][] getSubBoard(Cell[][] board, Cluster c) {
+	public Cell[][] getSubBoard(Cell[][] board, CellCluster c) {
 
 		int minI = c.getMinI();
 		int minJ = c.getMinJ();

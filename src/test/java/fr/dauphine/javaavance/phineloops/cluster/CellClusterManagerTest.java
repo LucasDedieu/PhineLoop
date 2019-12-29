@@ -30,7 +30,7 @@ public class CellClusterManagerTest {
 		// 5)  - x - - x
 
 		CellClusterManager mgr = CellClusterManager.getInstance();
-		Set<Cluster> clusterSet = mgr.getClusterSet();
+		Set<CellCluster> clusterSet = mgr.getClusterSet();
 		
 
 		// Add cells, test cluster count
@@ -84,7 +84,7 @@ public class CellClusterManagerTest {
 		Assert.assertEquals(4, clusterSet.size());
 		
 		// Test c1
-		Cluster c1 = mgr.getCluster(board[0][0]);
+		CellCluster c1 = mgr.getCluster(board[0][0]);
 		Assert.assertEquals(9, c1.getCellSet().size());
 		Assert.assertEquals(0, c1.getMinI());
 		Assert.assertEquals(2, c1.getMaxI());
@@ -99,7 +99,7 @@ public class CellClusterManagerTest {
 				getBoardString(mgr.getSubBoard(board, c1)));
 		
 		// Test c2
-		Cluster c2 = mgr.getCluster(board[0][2]);
+		CellCluster c2 = mgr.getCluster(board[0][2]);
 		Assert.assertEquals(1, c2.getCellSet().size());
 		Assert.assertEquals(0, c2.getMinI());
 		Assert.assertEquals(0, c2.getMaxI());
@@ -112,7 +112,7 @@ public class CellClusterManagerTest {
 				getBoardString(mgr.getSubBoard(board, c2)));
 		
 		// Test c3
-		Cluster c3 = mgr.getCluster(board[3][0]);
+		CellCluster c3 = mgr.getCluster(board[3][0]);
 		Assert.assertEquals(4, c3.getCellSet().size());
 		Assert.assertEquals(3, c3.getMinI());
 		Assert.assertEquals(5, c3.getMaxI());
@@ -128,7 +128,7 @@ public class CellClusterManagerTest {
 		
 		
 		// Test c4
-		Cluster c4 = mgr.getCluster(board[4][4]);
+		CellCluster c4 = mgr.getCluster(board[4][4]);
 		Assert.assertEquals(2, c4.getCellSet().size());
 		Assert.assertEquals(4, c4.getMinI());
 		Assert.assertEquals(5, c4.getMaxI());

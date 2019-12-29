@@ -3,7 +3,7 @@ package fr.dauphine.javaavance.phineloops.cluster;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Cluster {
+public class CellCluster {
 	private Set<Cell> cellSet = new HashSet<>();
 	private boolean computed = false;
 	private int minI;
@@ -29,8 +29,8 @@ public class Cluster {
 		return cellSet;
 	}
 	
-	public void merge(Cluster cluster) {
-		cellSet.addAll(cluster.getCellSet());
+	public void merge(CellCluster cellCluster) {
+		cellSet.addAll(cellCluster.getCellSet());
 	}
 	
 	
