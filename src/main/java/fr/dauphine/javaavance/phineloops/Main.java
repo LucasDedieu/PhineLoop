@@ -18,6 +18,7 @@ import org.apache.commons.cli.ParseException;
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
+import fr.dauphine.javaavance.phineloops.solver.MultiSolver;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverCSP;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
@@ -59,7 +60,7 @@ public class Main  {
     }
     	
 
-    private static boolean solve(String inputFile, String outputFile, int threads,String method) throws IOException{
+    private static boolean solve(String inputFile, String outputFile, int threads, String method) throws IOException{
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
@@ -68,7 +69,6 @@ public class Main  {
     		Files.copy(Paths.get(inputFile), Paths.get(outputFile));
     		return false;
     	}
-    	//System.out.println("original game :\n"+game);
     	
     	//Check if game is already solved
     	if(Checker.check(game)) {
@@ -90,7 +90,7 @@ public class Main  {
     		solver = new SolverChoco(game);
     	}
     	else {
-    		 solver = new SolverLineByLine(game);
+    		solver = new MultiSolver(game);
     	}
     	//Executor exec = Executors.newFixedThreadPool(threads);
     	//CountDownLatch latch = new CountDownLatch(1);
@@ -103,6 +103,7 @@ public class Main  {
 		//}
 		
     	//Game gameSolved = ThreadController.getInstance().getSolvedGame();
+    	
     	Game gameSolved = solver.solve(threads);
 
     	if(gameSolved == null) {
@@ -111,7 +112,6 @@ public class Main  {
     	}
     	long deltaTime = System.currentTimeMillis() - startTime;
     	System.out.println("Total time : "+deltaTime+" ms");
-    	//System.out.println("\n__________________________\n"+gameSolved);
     	for(int i =0;i<gameSolved.getHeight();i++) {
 			for(int j=0; j<gameSolved.getWidth();j++) {
 				Shape shape = gameSolved.getBoard()[i][j];
@@ -206,7 +206,7 @@ public class Main  {
 			if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
 			outputFile = cmd.getOptionValue( "o" );
 			int threads =0;
-			String method = "line";
+			String method = "";
 			if(cmd.hasOption("t")) {
 				threads= Integer.parseInt(cmd.getOptionValue( "t" ));
 			}
