@@ -7,7 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import fr.dauphine.javaavance.phineloops.controller.ClusterManager;
-import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
@@ -155,6 +154,7 @@ public class SolverLineByLine implements Solver{
 	 * Shuffle randomly the board
 	 * @param game :the game to shuffle
 	 */
+	@SuppressWarnings("unused")
 	private void shuffle(Game game) {
 		//Shuffle
 		Random rand = new Random();

@@ -2,37 +2,21 @@ package fr.dauphine.javaavance.phineloops.solver.csp;
 
 import java.util.ArrayList;
 
-
-import java.util.List;
-
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.ParallelPortfolio;
 import org.chocosolver.solver.Solution;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
-import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.Constraint;
-import org.chocosolver.solver.exception.ContradictionException;
-import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
-import org.chocosolver.solver.search.strategy.Search;
-
 public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Solver{
 	private Game game;
-	//Connections
-	private static int NORTH = 0;
-	private static int SOUTH = 1;
-	private static int EAST = 2;
-	private static int WEST = 3;
 	//Shapes
 	private final static int EMPTYSHAPE=0;
-	private final static int QSHAPE=1;
-	private final static int ISHAPE=2;
-	private final static int TSHAPE=3;
 	private final static int XSHAPE=4;
-	private final static int LSHAPE=5;
 
 	int height ;
 	int width ;

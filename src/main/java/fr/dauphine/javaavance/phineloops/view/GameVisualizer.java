@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,6 +14,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
@@ -55,7 +57,6 @@ public class GameVisualizer extends JFrame implements ActionListener{
 
 
 	private void init() {
-
 		map.put("0 0",  new ImageIcon(getClass().getResource("/images/00.png")));
 		map.put("1 0",  new ImageIcon(getClass().getResource("/images/10.png")));
 		map.put("1 1",  new ImageIcon(getClass().getResource("/images/11.png")));
@@ -73,7 +74,6 @@ public class GameVisualizer extends JFrame implements ActionListener{
 		map.put("5 2",  new ImageIcon(getClass().getResource("/images/52.png")));
 		map.put("5 3",  new ImageIcon(getClass().getResource("/images/53.png")));
 
-
 		this.height = game.getHeight();
 		this.width = game.getWidth();
 		buttonSize = HEIGHT_SIZE/Math.max(height,width);
@@ -88,6 +88,9 @@ public class GameVisualizer extends JFrame implements ActionListener{
 
 
 
+	/**
+	 * Adapt the layout to the game width and height. Link the buttons to the shapes.
+	 */
 	private void initButtons() {
 		int max = Math.max(height,width); 
 		setLayout(new GridLayout(max, max));
@@ -116,6 +119,9 @@ public class GameVisualizer extends JFrame implements ActionListener{
 		}
 	}
 
+	/**
+	 * Add menu bar with menu "Solve" and "Generate"
+	 */
 	private void addMenuBar() {
 		JMenuBar menuBar;
 		JMenu menu;
@@ -204,25 +210,32 @@ public class GameVisualizer extends JFrame implements ActionListener{
 			}
 		});
 		menu.add(menuItem);
-		
 		menuBar.add(menu);
-
 		this.setJMenuBar(menuBar);
 	} 
 	
+	/**
+	 * Detroy the current frame and start a new one with a game's size layout
+	 */
 	private void resetLayout() {
 		setLayout(null);
 		this.dispose();
 		new GameVisualizer(game);
 	}
 
-
+/**
+ * Refresh the image of a button
+ * @param button
+ */
 	private void refreshButton(ShapeButton button) {
 		String  shapeId = button.getShape().toString();
 		ImageIcon icon = new ImageIcon(map.get(shapeId).getImage().getScaledInstance(buttonSize, buttonSize, java.awt.Image.SCALE_SMOOTH));
 		button.setIcon(icon);	
 	}
 
+	/**
+	 * Draw the entire baord
+	 */
 	public void drawGame() {
 		Shape[][] board = game.getBoard();
 		for(int i=0; i<height; i++) {
@@ -234,8 +247,11 @@ public class GameVisualizer extends JFrame implements ActionListener{
 		}
 	}
 
+	/**
+	 * Link the grid layout buttons to a specific game with same height and width
+	 * @param game : the game to link
+	 */
 	public void updateButtons(Game game) {
-		
 		Shape[][] board= game.getBoard();
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
@@ -250,13 +266,15 @@ public class GameVisualizer extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 	}
 	
+	/**
+	 * Refresh the image of a specific shape's button
+	 * @param shape : the shape
+	 */
 	public void updateShape(Shape shape) {
 		int i = shape.getI();
 		int j = shape.getJ();
 		ShapeButton button = buttons[i][j];
-		refreshButton(button);
-	
-				
+		refreshButton(button);			
 	}
 
 }

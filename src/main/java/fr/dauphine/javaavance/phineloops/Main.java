@@ -15,9 +15,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
-import com.sun.org.apache.xerces.internal.impl.dtd.models.CMLeaf;
-
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;

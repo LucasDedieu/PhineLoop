@@ -164,6 +164,7 @@ public class Game {
 	 * @param neighbors :all the neighbors of a shape
 	 * @return number of real neighbors
 	 */
+	@SuppressWarnings("unused")
 	private int countNeighbors(Shape[] neighbors) {
 		int count = 0;
 		for(int i=0;i<4;i++) {

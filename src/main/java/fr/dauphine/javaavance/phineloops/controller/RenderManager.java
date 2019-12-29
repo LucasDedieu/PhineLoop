@@ -33,7 +33,4 @@ public class RenderManager {
 		drawer.updateButtons(game);
 		drawer.drawGame();
 	}
-	
-
-	
 }

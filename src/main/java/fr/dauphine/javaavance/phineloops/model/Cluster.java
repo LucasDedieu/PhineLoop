@@ -1,16 +1,6 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.carrotsearch.hppc.ObjectHashSet;
 import com.google.common.collect.HashMultiset;
-import com.koloboke.collect.hash.HashConfig;
-import com.koloboke.collect.set.hash.HashObjSet;
-import com.koloboke.collect.set.hash.HashObjSets;
-
-import gnu.trove.set.hash.THashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class Cluster {
 	//private Set<Shape> shapeSet = new HashSet<>();

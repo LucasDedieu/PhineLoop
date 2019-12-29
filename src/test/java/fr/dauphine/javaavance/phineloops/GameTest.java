@@ -2,11 +2,8 @@ package fr.dauphine.javaavance.phineloops;
 
 import org.junit.Test;
 
-
 import fr.dauphine.javaavance.phineloops.model.EmptyShape;
 import fr.dauphine.javaavance.phineloops.model.Game;
-import fr.dauphine.javaavance.phineloops.model.LShape;
-import fr.dauphine.javaavance.phineloops.model.QShape;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.model.TShape;
 import fr.dauphine.javaavance.phineloops.model.XShape;

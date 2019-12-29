@@ -27,7 +27,6 @@ public class ShapeTest {
 	@Test
 	public void testOrientation() {
 		TShape t = new TShape(2,0,0);
-		EmptyShape empty = new EmptyShape(0,0,0);
 		t.rotate();
 		assertEquals(3,t.getOrientation());
 		//assertTrue(t.getConnections().equals(new boolean[]{false,true,true,true}));

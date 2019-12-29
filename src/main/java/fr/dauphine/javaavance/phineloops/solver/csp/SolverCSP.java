@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Random;
 
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
@@ -60,8 +59,6 @@ public class SolverCSP implements Solver{
 
 		while(!stack.isEmpty() ) {
 			StateCSP iteration = stack.peek();
-			int i = iteration.getI();
-			int j = iteration.getJ();
 			Shape shape = iteration.getShape();	
 			//System.out.println(testGame);
 			if(stack.size() == maxStackSize) {
@@ -277,21 +274,6 @@ public class SolverCSP implements Solver{
 		return nb;
 	}
 
-	/**
-	 * Shuffle randomly the board
-	 * @param game :the game to shuffle
-	 */
-	private void shuffle(Game game) {
-		//Shuffle
-		Random rand = new Random();
-		for (Shape[] shapes:game.getBoard()){
-			for (Shape shape:shapes){
-				if(!shape.isFrozen()) {
-					for (int i=0;i<rand.nextInt(4);i++) shape.rotate();
-				}
-			}
-		}
-	}
 
 	/**
 	 * Perform a first freeze on the board. 

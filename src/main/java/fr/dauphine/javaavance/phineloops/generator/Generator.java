@@ -21,13 +21,10 @@ public class Generator {
 	private static int EAST = 1;
 	private static int SOUTH = 2;
 	private static int WEST = 3;
-	private int node = 0;
-	private int road = 0;
-	private int maxCc=0;
+
 
 	public Generator(Game game) {
 		this.game = game;
-		this.maxCc = game.getMaxCC();
 	}
 
 	/**
@@ -1452,6 +1449,7 @@ public class Generator {
 	
 	
 	
+	@SuppressWarnings("unused")
 	private void generateConnectedComponent()
 	{
 		

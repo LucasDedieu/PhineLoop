@@ -1,7 +1,5 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import fr.dauphine.javaavance.phineloops.controller.RenderManager;
-
 public class IShape extends Shape {
 
 	private int[] domain = {0,1};
