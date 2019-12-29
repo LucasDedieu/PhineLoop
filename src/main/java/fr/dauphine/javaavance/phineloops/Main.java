@@ -27,7 +27,7 @@ import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 import fr.dauphine.javaavance.phineloops.view.ShapesDrawer;
 
-public class Main /*extends Application*/  {
+public class Main  {
     private static String inputFile = null;  
     private static String outputFile = null;
     private static Integer width = -1;
@@ -39,14 +39,14 @@ public class Main /*extends Application*/  {
 	// generate grid and store it to outputFile...
 	//... 
     	if (maxcc!=-1) {
-    	try {
-        	Game game = new Game(height, width,maxcc);
-        	game.generate(maxcc);
-			game.write(outputFile);
-			System.out.println(game);
-		} catch (FileNotFoundException e) {
-			//System.out.println("File not found: "+outputFile);
-		}
+	    	try {
+	        	Game game = new Game(height, width,maxcc);
+	        	game.generate(maxcc);
+				game.write(outputFile);
+				System.out.println(game);
+			} catch (FileNotFoundException e) {
+				System.out.println("File not found: "+outputFile);
+			}
     	}
     	else {
     		try {
@@ -54,7 +54,7 @@ public class Main /*extends Application*/  {
             	game.generate();
     			game.write(outputFile);
     			System.out.println(game);
-    		} catch (FileNotFoundException e) {
+    		}catch (FileNotFoundException e) {
     			System.out.println("File not found: "+outputFile);
     		}
         }
@@ -65,8 +65,8 @@ public class Main /*extends Application*/  {
 	// load grid from inputFile, solve it and store result to outputFile...
 	// ...
     	Game game = loadFile(inputFile);
-    	//inputFile is not a valid game file
     	if(game == null) {
+    		//inputFile is not a valid game file
     		Files.copy(Paths.get(inputFile), Paths.get(outputFile));
     		return false;
     	}
@@ -106,7 +106,7 @@ public class Main /*extends Application*/  {
 		
     	//Game gameSolved = ThreadController.getInstance().getSolvedGame();
     	Game gameSolved = solver.solve(threads);
-		//Game gameSolved = solver.solve_choco();
+
     	if(gameSolved == null) {
     		game.write(outputFile);
     		return false;
@@ -278,13 +278,4 @@ public class Main /*extends Application*/  {
     	}
     	return game;   	
     }
-    
-/*
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
-		Visualize visu = new Visualize();
-		visu.start(primaryStage);
-	}*/
-	
 }

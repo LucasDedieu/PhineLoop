@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import fr.dauphine.javaavance.phineloops.checker.Checker;
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
@@ -46,6 +47,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.game = game;
 		init();
 		this.setVisible(true);
+		RenderManager.getIntance().init(this);
 		addMenuBar();
 		drawGame();
 	}
@@ -134,7 +136,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 				SolverLineByLine solver = new SolverLineByLine(ShapesDrawer.this.game);
 				ShapesDrawer.this.game = solver.solve(4);
 				drawGame();
-				updateButton(game);
+				updateButtons(game);
 				
 			}
 		});
@@ -149,9 +151,15 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SolverSnail solver = new SolverSnail(ShapesDrawer.this.game);
-				ShapesDrawer.this.game = solver.solve(4);
-				drawGame();
-				updateButton(game);
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						ShapesDrawer.this.game = solver.solve(4);
+						
+					}
+				});
+				t.start();
 			}
 		});
 		menu.add(menuItem);
@@ -172,7 +180,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				ShapesDrawer.this.game.generate();
 				drawGame();
-				updateButton(game);
+				updateButtons(game);
 				
 			}
 		});
@@ -201,7 +209,8 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		}
 	}
 
-	private void updateButton(Game game) {
+	public void updateButtons(Game game) {
+		
 		Shape[][] board= game.getBoard();
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
@@ -216,6 +225,15 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void updateShape(Shape shape) {
+		int i = shape.getI();
+		int j = shape.getJ();
+		ShapeButton button = buttons[i][j];
+		refreshButton(button);
+	
+				
 	}
 
 }

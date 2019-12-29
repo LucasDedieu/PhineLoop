@@ -7,6 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import fr.dauphine.javaavance.phineloops.controller.ClusterManager;
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
@@ -44,6 +45,7 @@ public class SolverLineByLine implements Solver{
 	public Game solve(int threads) {
 		Game solvedGame  = new Game(originalGame);
 		Shape[][] solvedBoard = solvedGame.getBoard();
+		
 
 		//Is game solvable
 		if(checkIfXShapeOnBorder(solvedBoard)) {
@@ -59,21 +61,17 @@ public class SolverLineByLine implements Solver{
 		}
 		long deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Freeze time :"+deltaTime+" ms");
-		//System.out.println(solvedGame);
+		
 		
 		//Find cluster
 		startTime = System.currentTimeMillis();
 		ClusterManager.getInstance().findClusters(solvedGame);
-		
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Find Cluster time :"+deltaTime+" ms");
 		
 		//Prepare games
 		startTime = System.currentTimeMillis();
 		Set<Game> games = ClusterManager.getInstance().getClusterGames(solvedGame);
-		//for(Game game : games) {
-		//	System.out.println(game);
-		//}
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Delimit games times :"+deltaTime+" ms");
 

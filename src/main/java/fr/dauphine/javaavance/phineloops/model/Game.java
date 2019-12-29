@@ -1,16 +1,9 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.io.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 
 import fr.dauphine.javaavance.phineloops.generator.Generator;
 
@@ -23,6 +16,7 @@ public class Game {
 	private int height;
 	private int maxcc;
 	private Shape[][] board;
+	
 
 	public Game(int height, int width, int maxcc) {
 		if(width<1) {
@@ -751,5 +745,7 @@ public class Game {
 		}
 		return sb.toString();
 	}
+	
+	
 
-	}
+}

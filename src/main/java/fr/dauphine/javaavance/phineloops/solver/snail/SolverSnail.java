@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Stack;
 
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
@@ -42,6 +43,11 @@ public class SolverSnail implements Solver{
 		int j = 0;
 		int nb = 1;
 		
+		boolean guiInit = RenderManager.getIntance().isInit();
+		if(guiInit) {
+			RenderManager.getIntance().updateGame(testGame);
+		}
+		
 		int shapeType;
 		StateSnail initialState = new StateSnail(Direction.EAST,0,i,j,0,1);
 		stack.push(initialState);
@@ -79,7 +85,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithNorthAndWest(shape)) {isWellPlaced = true;}
 						
@@ -102,7 +108,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -136,7 +142,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithNorthAndEast(shape)) {isWellPlaced = true;}
 						
@@ -160,7 +166,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);		
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -194,7 +200,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithSouthAndEast(shape)) {isWellPlaced = true;}
 						
@@ -219,7 +225,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -254,7 +260,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithSouthAndWest(shape)) {isWellPlaced = true;}
 						
@@ -279,7 +285,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;

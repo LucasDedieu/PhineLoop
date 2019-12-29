@@ -1,5 +1,7 @@
 package fr.dauphine.javaavance.phineloops.model;
 
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
+
 public class LShape extends Shape {
 
 	private int[] domain = {0,1,2,3};
@@ -35,6 +37,7 @@ public class LShape extends Shape {
 	public void rotate() {
 		super.rotate();
 		orientation = (orientation + 1)%4;
+		
 	}
 	
 
