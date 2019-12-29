@@ -1,8 +1,5 @@
 package fr.dauphine.javaavance.phineloops.solver.csp;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 

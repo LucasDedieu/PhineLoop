@@ -39,6 +39,9 @@ public class LineByLineConsumer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Kill all the other threads and handing back to the main thread by decrementing the latch
+	 */
 	private void abort() {
 		ThreadController.getInstance().stop();
 		while(latch.getCount()>0) {
@@ -54,6 +57,7 @@ public class LineByLineConsumer implements Runnable {
 		Shape[][] board = game.getBoard(); 
 		int i =height-1;
 		int j=width-1;
+		
 		StateLineByLine initialState = new StateLineByLine(i,j,0);
 		stack.push(initialState);		
 		while(!stack.isEmpty() ) {

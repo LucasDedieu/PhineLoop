@@ -1,15 +1,5 @@
 package fr.dauphine.javaavance.phineloops.solver.line;
 
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Stack;
-import java.util.concurrent.CountDownLatch;
-
-import fr.dauphine.javaavance.phineloops.controller.ThreadController;
-import fr.dauphine.javaavance.phineloops.model.Game;
-import fr.dauphine.javaavance.phineloops.model.Shape;
-
 public class SolverLineByLineMultiThreadOld {
 	/*
 	private Game originalGame ;

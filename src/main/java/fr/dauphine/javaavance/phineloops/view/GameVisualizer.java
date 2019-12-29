@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,13 +14,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+
 import fr.dauphine.javaavance.phineloops.checker.Checker;
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 
-public class ShapesDrawer extends JFrame implements ActionListener{
+public class GameVisualizer extends JFrame implements ActionListener{
 	
 
 	private static final long serialVersionUID = 1L;
@@ -41,11 +44,12 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 
 
-	public ShapesDrawer(Game game) {
+	public GameVisualizer(Game game) {
 		super();
 		this.game = game;
 		init();
 		this.setVisible(true);
+		RenderManager.getIntance().init(this);
 		addMenuBar();
 		drawGame();
 	}
@@ -53,7 +57,6 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 
 	private void init() {
-
 		map.put("0 0",  new ImageIcon(getClass().getResource("/images/00.png")));
 		map.put("1 0",  new ImageIcon(getClass().getResource("/images/10.png")));
 		map.put("1 1",  new ImageIcon(getClass().getResource("/images/11.png")));
@@ -71,7 +74,6 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		map.put("5 2",  new ImageIcon(getClass().getResource("/images/52.png")));
 		map.put("5 3",  new ImageIcon(getClass().getResource("/images/53.png")));
 
-
 		this.height = game.getHeight();
 		this.width = game.getWidth();
 		buttonSize = HEIGHT_SIZE/Math.max(height,width);
@@ -81,9 +83,16 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
+		initButtons();
+	}
 
+
+
+	/**
+	 * Adapt the layout to the game width and height. Link the buttons to the shapes.
+	 */
+	private void initButtons() {
 		int max = Math.max(height,width); 
-		
 		setLayout(new GridLayout(max, max));
 		buttons = new ShapeButton[height][width];
 		Shape[][] board = game.getBoard();
@@ -103,13 +112,16 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 					}
 					
 					private void displayDialog() {
-						JOptionPane.showMessageDialog(ShapesDrawer.this, "Well done ! If you want to replay click on generate in the menu bar");		
+						JOptionPane.showMessageDialog(GameVisualizer.this, "Well done ! If you want to replay click on generate in the menu bar");		
 					}
 				});
 			}
 		}
 	}
 
+	/**
+	 * Add menu bar with menu "Solve" and "Generate"
+	 */
 	private void addMenuBar() {
 		JMenuBar menuBar;
 		JMenu menu;
@@ -131,10 +143,10 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SolverLineByLine solver = new SolverLineByLine(ShapesDrawer.this.game);
-				ShapesDrawer.this.game = solver.solve(4);
+				SolverLineByLine solver = new SolverLineByLine(GameVisualizer.this.game);
+				GameVisualizer.this.game = solver.solve(4);
 				drawGame();
-				updateButton(game);
+				updateButtons(game);
 				
 			}
 		});
@@ -148,10 +160,16 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SolverSnail solver = new SolverSnail(ShapesDrawer.this.game);
-				ShapesDrawer.this.game = solver.solve(4);
-				drawGame();
-				updateButton(game);
+				SolverSnail solver = new SolverSnail(GameVisualizer.this.game);
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						GameVisualizer.this.game = solver.solve(4);
+						
+					}
+				});
+				t.start();
 			}
 		});
 		menu.add(menuItem);
@@ -170,26 +188,54 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ShapesDrawer.this.game.generate();
-				drawGame();
-				updateButton(game);
+				String resp = JOptionPane.showInputDialog(GameVisualizer.this, "Enter width, height with this format :\"wxh\"");
+				try {
+					String[] dims = resp.split("x");
+					width = Integer.parseInt(dims[0]);
+					height = Integer.parseInt(dims[1]);
+					//int nbcc = Integer.parseInt(dims[1].split(" ")[1]);
+					GameVisualizer.this.height = height;
+					GameVisualizer.this.width = width;
+					if(height>1&&width>1) {
+						GameVisualizer.this.game = new Game(height, width);
+						GameVisualizer.this.game.generate();
+						resetLayout();
+					}
+					
+				}
+				catch(NumberFormatException exp){
+					JOptionPane.showMessageDialog(GameVisualizer.this, "Warning : Negative dims");
+				}
 				
 			}
 		});
 		menu.add(menuItem);
-		
 		menuBar.add(menu);
-
 		this.setJMenuBar(menuBar);
 	} 
+	
+	/**
+	 * Detroy the current frame and start a new one with a game's size layout
+	 */
+	private void resetLayout() {
+		setLayout(null);
+		this.dispose();
+		new GameVisualizer(game);
+	}
 
-
+/**
+ * Refresh the image of a button
+ * @param button
+ */
 	private void refreshButton(ShapeButton button) {
 		String  shapeId = button.getShape().toString();
 		ImageIcon icon = new ImageIcon(map.get(shapeId).getImage().getScaledInstance(buttonSize, buttonSize, java.awt.Image.SCALE_SMOOTH));
 		button.setIcon(icon);	
 	}
 
+	/**
+	 * Draw the entire baord
+	 */
 	public void drawGame() {
 		Shape[][] board = game.getBoard();
 		for(int i=0; i<height; i++) {
@@ -201,7 +247,11 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		}
 	}
 
-	private void updateButton(Game game) {
+	/**
+	 * Link the grid layout buttons to a specific game with same height and width
+	 * @param game : the game to link
+	 */
+	public void updateButtons(Game game) {
 		Shape[][] board= game.getBoard();
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
@@ -214,8 +264,17 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	}
+	
+	/**
+	 * Refresh the image of a specific shape's button
+	 * @param shape : the shape
+	 */
+	public void updateShape(Shape shape) {
+		int i = shape.getI();
+		int j = shape.getJ();
+		ShapeButton button = buttons[i][j];
+		refreshButton(button);			
 	}
 
 }

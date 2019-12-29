@@ -28,6 +28,7 @@ public class IShape extends Shape {
 	public void rotate() {
 		super.rotate();
 		orientation = (orientation + 1)%2;
+		
 	}
 	
 	

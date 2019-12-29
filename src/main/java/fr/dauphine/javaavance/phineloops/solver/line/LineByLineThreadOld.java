@@ -1,14 +1,7 @@
 package fr.dauphine.javaavance.phineloops.solver.line;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.concurrent.CountDownLatch;
-
-import fr.dauphine.javaavance.phineloops.controller.ThreadController;
-import fr.dauphine.javaavance.phineloops.model.Game;
-import fr.dauphine.javaavance.phineloops.model.Shape;
-
 public class LineByLineThreadOld implements Runnable {
+	/*
 	
 	private Game originalGame ;
 	private int height;
@@ -29,7 +22,7 @@ public class LineByLineThreadOld implements Runnable {
 		this.board = game.getBoard();
 		this.rotateFirst = rotateFirst;
 		this.topLeft = topLeft;
-	}
+	}*/
 	
 	@Override
 	public void run() {

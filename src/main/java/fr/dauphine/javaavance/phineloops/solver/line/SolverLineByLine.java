@@ -44,6 +44,7 @@ public class SolverLineByLine implements Solver{
 	public Game solve(int threads) {
 		Game solvedGame  = new Game(originalGame);
 		Shape[][] solvedBoard = solvedGame.getBoard();
+		
 
 		//Is game solvable
 		if(checkIfXShapeOnBorder(solvedBoard)) {
@@ -59,21 +60,17 @@ public class SolverLineByLine implements Solver{
 		}
 		long deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Freeze time :"+deltaTime+" ms");
-		//System.out.println(solvedGame);
+		
 		
 		//Find cluster
 		startTime = System.currentTimeMillis();
 		ClusterManager.getInstance().findClusters(solvedGame);
-		
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Find Cluster time :"+deltaTime+" ms");
 		
 		//Prepare games
 		startTime = System.currentTimeMillis();
 		Set<Game> games = ClusterManager.getInstance().getClusterGames(solvedGame);
-		//for(Game game : games) {
-		//	System.out.println(game);
-		//}
 		deltaTime = System.currentTimeMillis()-startTime;
 		System.out.println("Delimit games times :"+deltaTime+" ms");
 
@@ -157,6 +154,7 @@ public class SolverLineByLine implements Solver{
 	 * Shuffle randomly the board
 	 * @param game :the game to shuffle
 	 */
+	@SuppressWarnings("unused")
 	private void shuffle(Game game) {
 		//Shuffle
 		Random rand = new Random();

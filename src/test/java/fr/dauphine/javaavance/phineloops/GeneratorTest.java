@@ -1,13 +1,6 @@
 package fr.dauphine.javaavance.phineloops;
 
-import java.io.FileNotFoundException;
-
-import org.junit.Assert;
-
 import org.junit.Test;
-
-import fr.dauphine.javaavance.phineloops.checker.*;
-import fr.dauphine.javaavance.phineloops.model.Game;
 
 public class GeneratorTest {
 

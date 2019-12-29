@@ -1,5 +1,6 @@
 package fr.dauphine.javaavance.phineloops.solver.snail;
 
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class StateSnail {
@@ -45,9 +46,12 @@ public class StateSnail {
 		return r <shape.getMaxRotation()+1;
 	}
 	
-	public void rotate(Shape shape) {
+	public void rotate(Shape shape, boolean guiInit) {
 		r++;
 		shape.rotate();
+		if(guiInit) {
+			RenderManager.getIntance().updateShape(shape);
+		}
 	}
 
 	public void setJ(int j) {

@@ -21,11 +21,14 @@ public class Generator {
 	private static int EAST = 1;
 	private static int SOUTH = 2;
 	private static int WEST = 3;
+<<<<<<< HEAD
 	private int maxCc;
+=======
+
+>>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 
 	public Generator(Game game) {
 		this.game = game;
-		this.maxCc = game.getMaxCC();
 	}
 
 	/**
@@ -1464,6 +1467,17 @@ public class Generator {
 		toPutShapes.clear();
 	}
 	
+<<<<<<< HEAD
+=======
+	
+	
+	@SuppressWarnings("unused")
+	private void generateConnectedComponent()
+	{
+		
+	}
+	
+>>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 	/**
 	 * 	Shuffle to a random position, the shapes of the board given in parameters 
 	 * @param game

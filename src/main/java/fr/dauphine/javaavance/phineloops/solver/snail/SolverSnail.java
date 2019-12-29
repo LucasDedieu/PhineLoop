@@ -2,35 +2,25 @@ package fr.dauphine.javaavance.phineloops.solver.snail;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Stack;
 
+import fr.dauphine.javaavance.phineloops.controller.RenderManager;
 import fr.dauphine.javaavance.phineloops.model.Game;
 import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.Solver;
 
-/**
- * Solver using "snail" shape picker. 
- * @author lucas
- *
- */
+
 public class SolverSnail implements Solver{
 	private Game originalGame ;
 	private int height;
 	private int width;
 	private Deque<StateSnail> stack = new ArrayDeque<>();
-	private Shape[][] board;
 	private int nbIterationInStack=0;
-	private int iEnd;
-	private int jEnd;
-
+	
+	
 	public SolverSnail(Game game) {
 		this.originalGame = game;
 		this.height = game.getHeight();
 		this.width = game.getWidth();
-		this.board = game.getBoard();
-		iEnd = (int)Math.ceil((height-1)/2.0);
-		jEnd = (int)((width-1)/2.0);
-
 	}
 
 
@@ -42,6 +32,12 @@ public class SolverSnail implements Solver{
 		int j = 0;
 		int nb = 1;
 		
+		//If in GUI, link the frame with the game
+		boolean guiInit = RenderManager.getIntance().isInit();
+		if(guiInit) {
+			RenderManager.getIntance().updateGame(testGame);
+		}
+		
 		int shapeType;
 		StateSnail initialState = new StateSnail(Direction.EAST,0,i,j,0,1);
 		stack.push(initialState);
@@ -51,7 +47,6 @@ public class SolverSnail implements Solver{
 			i = iteration.getI();
 			j = iteration.getJ();
 			nbIterationInStack = iteration.getNb();
-			//bool[i][j] =true;
 			int level = iteration.getLevel();
 			Shape shape = testBoard[i][j];
 			Direction currentDirection = iteration.getDir();
@@ -67,7 +62,7 @@ public class SolverSnail implements Solver{
 			}
 
 			switch(currentDirection) {
-			/////////////////////////////////////////////////////////////////////////////////EAST
+			/////////////////////////////////////////////////////////////////////////////////DIRECTION IS EAST
 			case EAST : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -79,7 +74,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithNorthAndWest(shape)) {isWellPlaced = true;}
 						
@@ -102,7 +97,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -124,7 +119,7 @@ public class SolverSnail implements Solver{
 				//Add next iteration to stack
 				stack.push(nextIteration);
 				break;
-				/////////////////////////////////////////////////////////////////////////////////SOUTH
+				/////////////////////////////////////////////////////////////////////////////////DIRECTION IS SOUTH
 			case SOUTH : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -136,7 +131,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithNorthAndEast(shape)) {isWellPlaced = true;}
 						
@@ -160,7 +155,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);		
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -182,7 +177,7 @@ public class SolverSnail implements Solver{
 				//Add next iteration to stack
 				stack.push(nextIteration);
 				break;
-				/////////////////////////////////////////////////////////////////////////////////WEST
+				////////////////////////////////////////////////////////////////////////////////////DIRECTION IS WEST
 			case WEST : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -194,7 +189,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithSouthAndEast(shape)) {isWellPlaced = true;}
 						
@@ -219,7 +214,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -242,7 +237,7 @@ public class SolverSnail implements Solver{
 				stack.push(nextIteration);
 				break;
 
-				/////////////////////////////////////////////////////////////////////////////////NORTH
+				/////////////////////////////////////////////////////////////////////////////////DIRECTION IS NORTH
 			case NORTH : 
 				shapeType =shape.getType();
 				//Case XShape or EmptyShape (do not rotate)
@@ -254,7 +249,7 @@ public class SolverSnail implements Solver{
 				else if(iteration.canRotate(shape)) {	
 					boolean isWellPlaced = false;
 					do{
-						iteration.rotate(shape);
+						iteration.rotate(shape, guiInit);
 						
 							if(testGame.isShapeWellConnectedWithSouthAndWest(shape)) {isWellPlaced = true;}
 						
@@ -279,7 +274,7 @@ public class SolverSnail implements Solver{
 						if(testGame.isShapeFullyConnected(shape)) {
 							return testGame;
 						}
-						iteration.rotate(shape);		
+						iteration.rotate(shape, guiInit);	
 					}
 					if(testGame.isShapeFullyConnected(shape)) {
 						return testGame;
@@ -305,25 +300,4 @@ public class SolverSnail implements Solver{
 		}
 		return null;
 	}
-
-	/**
-	 * old
-	 * @return
-	 */
-	private int calcMaxStackSize() {
-		int count =0;
-		for(int i = 0; i<height-1;i++) {
-			for(int j = 0; j<height-1;j++) {
-				Shape shape = board[i][j];
-				String shapeClassName =shape.getClass().getSimpleName();
-				//Case XShape or EmptyShape (do not rotate)
-				if(!shapeClassName.equals("XShape") && !shapeClassName.equals("EmptyShape") ) {
-					count++;
-				}
-			}
-		}
-		return count;
-	}
-
-
 }

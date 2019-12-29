@@ -1,13 +1,22 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import java.util.HashSet;
 import java.util.Set;
+
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class Cluster {
 	//private Set<Shape> shapeSet = new HashSet<>();
+	//FASTUTILS
 	private Set<Shape> shapeSet = new ObjectOpenHashSet<>(20);
+	//KOLOBOKE
+	//private HashObjSet<Shape> shapeSet =  HashObjSets.getDefaultFactory().withHashConfig(HashConfig.getDefault())newMutableSet();
+	//GUAVA
+	//private HashMultiset<Shape> shapeSet =HashMultiset.create();
+	//TROVE
+	//private Set<Shape> shapeSet = new THashSet<Shape>();
+	//HPPC
+	//private ObjectHashSet<Shape> shapeSet =  new ObjectHashSet<Shape>();
 	private boolean computed = false;
 	private int minI;
 	private int minJ;
