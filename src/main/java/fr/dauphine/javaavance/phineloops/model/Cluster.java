@@ -1,15 +1,18 @@
 package fr.dauphine.javaavance.phineloops.model;
 
-import com.google.common.collect.HashMultiset;
+import java.util.Set;
+
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class Cluster {
 	//private Set<Shape> shapeSet = new HashSet<>();
 	//FASTUTILS
-	//private Set<Shape> shapeSet = new ObjectOpenHashSet<>(20);
+	private Set<Shape> shapeSet = new ObjectOpenHashSet<>(20);
 	//KOLOBOKE
 	//private HashObjSet<Shape> shapeSet =  HashObjSets.getDefaultFactory().withHashConfig(HashConfig.getDefault())newMutableSet();
 	//GUAVA
-	private HashMultiset<Shape> shapeSet =HashMultiset.create();
+	//private HashMultiset<Shape> shapeSet =HashMultiset.create();
 	//TROVE
 	//private Set<Shape> shapeSet = new THashSet<Shape>();
 	//HPPC
@@ -55,7 +58,7 @@ public class Cluster {
 	}
 
 
-	public HashMultiset<Shape> getShapeSet(){
+	public Set<Shape> getShapeSet(){
 		return shapeSet;
 	}
 
