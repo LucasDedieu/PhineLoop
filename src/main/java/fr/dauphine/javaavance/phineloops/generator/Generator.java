@@ -21,14 +21,11 @@ public class Generator {
 	private static int EAST = 1;
 	private static int SOUTH = 2;
 	private static int WEST = 3;
-<<<<<<< HEAD
 	private int maxCc;
-=======
-
->>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 
 	public Generator(Game game) {
 		this.game = game;
+		this.maxCc = game.getMaxCC();
 	}
 
 	/**
@@ -39,29 +36,29 @@ public class Generator {
 		int w = game.getWidth();
 		Shape[][] board = game.getBoard();
 		// Generation of the set of Legal Shapes that we will put
-		Shape topLeftCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(2, w, w),
+		Shape topLeftCornerLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(1, 0, 0), new QShape(2, 0, 0),
 				new LShape(1, 0, 0) };
-		Shape topBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(2, w, w),
-				new QShape(3, w, w), new IShape(1, w, w), new TShape(2, w, w), new LShape(1, 0, 0),
+		Shape topBorderLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(1, 0, 0), new QShape(2, 0, 0),
+				new QShape(3, 0, 0), new IShape(1, 0, 0), new TShape(2, 0, 0), new LShape(1, 0, 0),
 				new LShape(2, 0, 0) };
-		Shape topRightCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(2, w, w), new QShape(3, w, w),
+		Shape topRightCornerLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(2, 0, 0), new QShape(3, 0, 0),
 				new LShape(2, 0, 0) };
-		Shape leftBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(1, w, w), new QShape(0, w, w),
-				new QShape(2, w, w), new IShape(0, w, w), new TShape(1, w, w), new LShape(0, 0, 0),
+		Shape leftBorderLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(1, 0, 0), new QShape(0, 0, 0),
+				new QShape(2, 0, 0), new IShape(0, 0, 0), new TShape(1, 0, 0), new LShape(0, 0, 0),
 				new LShape(1, 0, 0) };
-		Shape bottomLeftCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
+		Shape bottomLeftCornerLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(0, 0, 0), new QShape(1, 0, 0),
 				new LShape(0, 0, 0) };
-		Shape bottomBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(3, w, w), new IShape(1, w, w), new TShape(0, w, w), new LShape(0, 0, 0),
+		Shape bottomBorderLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(0, 0, 0), new QShape(1, 0, 0),
+				new QShape(3, 0, 0), new IShape(1, 0, 0), new TShape(0, 0, 0), new LShape(0, 0, 0),
 				new LShape(3, 0, 0) };
-		Shape bottomRightCornerLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(3, w, w),
+		Shape bottomRightCornerLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(0, 0, 0), new QShape(3, 0, 0),
 				new LShape(3, 0, 0) };
-		Shape rightBorderLegalShapes[] = { new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(3, w, w),
-				new QShape(2, w, w), new IShape(0, w, w), new TShape(3, w, w), new LShape(2, 0, 0),
+		Shape rightBorderLegalShapes[] = { new EmptyShape(0, 0, 0), new QShape(0, 0, 0), new QShape(3, 0, 0),
+				new QShape(2, 0, 0), new IShape(0, 0, 0), new TShape(3, 0, 0), new LShape(2, 0, 0),
 				new LShape(3, 0, 0) };
-		List<Shape> allShape = Arrays.asList(new EmptyShape(0, w, w), new QShape(0, w, w), new QShape(1, w, w),
-				new QShape(2, w, w), new QShape(3, w, w), new IShape(0, w, w), new IShape(1, w, w), new TShape(0, w, w),
-				new TShape(1, w, w), new TShape(2, w, w),new TShape(3, w, w), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
+		List<Shape> allShape = Arrays.asList(new EmptyShape(0, 0, 0), new QShape(0, 0, 0), new QShape(1, 0, 0),
+				new QShape(2, 0, 0), new QShape(3, 0, 0), new IShape(0, 0, 0), new IShape(1, 0, 0), new TShape(0, 0, 0),
+				new TShape(1, 0, 0), new TShape(2, 0, 0),new TShape(3, 0, 0), new XShape(0, 0, 0), new LShape(0, 0, 0), new LShape(1, 0, 0),
 				new LShape(2, 0, 0), new LShape(3, 0, 0));
 		Random rand = new Random();
 
@@ -340,8 +337,8 @@ public class Generator {
 		Random rand= new Random();
 		int h = game.getHeight();
 		int w = game.getWidth();
-		int departi=rand.nextInt(h);
-		int departj=rand.nextInt(w);
+		int starti=rand.nextInt(h);
+		int startj=rand.nextInt(w);
 		//We divide the number of boxes between each connected component (We add a minus two so they very rarely take all the feasible new entries)
 		int traversalEnd=(int)((float)(h*w)/(float)(nbcc))-2;
 		Shape[][] board = game.getBoard();
@@ -368,132 +365,60 @@ public class Generator {
 			}
 		}
 		
-		
-		if(traversalEnd==2)//Almost deterministic generation of shapes, has to be dealt with specifically for each case 
-		{
-			
-		}
+		//Almost deterministic generation of shapes, has to be dealt with specifically for each case as an optimization
+		/*
+		 * if(traversalEnd==2) {
+		 * 
+		 * }
+		 */
 
-		//We put the first piece on the board depending on the position
-		if (departi==0 && departj==0)
+		//We put the first piece on the board depending on the position which contains less restriction
+		if (starti==0 && startj==0)
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = topLeftCornerLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj);
-			board[departi][departj] = placedShape;
-			//We go through all the empty neighbor of the placed shape 
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);//We set a reservation for those empty neighbor so we will know how many connection they should have (i.e how many reservations) 
-					toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,topLeftCornerLegalShapes,board);
 		}
-		else if (departi==0 && departj<w-1)
+		else if (starti==0 && startj<w-1)
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = topBorderLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj); 
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,topBorderLegalShapes,board);
 		}
-		else if (departi == 0 && departj == (w - 1))
+		else if (starti == 0 && startj == (w - 1))
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = topRightCornerLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj);
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,topRightCornerLegalShapes,board);
 		}
-		else if (departi<(h-1) && departj==0)
+		else if (starti<(h-1) && startj==0)
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = leftBorderLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj); 
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,leftBorderLegalShapes,board);
 		}
-		else if (departi<(h-1) && departj==(w-1))
+		else if (starti<(h-1) && startj==(w-1))
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = rightBorderLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj); 
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,rightBorderLegalShapes,board);
 		}
-		else if (departi==h-1 && departj==0)
+		else if (starti==h-1 && startj==0)
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = bottomLeftCornerLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj); 
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,bottomLeftCornerLegalShapes,board);
 		}
-		else if (departi==h-1 && departj<(w-1))
+		else if (starti==h-1 && startj<(w-1))
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = bottomBorderLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj); 
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour); 
-			}
+			putFirstShape(starti,startj,toPutShapes,bottomBorderLegalShapes,board);
 		}
-		else if (departi==h-1 && departj==(w-1))
+		else if (starti==h-1 && startj==(w-1))
 		{
-			int randomIndex = rand.nextInt(topLeftCornerLegalShapes.length);
-			Shape placedShape = bottomRightCornerLegalShapes[randomIndex];
-			placedShape.setI(departi);
-			placedShape.setJ(departj);
-			board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-			{
-				neighbour.setReservedBy(board[departi][departj]);
-				toPutShapes.add(neighbour);  
-			}
+			putFirstShape(starti,startj,toPutShapes,bottomRightCornerLegalShapes,board);
 		}
 		else 
 		{
 			int randomIndex = rand.nextInt(allShape.size());
 			Shape placedShape = allShape.get(randomIndex); 
-			placedShape.setI(departi);
-			placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi][departj]);
+				neighbour.setReservedBy(board[starti][startj]);
 				toPutShapes.add(neighbour); 
 			}
 		}
-		firstConnectedComponent.add(board[departi][departj]);
+		firstConnectedComponent.add(board[starti][startj]);
 		
 		
 		//********************************************* TRAVERSAL ******************************************************************			
@@ -505,223 +430,41 @@ public class Generator {
 			int nextPlacedShapeIndex = rand.nextInt(toPutShapes.size()); // -1 ? 
 			Shape nextPlacedShape = toPutShapes.get(nextPlacedShapeIndex);
 			toPutShapes.remove(nextPlacedShapeIndex);
-			departi=nextPlacedShape.getI();
-			departj=nextPlacedShape.getJ();
+			starti=nextPlacedShape.getI();
+			startj=nextPlacedShape.getJ();
 			//We put the first piece on the board depending on the position
-			if (departi==0 && departj==0)
+			if (starti==0 && startj==0)
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateTopLeftCornerLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); // We add the position that we will have to put a piece in to close the connected component
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateTopLeftCornerLegalShapes(),board);
 			}
-			else if (departi==0 && departj<w-1)
+			else if (starti==0 && startj<w-1)
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateTopBorderLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); 
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateTopBorderLegalShapes(),board);
 			}
-			else if (departi == 0 && departj == (w - 1))
+			else if (starti == 0 && startj == (w - 1))
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateTopRightCornerLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour);  
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateTopRightCornerLegalShapes(),board);
 			}
-			else if (departi<(h-1) && departj==0)
+			else if (starti<(h-1) && startj==0)
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateLeftBorderLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj); 
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour);
-				} 
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateLeftBorderLegalShapes(),board); 
 			}
-			else if (departi<(h-1) && departj==(w-1))
+			else if (starti<(h-1) && startj==(w-1))
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateRightBorderLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); //
-				} 
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateRightBorderLegalShapes(),board); 
+
 			}
-			else if (departi==h-1 && departj==0)
+			else if (starti==h-1 && startj==0)
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateBottomLeftCornerLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size()); 
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateBottomLeftCornerLegalShapes(),board); 
 			}
-			else if (departi==h-1 && departj<(w-1))
+			else if (starti==h-1 && startj<(w-1))
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateBottomBorderLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateBottomBorderLegalShapes(),board); 
 			}
-			else if (departi==h-1 && departj==(w-1))
+			else if (starti==h-1 && startj==(w-1))
 			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:generateBottomRightCornerLegalShapes())
-				{
-					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
-					for(Shape reservation : nextPlacedShape.getReservedBy() )
-					{
-						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[departi][departj].getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
-							token++;
-					}
-					if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj);
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
-				{
-					neighbour.setReservedBy(board[departi][departj]);
-					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-				}
+				putOtherShapes(starti,startj,toPutShapes,nextPlacedShape,generateBottomRightCornerLegalShapes(),board); 
 			}
 			else 
 			{
@@ -729,8 +472,8 @@ public class Generator {
 				for(Shape sh:generateAllShapes())
 				{
 					int token=0;
-					sh.setI(departi);
-					sh.setJ(departj);
+					sh.setI(starti);
+					sh.setJ(startj);
 					for(Shape reservation : nextPlacedShape.getReservedBy() )
 					{
 						if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,nextPlacedShape.getReservedBy())) //I need to know who has put the shape as his neighbour in the board 
@@ -740,12 +483,12 @@ public class Generator {
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi);
-				placedShape.setJ(departj); 
-				board[departi][departj] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi][departj]))
+				placedShape.setI(starti);
+				placedShape.setJ(startj); 
+				board[starti][startj] = placedShape;
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi][departj]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
 						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
 				}
@@ -804,15 +547,7 @@ public class Generator {
 		 
 	 	ArrayList<Shape> connectedComponent= new ArrayList<Shape>();
 	 	ArrayList<Shape> toPutShapes = new ArrayList<Shape>();
-	 	Shape topLeftCornerLegalShapes2[] = generateTopLeftCornerLegalShapes();
-		Shape topBorderLegalShapes2[] = generateTopBorderLegalShapes();
-		Shape topRightCornerLegalShapes2[] = generateTopRightCornerLegalShapes();
-		Shape leftBorderLegalShapes2[] = generateLeftBorderLegalShapes();
-		Shape bottomLeftCornerLegalShapes2[] = generateBottomLeftCornerLegalShapes();
-		Shape bottomBorderLegalShapes2[] = generateBottomBorderLegalShapes();
-		Shape bottomRightCornerLegalShapes2[] = generateBottomRightCornerLegalShapes();
-		Shape rightBorderLegalShapes2[] = generateRightBorderLegalShapes();
-		List<Shape> allShape2 = generateAllShapes();
+		List<Shape> allShape = generateAllShapes();
 		Random rand = new Random();
 		int w=game.getWidth();
 		int h=game.getHeight();
@@ -837,45 +572,45 @@ public class Generator {
 		int newEntryIndex = rand.nextInt(feasibleEntry.size());
 		Shape newEntry = feasibleEntry.get(newEntryIndex);
 		//Now we get the coord for the new entry
-		int departi1=newEntry.getI();
-		int departj1=newEntry.getJ();
+		int starti=newEntry.getI();
+		int startj=newEntry.getJ();
 	
 		//We place a random shapes for the new connected component but by paying caution to the already placed shapes
-		if (departi1==0 && departj1==0)
+		if (starti==0 && startj==0)
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:topLeftCornerLegalShapes2)
+			for(Shape sh:generateTopLeftCornerLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
-					if (nb.getType()!=0) willWork=false; //If we have a case to complete for this shape but it is already occupied (i.e not empty) ,we don't put it 
+					if (nb.getType()!=0) willWork=false; //If we have a box to complete for this shape but it is already occupied (i.e not empty) ,we don't put it 
 				}
 				if(willWork) feasibleShapes.add(sh);
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1); 
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj); 
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour);  
 			}
 		}
-		else if (departi1==0 && departj1<w-1)
+		else if (starti==0 && startj<w-1)
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:topBorderLegalShapes2)
+			for(Shape sh:generateTopBorderLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -885,24 +620,24 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour); 
 			} 
 		}
-		else if (departi1 == 0 && departj1 == (w - 1))
+		else if (starti == 0 && startj == (w - 1))
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:topRightCornerLegalShapes2)
+			for(Shape sh:generateTopRightCornerLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -912,24 +647,24 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour); 
 			}
 		}
-		else if (departi1<(h-1) && departj1==0)
+		else if (starti<(h-1) && startj==0)
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:leftBorderLegalShapes2)
+			for(Shape sh:generateLeftBorderLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -939,24 +674,24 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour); 
 			}
 		}
-		else if (departi1<(h-1) && departj1==(w-1))
+		else if (starti<(h-1) && startj==(w-1))
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:rightBorderLegalShapes2)
+			for(Shape sh:generateRightBorderLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -966,23 +701,23 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				toPutShapes.add(neighbour);
 			}
 		}
-		else if (departi1==h-1 && departj1==0)
+		else if (starti==h-1 && startj==0)
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:bottomLeftCornerLegalShapes2)
+			for(Shape sh:generateBottomLeftCornerLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -992,24 +727,24 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour); 
 			}
 		}
-		else if (departi1==h-1 && departj1<(w-1))
+		else if (starti==h-1 && startj<(w-1))
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:bottomBorderLegalShapes2)
+			for(Shape sh:generateBottomBorderLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -1019,25 +754,25 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1);
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj);
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour);
 			}
 			
 		}
-		else if (departi1==h-1 && departj1==(w-1))
+		else if (starti==h-1 && startj==(w-1))
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:bottomRightCornerLegalShapes2)
+			for(Shape sh:generateBottomRightCornerLegalShapes())
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -1047,12 +782,12 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1); 
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj); 
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour);  
 			}
@@ -1060,11 +795,11 @@ public class Generator {
 		else 
 		{
 			ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-			for(Shape sh:allShape2)
+			for(Shape sh:allShape)
 			{
 				boolean willWork=true;
-				sh.setI(departi1);
-				sh.setJ(departj1);
+				sh.setI(starti);
+				sh.setJ(startj);
 				Shape[] shneighbor = game.getConnectionNeighbors(sh);
 				for(Shape nb:shneighbor)
 				{
@@ -1074,80 +809,70 @@ public class Generator {
 			}
 			int randomIndex = rand.nextInt(feasibleShapes.size());
 			Shape placedShape = feasibleShapes.get(randomIndex);
-			placedShape.setI(departi1);
-			placedShape.setJ(departj1); 
-			board[departi1][departj1] = placedShape;
-			for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+			placedShape.setI(starti);
+			placedShape.setJ(startj); 
+			board[starti][startj] = placedShape;
+			for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 			{
-				neighbour.setReservedBy(board[departi1][departj1]);
+				neighbour.setReservedBy(board[starti][startj]);
 				if(!toPutShapes.contains(neighbour)) 
 					toPutShapes.add(neighbour); 
 			}
 		}
-		connectedComponent.add(board[departi1][departj1]);
+		connectedComponent.add(board[starti][startj]);
 			
 		//********************************TRAVERSAL************************************************** 
 		
 		for(int i=0;i<traversalEnd && toPutShapes.size()!=0 && i<(traversalEnd-toPutShapes.size());i++)
 		{
-			//We have to regenerate the legal values because other wise they could overlap
-			Shape topLeftCornerLegalShapes11[] = generateTopLeftCornerLegalShapes();
-			Shape topBorderLegalShapes11[] = generateTopBorderLegalShapes();
-			Shape topRightCornerLegalShapes11[] = generateTopRightCornerLegalShapes();
-			Shape leftBorderLegalShapes11[] = generateLeftBorderLegalShapes();
-			Shape bottomLeftCornerLegalShapes11[] = generateBottomLeftCornerLegalShapes();
-			Shape bottomBorderLegalShapes11[] = generateBottomBorderLegalShapes();
-			Shape bottomRightCornerLegalShapes11[] = generateRightBorderLegalShapes();
-			Shape rightBorderLegalShapes11[] = generateRightBorderLegalShapes();
 			List<Shape> allShape11 = generateAllShapes();
 			int nextPlacedShapeIndex = rand.nextInt(toPutShapes.size());
 			Shape nextPlacedShape = toPutShapes.get(nextPlacedShapeIndex);
 			toPutShapes.remove(nextPlacedShapeIndex);
-			departi1=nextPlacedShape.getI();
-			departj1=nextPlacedShape.getJ();
+			starti=nextPlacedShape.getI();
+			startj=nextPlacedShape.getJ();
 			
 			//We put the rest of the shapes for the connected component 
-			if (departi1==0 && departj1==0)
+			if (starti==0 && startj==0)
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:topLeftCornerLegalShapes11)
+				for(Shape sh:generateTopLeftCornerLegalShapes()) //We try the shapes to know if we put it in the feasible ones 
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
-					Shape[] shneighbor = game.getConnectionNeighbors(sh);
+					sh.setI(starti);
+					sh.setJ(startj);
+					Shape[] shneighbor = game.getConnectionNeighbors(sh); //We put the chosen shape and put it on the empty box  
 					for(Shape nb:shneighbor)
 					{
-						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false; //We have to be able to put a shape in his toConnectNeighbors that will close the connected COmponent => All toConnectNeghbors have to be empty 
+						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false; //if a shape cannot connect to his neighbor, we don't add it 
 					}
 					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
 					}
-					//I need to know who has put the shape as his neighbour in the board 
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour))
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+						toPutShapes.add(neighbour); 
 				}
 			}
-			else if (departi1==0 && departj1<w-1)
+			else if (starti==0 && startj<w-1)
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:topBorderLegalShapes11)
+				for(Shape sh:generateTopBorderLegalShapes())
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1155,32 +880,31 @@ public class Generator {
 					}
 					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
 					}
-					//I need to know who has put the shape as his neighbour in the board 
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1); 
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj); 
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
 						toPutShapes.add(neighbour); 
 				}
 			}
-			else if (departi1 == 0 && departj1 == (w - 1))
+			else if (starti == 0 && startj == (w - 1))
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:topRightCornerLegalShapes11)
+				for(Shape sh:generateTopRightCornerLegalShapes())
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1188,64 +912,31 @@ public class Generator {
 					}
 					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
 					}
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
-					if(!toPutShapes.contains(neighbour)) 
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-				}
-			}
-			else if (departi1<(h-1) && departj1==0)
-			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:leftBorderLegalShapes11)
-				{
-					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
-					Shape[] shneighbor = game.getConnectionNeighbors(sh);
-					for(Shape nb:shneighbor)
-					{
-						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
-					}
-					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
-					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
-					}
-					//I need to know who has put the shape as his neighbour in the board 
-					if (willWork) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);//On ne peut pas connaitre leur position à l'avance ... 
-				board[departi1][departj1] = placedShape;
-				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
-				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
 						toPutShapes.add(neighbour); 
 				}
 			}
-			else if (departi1<(h-1) && departj1==(w-1))
+			else if (starti<(h-1) && startj==0)
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:rightBorderLegalShapes11)
+				for(Shape sh:generateLeftBorderLegalShapes())
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1253,63 +944,31 @@ public class Generator {
 					}
 					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false;
 					}
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);//On ne peut pas connaitre leurs position à l'avance ... 
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj); 
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
-					if(!toPutShapes.contains(neighbour)) // && neighbour.getType()==0
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
-				}
-			}
-			else if (departi1==h-1 && departj1==0)
-			{
-				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:bottomLeftCornerLegalShapes11)
-				{
-					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
-					Shape[] shneighbor = game.getConnectionNeighbors(sh);
-					for(Shape nb:shneighbor)
-					{
-						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
-					}
-					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
-					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
-					}
-					//I need to know who has put the shape as his neighbour in the board 
-					if (willWork) feasibleShapes.add(sh);
-				}
-				int randomIndex = rand.nextInt(feasibleShapes.size());
-				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);
-				board[departi1][departj1] = placedShape;
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
-				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
 						toPutShapes.add(neighbour); 
 				}
 			}
-			else if (departi1==h-1 && departj1<(w-1))
+			else if (starti<(h-1) && startj==(w-1))
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:bottomBorderLegalShapes11)
+				for(Shape sh:generateRightBorderLegalShapes())
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1323,25 +982,25 @@ public class Generator {
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+						toPutShapes.add(neighbour);  
 				}
 			}
-			else if (departi1==h-1 && departj1==(w-1))
+			else if (starti==h-1 && startj==0)
 			{
 				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
-				for(Shape sh:bottomRightCornerLegalShapes11)
+				for(Shape sh:generateBottomLeftCornerLegalShapes())
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1349,22 +1008,84 @@ public class Generator {
 					}
 					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 					{
-						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put shape that can be connected to all his reservedBy neighbors 
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false;  
 					}
-					//We need to know who has put the shape as his neighbour in the board 
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1);
-				board[departi1][departj1] = placedShape;
-				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
-						toPutShapes.add(neighbour); // We add the connection to close to an arraylist 
+						toPutShapes.add(neighbour); 
+				}
+			}
+			else if (starti==h-1 && startj<(w-1))
+			{
+				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
+				for(Shape sh:generateBottomBorderLegalShapes())
+				{
+					boolean willWork=true;
+					sh.setI(starti);
+					sh.setJ(startj);
+					Shape[] shneighbor = game.getConnectionNeighbors(sh);
+					for(Shape nb:shneighbor)
+					{
+						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
+					}
+					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
+					{
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
+					}
+					if (willWork) feasibleShapes.add(sh);
+				}
+				int randomIndex = rand.nextInt(feasibleShapes.size());
+				Shape placedShape = feasibleShapes.get(randomIndex);
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
+				connectedComponent.add(placedShape);
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
+				{
+					neighbour.setReservedBy(board[starti][startj]);
+					if(!toPutShapes.contains(neighbour)) 
+						toPutShapes.add(neighbour); 
+				}
+			}
+			else if (starti==h-1 && startj==(w-1))
+			{
+				ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
+				for(Shape sh:generateBottomRightCornerLegalShapes())
+				{
+					boolean willWork=true;
+					sh.setI(starti);
+					sh.setJ(startj);
+					Shape[] shneighbor = game.getConnectionNeighbors(sh);
+					for(Shape nb:shneighbor)
+					{
+						if (nb.getType()!=0 && !game.areShapesConnected(sh, nb)) willWork=false;
+					}
+					for(Shape toConnectsh:nextPlacedShape.getReservedBy())
+					{
+						if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
+					}
+					if (willWork) feasibleShapes.add(sh);
+				}
+				int randomIndex = rand.nextInt(feasibleShapes.size());
+				Shape placedShape = feasibleShapes.get(randomIndex);
+				placedShape.setI(starti);
+				placedShape.setJ(startj);
+				board[starti][startj] = placedShape;
+				connectedComponent.add(placedShape);
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
+				{
+					neighbour.setReservedBy(board[starti][startj]);
+					if(!toPutShapes.contains(neighbour)) 
+						toPutShapes.add(neighbour); 
 				} 
 			}
 			else 
@@ -1373,8 +1094,8 @@ public class Generator {
 				for(Shape sh:allShape11)
 				{
 					boolean willWork=true;
-					sh.setI(departi1);
-					sh.setJ(departj1);
+					sh.setI(starti);
+					sh.setJ(startj);
 					Shape[] shneighbor = game.getConnectionNeighbors(sh);
 					for(Shape nb:shneighbor)
 					{
@@ -1382,20 +1103,19 @@ public class Generator {
 					} 
 						for(Shape toConnectsh:nextPlacedShape.getReservedBy())
 						{
-							if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; //We have to put a shape that can be connected to all his reservedBy neighbors 
+							if(!(game.areShapesConnected(toConnectsh, sh))) willWork=false; 
 						}
-					//We need to know who has put the shape as his neighbor in the board 
 					if (willWork) feasibleShapes.add(sh);
 				}
 				int randomIndex = rand.nextInt(feasibleShapes.size());
 				Shape placedShape = feasibleShapes.get(randomIndex);
-				placedShape.setI(departi1);
-				placedShape.setJ(departj1); 
-				board[departi1][departj1] = placedShape;
+				placedShape.setI(starti);
+				placedShape.setJ(startj); 
+				board[starti][startj] = placedShape;
 				connectedComponent.add(placedShape);
-				for (Shape neighbour:game.getToConnectNeighbors(board[departi1][departj1]))
+				for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
 				{
-					neighbour.setReservedBy(board[departi1][departj1]);
+					neighbour.setReservedBy(board[starti][startj]);
 					if(!toPutShapes.contains(neighbour)) 
 						toPutShapes.add(neighbour); 
 				}
@@ -1411,6 +1131,68 @@ public class Generator {
 	 
 	 //****************************UTIL METHODS FOR THE GENERATOR**************************
 	 
+	
+	
+	/**
+	 *  Put the first Shape of the connected component 
+	 * @param starti the 
+	 * @param startj
+	 * @param toPutShapes
+	 * @param legalShapes
+	 * @param board
+	 */
+	private void putFirstShape(int starti,int startj,ArrayList<Shape> toPutShapes,Shape[] legalShapes,Shape[][] board)
+	{
+		Random rand = new Random();
+		int randomIndex = rand.nextInt(legalShapes.length);
+		Shape placedShape = legalShapes[randomIndex];
+		placedShape.setI(starti);
+		placedShape.setJ(startj);
+		board[starti][startj] = placedShape;
+		for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
+		{
+			neighbour.setReservedBy(board[starti][startj]);
+			toPutShapes.add(neighbour);  
+		}
+	}
+	
+	/**
+	 *  Put the other shapes of the connected component 
+	 * @param starti
+	 * @param startj
+	 * @param toPutShapes
+	 * @param nextPlacedShape
+	 * @param legalShapes
+	 * @param board
+	 */
+	private void putOtherShapes(int starti, int startj,ArrayList<Shape> toPutShapes,Shape nextPlacedShape,Shape[] legalShapes,Shape[][] board)
+	{
+		Random rand = new Random();
+		ArrayList<Shape> feasibleShapes = new ArrayList<Shape>();
+		for(Shape sh:legalShapes)
+		{
+			int token=0;
+			sh.setI(starti);
+			sh.setJ(startj);
+			for(Shape reservation : nextPlacedShape.getReservedBy() )
+			{
+				if(game.areShapesConnected(reservation, sh) && !game.isObstructed(sh,board[starti][startj].getReservedBy())) //We need to know who has put the shape as his neighbour in the board 
+					token++;
+			}
+			if(token==nextPlacedShape.getReservedBy().size()) feasibleShapes.add(sh);
+		}
+		int randomIndex = rand.nextInt(feasibleShapes.size());
+		Shape placedShape = feasibleShapes.get(randomIndex);
+		placedShape.setI(starti);
+		placedShape.setJ(startj);
+		board[starti][startj] = placedShape;
+		for (Shape neighbour:game.getToConnectNeighbors(board[starti][startj]))
+		{
+			neighbour.setReservedBy(board[starti][startj]);
+			if(!toPutShapes.contains(neighbour))
+				toPutShapes.add(neighbour); // We add the position that we will have to put a piece in to close the connected component
+		}
+	}
 	 
 	/**
 	 * Put the correct shapes to connected Component to close them 
@@ -1467,17 +1249,6 @@ public class Generator {
 		toPutShapes.clear();
 	}
 	
-<<<<<<< HEAD
-=======
-	
-	
-	@SuppressWarnings("unused")
-	private void generateConnectedComponent()
-	{
-		
-	}
-	
->>>>>>> branch 'master' of https://github.com/Dauphine-Java-M1/phineloops-alt.git
 	/**
 	 * 	Shuffle to a random position, the shapes of the board given in parameters 
 	 * @param game
