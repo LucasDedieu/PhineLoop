@@ -97,7 +97,7 @@ public class Game {
 	
 	/**
 	 * 
-	 * @param the board to put for the game
+	 * @param board the board to put for the game
 	 */
 	public void setBoard(Shape[][] board) {
 		this.board = board;
@@ -154,7 +154,7 @@ public class Game {
 	/**
 	 * Write the board in a file
 	 * @param outputFile :the file
-	 * @throws FileNotFoundException
+	 * @throws FileNotFoundException throw if the file is not found
 	 */
 	public void write(String outputFile) throws FileNotFoundException {
 		FileOutputStream fos = new FileOutputStream(outputFile);
@@ -705,7 +705,7 @@ public class Game {
 
 	/**
 	 * Return the good orientation of a Qshape for a connection 
-	 * @param shape
+	 * @param shape the shape we want to connect
 	 * @return the orientation
 	 */
 	public int getQOrientationForOpenConnection(Shape shape) //F
@@ -736,7 +736,7 @@ public class Game {
 	
 	/**
 	 * Check if the shape has an empty neighbor
-	 * @param shape
+	 * @param shape the shape to test
 	 * @return true it has an empty neighbor
 	 */
 	public boolean hasEmptyNeighbor(Shape shape)
