@@ -18,7 +18,7 @@ public class MultiSolver implements Solver {
 
 	@Override
 	public Game solve(int threads) {
-		if(threads < 2) {
+		if(threads < 3) {
 			Solver solver = new SolverLineByLine(game);
 			return solver.solve(threads);
 		}
@@ -45,7 +45,7 @@ public class MultiSolver implements Solver {
 			@Override
 			public void run() {
 				Solver solver = new SolverLineByLine(game);
-				Game gameSolved = solver.solve(threads-1);
+				Game gameSolved = solver.solve(threads-2);
 				ThreadController.getInstance().setSolvedGame(gameSolved);
 				System.out.println("line");
 				solversLatch.countDown();
