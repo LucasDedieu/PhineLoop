@@ -23,9 +23,8 @@ public class MyPropagator extends Propagator<IntVar>{
 	public void propagate(int evtmask) throws ContradictionException {
 		// TODO Auto-generated method stud 
 		for (int orientation=vars[0].getLB();orientation<=vars[0].getUB();orientation++) //For each orientations of the current piece 
-		//for (int orientation=0;orientation<neighbourhood[0].getDomain().length;orientation++)
 		{
-			Shape auxshape = neighbourhood[0]; // Useless
+			Shape auxshape = neighbourhood[0]; 
 			int token=0; //token to count how many times the neighbor of the piece in his current orientation can connect with it (should be equals to his number of connection if the orientation is feasible) 
 			neighbourhood[0].setOrientation(orientation); 
 			for (int v=1;v<neighbourhood.length;v++) //Now for each neighbor ...
@@ -42,11 +41,8 @@ public class MyPropagator extends Propagator<IntVar>{
 				}
 				neighbourhood[v].setOrientation(auxorientation);
 			}
-				//System.out.println(neighbourhood[0].getSymbol());
-				//System.out.println(token);
-				//System.out.println(neighbourhood[0].getVConnections());
 				if (token!=neighbourhood[0].getVConnections())
-						vars[0].removeValue(orientation,null);
+						vars[0].removeValue(orientation,null); //If it did not meet his neighbor enough time in this orientation we remove it 
 				neighbourhood[0]=auxshape;
 		}
 		if (vars[0].isInstantiated()) neighbourhood[0].setOrientation(vars[0].getValue());
@@ -55,35 +51,17 @@ public class MyPropagator extends Propagator<IntVar>{
 	@Override
 	public ESat isEntailed() {
 		// TODO Auto-generated method stub
-		//Maybe fix this
-		/*int token=0;
-		for (int orientation=vars[0].getLB();orientation<=vars[0].getUB();orientation++)
-		{
-			neighbourhood[0].setOrientation(orientation);
-			for(int v=1;v<neighbourhood.length;v++)
-			{
-				for(int orientationv=vars[v].getLB();orientationv<vars[v].getUB();orientationv++)
-				{
-					neighbourhood[v].setOrientation(orientationv);
-					if (game.areShapesConnected(neighbourhood[0], neighbourhood[v])) 
-						{
-							token++;
-							break;
-						}
-				}
-			}
-		}*/
+		//We check if all the value of the domain correspond to a solution
 		int token=0;
 		for (int orientation=vars[0].getLB();orientation<=vars[0].getUB();orientation++)
 		{
 			neighbourhood[0].setOrientation(orientation);
-			//System.out.println("Je vérifie");
+			//We turn the shape in all of his orientation and mark if it has meet a neighbor 
 			if(game.isShapeFullyConnected(neighbourhood[0])) token++;
 		}
-		
-		if (token==0)
+		if (token==0) //Never met a neighbor 
             return ESat.FALSE;
-        else if (token==vars[0].getRange())
+        else if (token==vars[0].getRange()) //Always met a neighbor
             return ESat.TRUE;
         else
             return ESat.UNDEFINED;

@@ -14,12 +14,10 @@ import fr.dauphine.javaavance.phineloops.model.Shape;
 
 public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Solver{
 	private Game game;
-	//Shapes
 	private final static int EMPTYSHAPE=0;
 	private final static int XSHAPE=4;
-
-	int height ;
-	int width ;
+	private int height ;
+	private int width ;
 	
 	public SolverChoco(Game game) {
 		this.game = game;
@@ -30,17 +28,15 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 	
 	public Game solve_choco() {
 		Model model = new Model("Phineloops model");
-		//prepare(game);
 		Shape[][] board= game.getBoard();
-		Game game_solved;
-		//We define an annex board for the shapetypes so we can reduce the domain to simply their orientations 
-		//We define the variables which are the cases along with their shape type
+		Game game_solved; 
+		//We define the variables which are the boxes along with their shape type
 		IntVar[][] vars = new IntVar[height][width];
 		//We get the domains of the variables which are their orientations 
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) 
 			{
-					int[] domain = board[i][j].getDomainWithPruning(game); // We prune the domain regarding the position on the board of the shapes 
+					int[] domain = board[i][j].getDomainWithPruning(game); // We prune the domain regarding the position on the board of the shapes (unary constraint)
 					vars[i][j] = model.intVar(domain);
 			}
 		}
@@ -48,7 +44,7 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		for(int i=0; i<height;i++) {
 			for(int j =0; j<width;j++) { 
 				if (vars[i][j].isInstantiated()) board[i][j].setOrientation(vars[i][j].getValue());
-				Constraint myConstraint = new Constraint("Simple connection with shapes Constraint",
+				Constraint myConstraint = new Constraint("Connection with shapes Constraint",
 							new MyPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game)
 							/*,new InstantiatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game)*/);
 				myConstraint.post();
@@ -57,7 +53,6 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		
 		//Now let's get the solution 
 		Solver plsolver = model.getSolver();
-		plsolver.showStatistics();
 		Solution solution = plsolver.findSolution();
 		if (solution != null) {
 			System.out.println(solution.toString()); 
@@ -74,17 +69,12 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 	
 	
 	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
+	 * Create a model for the resolution of the problem  
 	 */
 	private Model makeModel() {
 		// TODO Auto-generated method stub
 		Model model = new Model("Phineloops model");
 		Shape[][] board= game.getBoard();
-		//We define an annex board for the shapetypes so we can reduce the domain to simply their orientations 
 		//We define the variables which are the cases along with their shape type
 		IntVar[][] vars = new IntVar[height][width];
 		//We get the domains of the variables which are their orientations 
@@ -92,7 +82,7 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		{
 			for(int j =0; j<width;j++) 
 			{
-				int[] domain = board[i][j].getDomain(); // Can maybe reduce the domain there ... 
+				int[] domain = board[i][j].getDomainWithPruning(game); // Can maybe reduce the domain there ... 
 				vars[i][j] = model.intVar(domain);
 			}
 		}
@@ -103,7 +93,6 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 			{ 	
 				if (board[i][j].getType()!=EMPTYSHAPE && board[i][j].getType()!=XSHAPE)
 				{
-					//Constraint myConstraint = new Constraint("All shapes connected Constraint", new ShapeConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board),new InstanciatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game, board));
 					Constraint myConstraint = new Constraint("Simple connection with shapes Constraint",new MyPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game));
 					myConstraint.post();
 				}
@@ -112,15 +101,14 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 		return model;
 	}
 		
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * JAVA DOC ALBAN : Create a model for the resolution of the problem using multi-threading  
+	/**
+	 * 	Solve the problem using multithreading with a portfolio approach 
+	 * @param nbThreads
+	 * @return the game solved 
 	 */
-	public Game solve_choco_with_multithreading(int nbThreads) // Ou autre classe qui hérite de solverChoco 
+	public Game solve_choco_with_multithreading(int nbThreads,Shape[][] board,IntVar[][] vars) // Ou autre classe qui hérite de solverChoco 
 	{
+		Game game_solved;
 		ParallelPortfolio portfolio = new ParallelPortfolio();
 		int nbModels = nbThreads;
 		for(int s=0;s<nbModels;s++)
@@ -128,17 +116,28 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 			portfolio.addModel(makeModel());
 		}
 		portfolio.solve();
-		return null;
+		Solution solution = portfolio.getBestModel().getSolver().findSolution();
+		if (solution != null) {
+			System.out.println(solution.toString()); 
+			for(int i1=0; i1<height;i1++) {
+				for(int j =0; j<width;j++) {
+					board[i1][j].setOrientation(solution.getIntVal(vars[i1][j]));
+				}
+			}
+		}
+		game_solved=new Game(this.game);
+			
+		return game_solved;
 	}
 
 	/**
-	 * 
-	 * @param currentPiece
-	 * @param currentPieceIntVar
-	 * @param vars
-	 * @return
+	 * 	Generate the IntVar neighbourhood of the shape (current shape included)
+	 * @param currentPiece the current Shape
+	 * @param currentPieceIntVar the IntVar of the shapes
+	 * @param vars the IntVar of all the shapes
+	 * @return the intvar neighbourhood
 	 */
-	public IntVar[] getIntVarNeighbourhood(Shape currentPiece,IntVar currentPieceIntVar,IntVar[][] vars)
+	private IntVar[] getIntVarNeighbourhood(Shape currentPiece,IntVar currentPieceIntVar,IntVar[][] vars)
 	{
 		Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
 		ArrayList<IntVar> transitiveCVN = new ArrayList<IntVar>();
@@ -159,11 +158,11 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 	}
 		
 	/**
-	* 
-	* @param currentPiece
-	* @return
+	* Generate the neighbourhood of the shape (current shape included)
+	* @param currentPiece the current piece 
+	* @return the neighbourhood
 	*/
-	public Shape[] getNeighbourhood(Shape currentPiece)
+	private Shape[] getNeighbourhood(Shape currentPiece)
 	{
 		Shape[] shapeNeighbour=game.getNeighbors(currentPiece);
 		ArrayList<Shape> transitiveCSN = new ArrayList<Shape>();
