@@ -66,7 +66,7 @@ public class SolverChoco implements fr.dauphine.javaavance.phineloops.solver.Sol
 				if (vars[i][j].isInstantiated()) board[i][j].setOrientation(vars[i][j].getValue());
 				Constraint myConstraint = new Constraint("Simple connection with shapes Constraint",
 							new MyPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game)
-							,new InstantiatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game));
+							/*,new InstantiatedAndConnectedPropagator(this.getIntVarNeighbourhood(board[i][j], vars[i][j], vars),this.getNeighbourhood(board[i][j]),this.game)*/);
 				myConstraint.post();
 			}
 		}

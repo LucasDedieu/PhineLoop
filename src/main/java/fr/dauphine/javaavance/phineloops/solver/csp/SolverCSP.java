@@ -50,7 +50,7 @@ public class SolverCSP implements Solver{
 		if(Checker.check(testGame)) {
 			return testGame;
 		}
-		System.out.println(testGame);
+		//System.out.println(testGame);
 
 		Shape initShape =pickShape(testGame);
 		stack = new ArrayDeque<StateCSP>();
@@ -114,7 +114,7 @@ public class SolverCSP implements Solver{
 			popList.clear();
 		}
 
-		System.out.println(testGame);
+		//System.out.println(testGame);
 
 		return null;
 	}

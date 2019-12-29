@@ -16,6 +16,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.sun.corba.se.spi.orbutil.fsm.Input;
+import com.sun.org.apache.xerces.internal.impl.dtd.models.CMLeaf;
 
 import fr.dauphine.javaavance.phineloops.checker.Checker;
 import fr.dauphine.javaavance.phineloops.model.Game;
@@ -25,7 +26,7 @@ import fr.dauphine.javaavance.phineloops.solver.csp.SolverCSP;
 import fr.dauphine.javaavance.phineloops.solver.csp.SolverChoco;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
-import fr.dauphine.javaavance.phineloops.view.ShapesDrawer;
+import fr.dauphine.javaavance.phineloops.view.GameVisualizer;
 
 public class Main  {
     private static String inputFile = null;  
@@ -154,7 +155,8 @@ public class Main  {
         options.addOption("t", "threads", true, "Maximum number of solver threads. (Use only with --solve.)");
         options.addOption("m", "method", true, "Specify what method should be use for solver (line or snail or csp). (Use only with --solve.)");
         options.addOption("x", "nbcc", true, "Maximum number of connected components. (Use only with --generate.)");
-        options.addOption("G", "gui", true, "Run with the graphic user interface.");
+        options.addOption("G", "gui", false, "Run with the graphic user interface.");
+        options.addOption("d", "dimension", true, "Specify the dimension of the game (Use only with --solve.)");
         options.addOption("h", "help", false, "Display this help");
         
         try {
@@ -180,12 +182,26 @@ public class Main  {
 			generate(width, height, outputFile);
 	    }
 	    else if(cmd.hasOption( "G" ) ){
-	    	String[] gridformat = cmd.getOptionValue( "G" ).split("x");
-			width = Integer.parseInt(gridformat[0]);
-			height = Integer.parseInt(gridformat[1]);
-			Game game = new Game(height, width);
-			game.generate();
-			ShapesDrawer ui = new ShapesDrawer(new Game(game));
+	    	inputFile = cmd.getOptionValue( "G" );
+	    	boolean inputfileValid = false;
+	    	if(inputFile!=null) {
+	    		Game game = loadFile(inputFile);
+	    		if(game!=null) {
+	    			inputfileValid =true;
+	    			new GameVisualizer(new Game(game));
+	    		}
+	    	}
+	    	if(cmd.hasOption("d") && !inputfileValid) {
+	    		String[] gridformat = cmd.getOptionValue( "d" ).split("x");
+				width = Integer.parseInt(gridformat[0]);
+				height = Integer.parseInt(gridformat[1]);
+				Game game = new Game(height, width);
+				game.generate();
+				new GameVisualizer(new Game(game));
+	    	}
+	    	else {
+	    		throw new ParseException("Missing or invalid input file argument and no --dimension hxw argument"); 
+	    	}
 	    }
 	    else if( cmd.hasOption( "s" ) ) {
 			System.out.println("Running phineloops solver.");

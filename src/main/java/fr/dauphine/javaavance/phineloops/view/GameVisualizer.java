@@ -20,7 +20,7 @@ import fr.dauphine.javaavance.phineloops.model.Shape;
 import fr.dauphine.javaavance.phineloops.solver.line.SolverLineByLine;
 import fr.dauphine.javaavance.phineloops.solver.snail.SolverSnail;
 
-public class ShapesDrawer extends JFrame implements ActionListener{
+public class GameVisualizer extends JFrame implements ActionListener{
 	
 
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 
 
-	public ShapesDrawer(Game game) {
+	public GameVisualizer(Game game) {
 		super();
 		this.game = game;
 		init();
@@ -83,9 +83,13 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
+		initButtons();
+	}
 
+
+
+	private void initButtons() {
 		int max = Math.max(height,width); 
-		
 		setLayout(new GridLayout(max, max));
 		buttons = new ShapeButton[height][width];
 		Shape[][] board = game.getBoard();
@@ -105,7 +109,7 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 					}
 					
 					private void displayDialog() {
-						JOptionPane.showMessageDialog(ShapesDrawer.this, "Well done ! If you want to replay click on generate in the menu bar");		
+						JOptionPane.showMessageDialog(GameVisualizer.this, "Well done ! If you want to replay click on generate in the menu bar");		
 					}
 				});
 			}
@@ -133,8 +137,8 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SolverLineByLine solver = new SolverLineByLine(ShapesDrawer.this.game);
-				ShapesDrawer.this.game = solver.solve(4);
+				SolverLineByLine solver = new SolverLineByLine(GameVisualizer.this.game);
+				GameVisualizer.this.game = solver.solve(4);
 				drawGame();
 				updateButtons(game);
 				
@@ -150,12 +154,12 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SolverSnail solver = new SolverSnail(ShapesDrawer.this.game);
+				SolverSnail solver = new SolverSnail(GameVisualizer.this.game);
 				Thread t = new Thread(new Runnable() {
 					
 					@Override
 					public void run() {
-						ShapesDrawer.this.game = solver.solve(4);
+						GameVisualizer.this.game = solver.solve(4);
 						
 					}
 				});
@@ -178,9 +182,24 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ShapesDrawer.this.game.generate();
-				drawGame();
-				updateButtons(game);
+				String resp = JOptionPane.showInputDialog(GameVisualizer.this, "Enter width, height with this format :\"wxh\"");
+				try {
+					String[] dims = resp.split("x");
+					width = Integer.parseInt(dims[0]);
+					height = Integer.parseInt(dims[1]);
+					//int nbcc = Integer.parseInt(dims[1].split(" ")[1]);
+					GameVisualizer.this.height = height;
+					GameVisualizer.this.width = width;
+					if(height>1&&width>1) {
+						GameVisualizer.this.game = new Game(height, width);
+						GameVisualizer.this.game.generate();
+						resetLayout();
+					}
+					
+				}
+				catch(NumberFormatException exp){
+					JOptionPane.showMessageDialog(GameVisualizer.this, "Warning : Negative dims");
+				}
 				
 			}
 		});
@@ -190,6 +209,12 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 		this.setJMenuBar(menuBar);
 	} 
+	
+	private void resetLayout() {
+		setLayout(null);
+		this.dispose();
+		new GameVisualizer(game);
+	}
 
 
 	private void refreshButton(ShapeButton button) {
@@ -223,8 +248,6 @@ public class ShapesDrawer extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void updateShape(Shape shape) {
