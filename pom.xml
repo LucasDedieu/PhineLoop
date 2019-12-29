@@ -14,11 +14,7 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version>
 		</dependency>
-		<dependency>
-			<groupId>org.choco-solver</groupId>
-			<artifactId>choco-solver</artifactId>
-			<version>4.10.2</version>
-		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -30,6 +26,11 @@
 			<artifactId>fastutil</artifactId>
 			<version>6.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.choco-solver</groupId>
+			<artifactId>choco-solver</artifactId>
+			<version>4.10.2</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,6 +38,14 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<build>
+		<resources>
+			<resource>
+				<directory>images</directory>
+				<includes>
+					<include>*.png</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
