@@ -66,13 +66,13 @@ public class TShape extends Shape {
 		switch(orientation)
 		{
 		case 0:
-			return "┻";
+			return "┴";
 		case 1:
-			return "┣";
+			return "┝";
 		case 2:
-			return "┳";
+			return "┬";
 		case 3:
-			return "┫";
+			return "┤";
 		default:
 			throw new IllegalArgumentException("0<=orientation<=3");
 		}

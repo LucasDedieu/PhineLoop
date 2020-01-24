@@ -24,7 +24,7 @@ public class XShape extends Shape {
 	}
 	
 	public String getSymbol() {
-		return "╋";
+		return "┼";
 	}
 	
 	public int getMaxRotation() {
