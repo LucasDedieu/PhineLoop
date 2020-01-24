@@ -1254,6 +1254,8 @@ public class Generator {
 	 * @param game
 	 */
 	private void shuffleGame(Game game) {
+		System.out.println("Game before shuffle : ");
+		System.out.println(game);
 		Random rand = new Random();
 		for (Shape[] shapes : game.getBoard()) {
 			for (Shape shape : shapes) {

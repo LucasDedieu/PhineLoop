@@ -42,6 +42,7 @@ public class Main  {
 	        	Game game = new Game(height, width,maxcc);
 	        	game.generate(maxcc);
 				game.write(outputFile);
+				System.out.println("Game generate :");
 				System.out.println(game);
 			} catch (FileNotFoundException e) {
 				System.out.println("File not found: "+outputFile);
@@ -52,6 +53,7 @@ public class Main  {
             	Game game = new Game(height, width);
             	game.generate();
     			game.write(outputFile);
+    			System.out.println("Game generate :");
     			System.out.println(game);
     		}catch (FileNotFoundException e) {
     			System.out.println("File not found: "+outputFile);
@@ -121,6 +123,7 @@ public class Main  {
 		}
     	if(Checker.check(gameSolved)) {
     		gameSolved.write(outputFile);
+    		System.out.println(gameSolved);
         	return true;
     	}
     	return false;
