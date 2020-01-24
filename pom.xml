@@ -40,10 +40,10 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>images</directory>
-				<includes>
+				<directory>src/main/resources</directory>
+				<!--  <includes>
 					<include>*.png</include>
-				</includes>
+				</includes>-->
 			</resource>
 		</resources>
 		<plugins>
