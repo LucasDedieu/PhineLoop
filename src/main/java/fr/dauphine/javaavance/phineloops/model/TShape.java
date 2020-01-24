@@ -68,7 +68,7 @@ public class TShape extends Shape {
 		case 0:
 			return "┴";
 		case 1:
-			return "┝";
+			return "├";
 		case 2:
 			return "┬";
 		case 3:
