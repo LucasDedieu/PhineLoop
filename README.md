@@ -1,6 +1,9 @@
 # Phineloops
 This is a java implementation for the game Infinity Loops.
 
+## Resume of the original game
+Infinity Loop is a captivating mobile game that challenges players to connect various shapes and patterns in a continuous loop. With its minimalist design and intuitive gameplay, it offers a relaxing and addictive experience. The goal is to rotate and align the pieces until they form a complete loop without any loose ends. Featuring hundreds of levels with increasing complexity, Infinity Loop provides a perfect blend of puzzle-solving and creativity. It offers a unique and satisfying puzzle-solving experience that keeps players engaged and entertained. With its accessible mechanics and endless possibilities, Infinity Loop is a must-play game for puzzle enthusiasts of all ages.
+
 # Build
 <ul>
 <li>Clone the repository</li>
